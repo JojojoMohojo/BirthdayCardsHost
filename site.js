@@ -18,6 +18,7 @@ document.getElementById("draw").addEventListener("click", function() {
     document.getElementById("CardNumber").textContent = "#" + card.number;
     document.getElementById("Card").classList.remove("hidden");
     document.getElementById("rules").classList.remove("hidden");
+    document.getElementById("remainingCards").textContent = cardList.length;
 
     // Disable the button for 10 seconds
     drawbutton.disabled = true;
@@ -197,5 +198,15 @@ var cardList = [
         "title":"Snap you're back working at the pub",
         "text":"Finish anyone who's got 2 fingers or less, finish them and take them to the bar",
         "number": 32
+    },
+    {
+        "title":"Look after the Grand Autismo",
+        "text":"Trouble in lego city, Mr Paul has fallen in the big sads, any time he would have to drink you have to instead",
+        "number": 33
+    },
+    {
+        "title":"7 years of straight pain",
+        "text":"Matt lived with the pooper for 7 years, but now he's your room mate. Link arms with K-Dwag until you both finish your drinks",
+        "number": 34
     }
 ]
