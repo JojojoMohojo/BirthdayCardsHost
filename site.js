@@ -17,6 +17,7 @@ document.getElementById("draw").addEventListener("click", function() {
     document.getElementById("CardText").textContent = card.text;
     document.getElementById("CardNumber").textContent = "#" + card.number;
     document.getElementById("Card").classList.remove("hidden");
+    document.getElementById("rules").classList.remove("hidden");
 
     // Disable the button for 10 seconds
     drawbutton.disabled = true;
@@ -29,6 +30,7 @@ document.getElementById("draw").addEventListener("click", function() {
 document.getElementById("rules").addEventListener("click", function() {
     document.getElementById("Card").classList.add("hidden");
     document.getElementById("Rules").classList.remove("hidden");
+    document.getElementById("rules").classList.add("hidden");
 });
 
 function getRandomObjectFromArray(array) {
@@ -165,5 +167,35 @@ var cardList = [
         "title":"Brainy boy chess time",
         "text":"Ask the barman for the 'Queen of drinks', you must drink whatever they get you",
         "number":26
+    },
+    {
+        "title":"Ahoy nerds it's DND time",
+        "text":"I cast fireball, roll a D20, that's how many time you must drink",
+        "number":27
+    },
+    {
+        "title":"Your are Matt's friend",
+        "text":"If you're Matt's friend you probably have autism. Avoid eye contact, if anyone looks you in the eyes for the next 15 mins they must take (n+1) drinks where n is the number of people who have previously looked you in the eyes",
+        "number":28
+    },
+    {
+        "title":"Food Snob",
+        "text":"Eww you little food snob, order a vodka and cordial you posh boy",
+        "number":29
+    },
+    {
+        "title":"Insurance Payout",
+        "text":"Matt has just had his insurance pay out for his car, time to share that wealth, he'll buy you a drink",
+        "number":30
+    },
+    {
+        "title":"Yikes you're losing muscle mass",
+        "text":"Bro you're becoming so skinny, pick someone to feed you the rest of your drink as it's too heavy for your little arms",
+        "number": 31
+    },
+    {
+        "title":"Snap you're back working at the pub",
+        "text":"Finish anyone who's got 2 fingers or less, finish them and take them to the bar",
+        "number": 32
     }
 ]
