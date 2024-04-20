@@ -136,12 +136,12 @@ var cardList = [
     },
     {
         "title":"Vest time",
-        "text":"Matt loves a vest so wear one for him (one will be supplied), this vest cannot be removed until someone else draws this",
+        "text":"Matt loves a vest so wear one for him (one will be supplied), this vest cannot be removed until someone else draws this. The vest must be the top layer. If you choose to wear the vest over the top of your clothes you must draw another card",
         "number":20
     },
     {
-        "title":"Little wittle PissBoy",
-        "text":"Ewww you little piss boy, no going for a wee until you have finished your drink you little piss goblin",
+        "title":"Ooooh so spicy",
+        "text":"Matt loves his spice cause he's so hard. Prove that you are hard by doing a shot of hot sauce (or the closest condiment)",
         "number":21
     },
     {
@@ -208,5 +208,10 @@ var cardList = [
         "title":"7 years of straight pain",
         "text":"Matt lived with the pooper for 7 years, but now he's your room mate. Link arms with K-Dwag until you both finish your drinks",
         "number": 34
+    },
+    {
+        "title":"It's Ellen's birthday too",
+        "text":"It's the little goblins birthday, pub her a drink at this pub and she'll get your next one",
+        "number":35
     }
 ]
