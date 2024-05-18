@@ -1,8 +1,36 @@
+// Add these functions at the beginning of your file
+function saveStateToCookies() {
+    document.cookie = "cardList=" + JSON.stringify(cardList) + "; path=/";
+    document.cookie = "remainingCards=" + cardList.length + "; path=/";
+}
+
+function getCookie(name) {
+    let cookieArr = document.cookie.split(";");
+    for (let i = 0; i < cookieArr.length; i++) {
+        let cookiePair = cookieArr[i].split("=");
+        if (name == cookiePair[0].trim()) {
+            return decodeURIComponent(cookiePair[1]);
+        }
+    }
+    return null;
+}
+
+function loadStateFromCookies() {
+    const savedCardList = getCookie("cardList");
+    if (savedCardList) {
+        cardList = JSON.parse(savedCardList);
+    } else {
+        cardList = defaultCardList;
+    }
+    document.getElementById("remainingCards").textContent = cardList.length;
+}
+
+// Call this function after every state change
 document.getElementById("draw").addEventListener("click", function() {
-    const drawbutton = this;
+    const drawButton = this;
     document.getElementById("Rules").classList.add("hidden");
     var card;
-    if(cardList.length == 0){
+    if (cardList.length == 0) {
         card = {
             title: "Out of Cards",
             text: "You get a free pass while the deck is reloaded",
@@ -20,11 +48,14 @@ document.getElementById("draw").addEventListener("click", function() {
     document.getElementById("rules").classList.remove("hidden");
     document.getElementById("remainingCards").textContent = cardList.length;
 
+    // Save state to cookies
+    saveStateToCookies();
+
     // Disable the button for 5 seconds
-    drawbutton.disabled = true;
+    drawButton.disabled = true;
     setTimeout(function() {
         console.log("button is back online");
-        drawbutton.disabled = false;
+        drawButton.disabled = false;
     }, 5000); // 5 seconds in milliseconds
 });
 
@@ -40,7 +71,7 @@ function getRandomObjectFromArray(array) {
 
 // function return random Pokemon generation for card 5
 function getRandomNumber(min, max) {
-    switch(Math.floor(Math.random() * (max - min + 1)) + min) {
+    switch (Math.floor(Math.random() * (max - min + 1)) + min) {
         case 1:
             return "1st";
         case 2:
@@ -48,9 +79,10 @@ function getRandomNumber(min, max) {
         case 3:
             return "3rd";
     }
-};
+}
 
-var cardList = [
+// Initialize the state
+var defaultCardList = [
     {
         title: "It's not 11 o'clock yet!",
         text: "Tom is still working overtime and can't drink. Everyone down his drink for him so he can focus on work",
@@ -221,4 +253,13 @@ var cardList = [
         text: "Tom sat on your phone and somehow managed to send a text on it. Tom is allowed to send one text to anyone on your phone (excluding work and parents). If you refuse, take a shot",
         number : 34
     }
-]
+];
+
+var cardList = defaultCardList;
+
+// Load the initial state
+loadStateFromCookies();
+
+window.onload = function() {
+    loadStateFromCookies();
+};

@@ -20,7 +20,7 @@ body {
     border: 1px solid #d3d9f5;
     color: #ffffff;
     background: #DC602E;
-    border-radius: 5px; 
+    border-radius: 5px;
     padding: 10px;
     margin-bottom: 10px;
 }
@@ -58,6 +58,7 @@ body {
     font-weight: bolder;
     text-align: center;
     margin: 0 auto;
+    cursor: pointer;
 }
 
 .button-container {
@@ -72,8 +73,8 @@ button:active {
 }
 
 #draw:disabled {
-    background-color: #464646; /* Change background color to light gray */
-    color: #999; /* Change text color to darker gray */
+    background-color: #464646; /* Change background color to dark gray */
+    color: #999; /* Change text color to light gray */
     cursor: not-allowed; /* Change cursor to not-allowed */
 }
 
