@@ -4,14 +4,14 @@ document.getElementById("draw").addEventListener("click", function() {
     var card;
     if(cardList.length == 0){
         card = {
-            "title":"Out of Cards",
-            "text":"You get a free pass while the deck is reloaded",
-            "number":"??"
-        }
+            title: "Out of Cards",
+            text: "You get a free pass while the deck is reloaded",
+            number: "??"
+        };
     } else {
         const ranNum = getRandomObjectFromArray(cardList);
         card = cardList[ranNum];
-        cardList.splice(ranNum,1);
+        cardList.splice(ranNum, 1);
     }
     document.getElementById("CardTitle").textContent = card.title;
     document.getElementById("CardText").textContent = card.text;
@@ -20,10 +20,10 @@ document.getElementById("draw").addEventListener("click", function() {
     document.getElementById("rules").classList.remove("hidden");
     document.getElementById("remainingCards").textContent = cardList.length;
 
-    // Disable the button for 10 seconds
+    // Disable the button for 5 seconds
     drawbutton.disabled = true;
-    setTimeout(function(e) {
-        console.log("button is back online")
+    setTimeout(function() {
+        console.log("button is back online");
         drawbutton.disabled = false;
     }, 5000); // 5 seconds in milliseconds
 });
@@ -35,183 +35,190 @@ document.getElementById("rules").addEventListener("click", function() {
 });
 
 function getRandomObjectFromArray(array) {
-    return randomIndex = Math.floor(Math.random() * array.length);
+    return Math.floor(Math.random() * array.length);
 }
+
+// function return random Pokemon generation for card 5
+function getRandomNumber(min, max) {
+    switch(Math.floor(Math.random() * (max - min + 1)) + min) {
+        case 1:
+            return "1st";
+        case 2:
+            return "2nd";
+        case 3:
+            return "3rd";
+    }
+};
 
 var cardList = [
     {
-        "title":"Baldy baldy baldy ",
-        "text":"Male pattern baldness got you down, just shave it all off. Wear the bald cap, if you remove the bald cap before someone else draws this card you must do a shot",
-        "number":1
+        title: "It's not 11 o'clock yet!",
+        text: "Tom is still working overtime and can't drink. Everyone down his drink for him so he can focus on work",
+        number: 1
     },
     {
-        "title":"Ellen's Quiz Time",
-        "text":"Duh duh duh, it's Ellen quiz time. She will ask a question about Matt, get it wrong but someone else then gets it correct, you must drink half your drink",
-        "number":2
+        title :"The Classic Attire",
+        text: "He never leaves the house without it. You have to wear Tom's hawaiian shirt. Or take a shot of spirit",
+        number: 2
     },
     {
-        "title":"Tattoo time",
-        "text":"You are jealous of Matt's sick ink, get one of Matt's tattoos done with a Sharpie, your choice which one and where",
-        "number":3
+        title: "Hannah's quiz time",
+        text: "Hannah asks question about Tom, if you get it wrong someone else can answer, then you have to down half your drink",
+        number :3
     },
     {
-        "title":"King of Burghfield",
-        "text":"You're the king of a small village, time to throw your weight around. Choose a drink, everyone has to order that as their next drink",
-        "number":4
+        title: "Big man's choice",
+        text: "You and Tom decide the next drink everyone has to order at the next pub",
+        number: 4
     },
     {
-        "title":"God tier Moustache",
-        "text":"Matt has an amazing tache, you should draw one on to be just like him. If you already have one you don't have to do anything ... except remove that beard. Forfitting this is worth 2 shots",
-        "number":5
+        title: "Who's that pokemon?",
+        text: "You must pretend to be a pokemon from the " + getRandomNumber(1, 3) + " generation, so Tom can guess. If Tom can't guess correctly within 15 seconds, Tom must draw the pokemon onto your arm",
+        number: 5
     },
     {
-        "title":"Dj Lil Honks",
-        "text":"Wicka wicka, let the group record a new ring tone for you and leave your phone on loud for the rest of the night or down your drinks and another person's",
-        "number":6
+        title: "Guitar Hero pro",
+        text: "Tom loves to belt out some tunes on the Wii. Let the group record a new ring tone for you and leave your phone on loud speaker for the rest of the night, or down your drink and the drink of someone else",
+        number: 6
     },
     {
-        "title":"Where's my phone?",
-        "text":"ooopies you left your phone alone in a room with Matt, he can send one text to anyone on your phone (excluding work and parents). If you refuse take a shot",
-        "number":7
+        title: "You gotta open that case boy",
+        text: "You just opened a CS2 case, but since it's Tom's birthday he deserves a reward. Transfer Tom a skin from your inventory. (If you do not play CS2, buy Tom a drink)",
+        number: 7
     },
     {
-        "title":"Matt facts",
-        "text":"Matt's facts have a tendency to be fake, give him a cool new fact on the topic of his choice. If he likes your fact you can give out a drink, else you must drink.",
-        "number":8
+        title: "Squirtle squirtle!",
+        text: "You little squirtle. Neck a pint of water in one go or take a shot",
+        number: 8
     },
     {
-        "title":"Lil honkys training school",
-        "text":"Everything you say for the next 10 mins must be spoken in rhymes, each time you fail take a sip, or a shot to remove this curse",
-        "number":9
+        title: "Chance time!",
+        text: "You landed on a Chance time space. Swap everyone's drinks around, you get to choose who gets what",
+        number: 9
     },
     {
-        "title":"Lil froggy boy",
-        "text":"Matt likes frogs, frogs like water and so do you. Neck a pint of water, you must finish it in one go or else you have to do a shot you naughty frog.",
-        "number":10
+        title: "In the doghouse",
+        text: "You've drank too much and are snoring loudly. Hannah is making you sleep on the sofa tonight. You have to finish your drink on a table by yourself",
+        number: 10
     },
     {
-        "title":"I go to the gym, do you?",
-        "text":"Matt goes to the gym and is super buff. For each push up over 10 you can do, give out that many sips. For each one under 10 drink that many.",
-        "number":11
+        title: "Back in action",
+        text: "Just like Tom, your legs are now stronger than ever! Choose someone to carry to the next pub. They cannot have been picked before",
+        number: 11
     },
     {
-        "title":"Matt has Fridays off ",
-        "text":"So should you, but it's a Saturday, either way chill, this card is a freebie",
-        "number":12
+        title: "Epic gamer moment",
+        text: "You are an epic gamer my guy. You must wear the gamer shirt until someone else draws this card or decides to wear it themselves. If you decline, take a shot of spirit. (You are NOT allowed to say the gamer word)",
+        number: 12
     },
     {
-        "title":"Al does the griddy",
-        "text":"If Al is here he must do the griddy, otherwise you have to and you have to take 3 sips as you have lost Al",
-        "number":13
+        title:"Super Smash Bros.",
+        text: "It's a game of categories, but the only category allowed is Super Smash Bros characters. You start. Loser takes 3 drinks",
+        number: 13
     },
     {
-        "title":"Chat mpt",
-        "text":"Ask chat gpt to make a drinking game for us to play given our current situation and we must all play it. You are the games leader, let the games begin",
-        "number":14
+        title: "Drink for the fallen",
+        text: "Take a drink for each person who has gone home. If no-one has left yet, down your drink as a toast in advance",
+        number: 14
     },
     {
-        "title":"You are gay",
-        "text":"If you read this card you are gay, order a fancy drink at the bar and let Matt have half cause he's half gay (unless you're monty and then you can have the whole pint) #BiErasure",
-        "number":15
+        title: "Strong bones!",
+        text: "Don't end up like Tom with rickets. Drink a glass of milk, and you must finish it before you can return to your drink",
+        number: 15
     },
     {
-        "title":"Change places",
-        "text":"You get to swap everyone's drinks around, everyone must end up with a different drink. Choose who gets whose.",
-        "number":16
+        title: "No. 5 Large",
+        text: "Tom has gotten too drunk. Perk him up with the saviour food, Mr Cod. (Or similar if not possible)",
+        number: 16
     },
     {
-        "title":"Only child",
-        "text":"Matt's an only child and so now are you. You must go finish your drink on a table by yourself and you can't come back until it's finished",
-        "number":17
+        title: "Liam's round",
+        text: "Liam is buying your next drink but has forgotten your order. Drink whatever he brings back for you. (Liam does not have to pay for you unless he's feeling nice)",
+        number: 17
     },
     {
-        "title":"You've skipped leg day",
-        "text":"Matt always skips leg day but not today. Choose someone to carry to the next pub. They cannot have been picked before. 1 sip per time you stop. You're not allowed to move without carrying them",
-        "number":18
+        title:"Tommy says",
+        text:"The group must only drink with your non-dominant hand for this pub. Anyone caught out takes a drink. (With their non-dominant hand you mug)",
+        number:18
     },
     {
-        "title":"Naughty vapers",
-        "text":"Won't you think of the planet, if you bought a vape out today you must finish your drink. Unless someone has asked for some of it, then they must finish your drink",
-        "number":19
+        title: "Sleeping with both eyes open",
+        text: "You drank so much last night you slept with your eyes open, now they're all sticky and bloodshot. Anyone who looks you in the eyes for the next 5 minutes must take a drink",
+        number: 19
     },
     {
-        "title":"Vest time",
-        "text":"Matt loves a vest so wear one for him (one will be supplied), this vest cannot be removed until someone else draws this. The vest must be the top layer. If you choose to wear the vest over the top of your clothes you must draw another card",
-        "number":20
+        title: "Here's my spout",
+        text: "Top up Tom's drink with your own, acting like a teapot",
+        number: 20
     },
     {
-        "title":"Ooooh so spicy",
-        "text":"Matt loves his spice cause he's so hard. Prove that you are hard by doing a shot of hot sauce (or the closest condiment)",
-        "number":21
+        title: "Well that's written off...",
+        text: "Tom just hit ANOTHER deer on the road and now his car is totalled. He must buy you a drink as thanks for driving him around",
+        number: 21
     },
     {
-        "title":"Ben Ten Time",
-        "text":"It's a game of categories but the only category allowed is Ben10 aliens, you start",
-        "number":22
+        title: "Rawr xD",
+        text: "No one really understood secondary school emo Tom, but you can feel a little closer to how he felt if you don the wig and sing/shout 'Can you feel my heart'",
+        number: 22
     },
     {
-        "title":"Fallen soldiers",
-        "text":"It's sad to see so many fallen soldiers, you must take a drink for each person who has now gone home. Chris and Lewis count as they died before the battle even started",
-        "number":23
+        title: "Absolute bullshit",
+        text: "It's time for a Mario Party mini-game! Give your best impression of a Mario Party character, and Tom has to guess. If Tom can't guess correctly within 15 seconds, you must both take 3 drinks",
+        number: 23
     },
     {
-        "title":"Sneeze Sneeze Cough Cough",
-        "text":"Oh no you've just got a cat but you're allergic. What a stupid thing to do! Better get a glass of milk for that cat tho (and drink it, the cat doesn't deserve any milk)",
-        "number":24
+        title: "Monttttyyyyyy!",
+        text: "Monty burnt a penis into the roof of Tom's car, now he's drawing one on you. Let Monty draw a penis onto a place of your choosing. (Must be visible)",
+        number: 24
     },
     {
-        "title":"How many plants??",
-        "text":"Matt has lots of plants but you should get some too, order a salad and eat the whole thing!",
-        "number":25
+        title: "Horses don't have hands!",
+        text: "Tom is a horse. Horses, don't have hands. Feed Tom the rest of his drink",
+        number: 25
     },
     {
-        "title":"Brainy boy chess time",
-        "text":"Ask the barman for the 'Queen of drinks', you must drink whatever they get you",
-        "number":26
+        title: "Bloody bastard",
+        text: "You tried to give Tom birthday beats, but you've realized you're Ed Brown! Tom gets to give you 26 birthday beats",
+        number: 26
     },
     {
-        "title":"Ahoy nerds it's DND time",
-        "text":"I cast fireball, roll a D20, that's how many time you must drink",
-        "number":27
+        title: "Pokemon trivia",
+        text: "Ask Tom a question about Pokemon. If he gets it right, you have to buy him his favourite drink. If he gets it wrong, you can buy him any drink",
+        number: 27
     },
     {
-        "title":"Your are Matt's friend",
-        "text":"If you're Matt's friend you probably have autism. Avoid eye contact, if anyone looks you in the eyes for the next 15 mins they must take (n+1) drinks where n is the number of people who have previously looked you in the eyes",
-        "number":28
+        title: "Back at BCOT",
+        text: "Tom's used to love his white chocolate starbucks at college. Order and drink a white mocha from the bar. If you can't get one, order and drink a black coffee, Tom loves those now",
+        number :28
     },
     {
-        "title":"Food Snob",
-        "text":"Eww you little food snob, order a vodka and cordial you posh boy",
-        "number":29
+        title: "Pummel Party",
+        text: "You picked up an Arcade Challenge! Challenge someone to a game of pong, loser buys the winner a drink (Joe has the app on his phone)",
+        number:29
     },
     {
-        "title":"Insurance Payout",
-        "text":"Matt has just had his insurance pay out for his car, time to share that wealth, he'll buy you a drink",
-        "number":30
+        title: "Short shorts",
+        text: "Tom wore his tight chino shorts out and has ripped them, revealing his bussy. Poke him in the arse quick!",
+        number: 30
     },
     {
-        "title":"Yikes you're losing muscle mass",
-        "text":"Bro you're becoming so skinny, pick someone to feed you the rest of your drink as it's too heavy for your little arms",
-        "number": 31
+        title: "Blue moon!",
+        text: "Tom has finally shown up on Discord! What a treat! Buy yourself a Blue Moon or a Blue Lagoon to drink",
+        number: 31
     },
     {
-        "title":"Snap you're back working at the pub",
-        "text":"Finish anyone who's got 2 fingers or less, finish them and take them to the bar",
-        "number": 32
+        title: "5v5",
+        text: "Challenge the person sat closest opposite to you to Rock, Paper, Scissors. Loser downs their drink. Best of 3",
+        number: 32
     },
     {
-        "title":"Look after the Grand Autismo",
-        "text":"Trouble in lego city, Mr Paul has fallen in the big sads, any time he would have to drink you have to instead",
-        "number": 33
+        title: "Tom's favourite meme",
+        text: "Keep your toddlers on a leash! Go ask for 'The Pitbull of Drinks' at the bar and enjoy it",
+        number: 33
     },
     {
-        "title":"7 years of straight pain",
-        "text":"Matt lived with the pooper for 7 years, but now he's your room mate. Link arms with K-Dwag until you both finish your drinks",
-        "number": 34
-    },
-    {
-        "title":"It's Ellen's birthday too",
-        "text":"It's the little goblins birthday, pub her a drink at this pub and she'll get your next one",
-        "number":35
+        title: "Butt text, sorry!",
+        text: "Tom sat on your phone and somehow managed to send a text on it. Tom is allowed to send one text to anyone on your phone (excluding work and parents). If you refuse, take a shot",
+        number : 34
     }
 ]

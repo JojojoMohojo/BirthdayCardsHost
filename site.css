@@ -1,49 +1,70 @@
-#Rules {
-    border:1px solid #d3d9f5;
-    border-radius: 5px; 
-    padding:10px;
-    color:#d3d9f5;
-    margin-bottom:10px;
+body {
+    height: 100%;
+    margin: 0;
+    background: url('Tom-80s.jpg') no-repeat center center fixed;
+    background-size: cover;
+    font-family: 'Trebuchet MS', sans-serif;
+    display: flex;
+    flex-direction: column;
 }
 
-.hidden{
-    display:none;
+.container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 10px;
+}
+
+#Rules {
+    border: 1px solid #d3d9f5;
+    color: #ffffff;
+    background: #DC602E;
+    border-radius: 5px; 
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.hidden {
+    display: none;
 }
 
 #Card {
-    min-height: 250px;
-    border:2px solid #d3d9f5;
-    padding:10px;
+    border: 1px solid #d3d9f5;
+    color: #ffffff;
+    background: #DC602E;
+    padding: 10px;
     font-size: 20px;
-    border-radius:10px;
-    color:#d3d9f5;
-    width:85%;
+    border-radius: 10px;
+    width: 85%;
     margin: 20px auto;
     position: relative;
 }
 
 #CardTitle {
     text-align: center;
-    font-size: 35px;
-    margin-bottom: 10px;
-    font-weight:bold;
+    font-size: 25px;
+    margin-bottom: 7px;
+    font-weight: bold;
 }
 
 .button {
     padding: 10px;
-    background: black;
-    border:2px solid #B7C3F3;
-    color: #B7C3F3;
-    border-radius:5px;
-    width:80%;
+    background: #05A8AA;
+    color: #ffffff;
+    border: 2px solid #5FBFB1;
+    border-radius: 5px;
+    width: 80%;
     font-weight: bolder;
+    text-align: center;
+    margin: 0 auto;
 }
 
 .button-container {
     width: 100%;
-    justify-content: space-around;
-    display:flex;
-    margin-bottom:10px;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
 }
 
 button:active {
@@ -51,14 +72,45 @@ button:active {
 }
 
 #draw:disabled {
-    background-color: gray; /* Change background color to light gray */
+    background-color: #464646; /* Change background color to light gray */
     color: #999; /* Change text color to darker gray */
     cursor: not-allowed; /* Change cursor to not-allowed */
+}
+
+#CardText {
+    margin-bottom: 30px;
 }
 
 #CardNumber {
     position: absolute;
     bottom: 0;
-    right:0;
+    right: 0;
     padding: 10px;
+}
+
+#cards-remaining {
+    padding: 10px;
+    background: #05A8AA;
+    color: #ffffff;
+    border: 2px solid #5FBFB1;
+    border-radius: 5px;
+    width: 80%;
+    font-weight: bolder;
+    text-align: center;
+    margin: 0 auto;
+}
+
+h3 {
+    padding: 0;
+    margin: 0;
+}
+
+ol {
+    margin: 5px 0;
+}
+
+.bottom-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
