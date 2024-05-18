@@ -19,15 +19,15 @@ function loadStateFromCookies() {
     const savedCardList = getCookie("cardList");
     if (savedCardList) {
         cardList = JSON.parse(savedCardList);
-        document.getElementById("remainingCards").textContent = cardList.length;
     } else {
         cardList = defaultCardList;
     }
+    document.getElementById("remainingCards").textContent = cardList.length;
 }
 
 // Call this function after every state change
 document.getElementById("draw").addEventListener("click", function() {
-    const drawbutton = this;
+    const drawButton = this;
     document.getElementById("Rules").classList.add("hidden");
     var card;
     if (cardList.length == 0) {
@@ -52,10 +52,10 @@ document.getElementById("draw").addEventListener("click", function() {
     saveStateToCookies();
 
     // Disable the button for 5 seconds
-    drawbutton.disabled = true;
+    drawButton.disabled = true;
     setTimeout(function() {
         console.log("button is back online");
-        drawbutton.disabled = false;
+        drawButton.disabled = false;
     }, 5000); // 5 seconds in milliseconds
 });
 
