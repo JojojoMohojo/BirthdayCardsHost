@@ -288,7 +288,7 @@ body {
 .card-inner {
     background: var(--card-bg);
     border-radius: 12px;
-    padding: 28px 24px 20px;
+    padding: 28px 26px 20px;
     box-shadow: var(--shadow-card);
     width: 100%;
     position: relative;
@@ -325,10 +325,10 @@ body {
     line-height: 1.1;
 }
 
-.card-pip-tl { top: 14px; left: 12px; }
+.card-pip-tl { top: 18px; right: 14px; }
 
 .card-pip-br {
-    bottom: 14px; right: 12px;
+    bottom: 18px; left: 14px;
     transform: rotate(180deg);
 }
 
@@ -348,7 +348,7 @@ body {
 
 .card-title {
     font-family: 'Playfair Display', serif;
-    font-size: 26px;
+    font-size: 24px;
     font-weight: 900;
     color: var(--card-text);
     line-height: 1.2;
