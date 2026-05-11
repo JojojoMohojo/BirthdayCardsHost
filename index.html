@@ -37,25 +37,26 @@
             <div id="rules-panel" class="panel rules-panel">
                 <h2 class="rules-heading">The Rules</h2>
                 <p class="rules-late">Draw one card for each hour you arrive late.</p>
+                <p class="rules-late">You may phone Hudson for a Monkey's Paw (One Per User)</p>
                 <p class="rules-subheading">Draw a card if you:</p>
                 <ol id="rules-list-1" class="rules-list">
-                    <li>Tom tells you to draw a card — his word is final</li>
-                    <li>Place your drink within a thumb's length of the table</li>
-                    <li>Are caught drinking sparkling wine or prosecco (once per drink)</li>
-                    <li>Wish Tom a happy birthday</li>
-                    <li>Fail to split the G</li>
-                    <li>Take a piss at the pub (first piss per pub is free)</li>
                 </ol>
                 <p id="rules-subheading-2" class="rules-subheading">Make someone else draw if you:</p>
                 <ol id="rules-list-2" class="rules-list">
-                    <li>Wear the gamer vest for a whole pub</li>
-                    <li>Drink a full glass of milk</li>
                 </ol>
                 <div class="rules-admin">
                     <button id="next-pub" class="admin-btn admin-btn-pub" aria-label="Next pub">
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M5 5h12l-1.5 13H6.5L5 5z"/>
                             <path d="M17 9h2a1.5 1.5 0 0 1 0 5h-2"/>
+                        </svg>
+                    </button>
+                    <button id="player-manager-btn" class="admin-btn admin-btn-people" aria-label="Manage players">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                            <circle cx="9" cy="7" r="4"/>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
                         </svg>
                     </button>
                     <button id="rule-manager-btn" class="admin-btn admin-btn-edit" aria-label="Edit rules">
@@ -162,6 +163,26 @@
             <div class="confirm-actions">
                 <button id="confirm-yes" class="btn btn-danger-solid">Reset</button>
                 <button id="confirm-no" class="btn btn-secondary">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="player-manager-overlay" class="overlay hidden">
+        <div class="rule-manager-drawer">
+            <div class="rule-manager-header">
+                <span class="rule-manager-title">Players</span>
+                <button id="player-manager-close" class="icon-btn" aria-label="Close">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+            <div class="rule-manager-body">
+                <div id="pm-player-list" class="rm-rule-list"></div>
+                <div class="rm-add-form">
+                    <div class="rm-input-row">
+                        <input type="text" id="pm-input" class="rm-input" placeholder="New player name…" maxlength="50"/>
+                        <button id="pm-add" class="rm-add-btn">Add</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

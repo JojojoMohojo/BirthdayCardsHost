@@ -1,24 +1,31 @@
 'use strict';
 
 // ── Players ───────────────────────────────────────────────────────────────────
-// Edit this list before the night. No limit on names — chips wrap onto multiple rows.
 
-const PLAYERS = ['Joe', 'Liam', 'Monty', 'Hannah', 'Tom', 'Faith', 'Player 8', 'Player 9', 'Player 10', 'Player 11', 'Player 12', 'Player 13', 'Player 14', 'Player 15'];
+const DEFAULT_PLAYERS = ['Joe', 'Liam', 'Monty', 'Hannah', 'Tom', 'Faith', 'Ellen', 'Matt', 'Brandon', 'Imogen', 'Ashley', 'Cameron', 'Ellie'];
 
 // ── Default rules ─────────────────────────────────────────────────────────────
 
 const DEFAULT_RULES_DRAW = [
     { text: "Tom tells you to draw a card — his word is final",                  pub: 1 },
+    { text: "Use any players first name (or shorted version)",                   pub: 1 },
+    { text: "Fail to split the G",                                               pub: 2 },
     { text: "Place your drink within a thumb's length of the table",             pub: 2 },
-    { text: "Are caught drinking sparkling wine or prosecco (once per drink)",   pub: 3 },
-    { text: "Wish Tom a happy birthday",                                         pub: 4 },
-    { text: "Fail to split the G",                                               pub: 5 },
-    { text: "Take a piss at the pub (first piss per pub is free)",               pub: 6 },
+    { text: "Take a piss at the pub (first piss per pub is free)",               pub: 3 },
+    { text: "Drink with your left hand",                                         pub: 5 },
+    { text: "Accidently rhyme",                                                  pub: 6 },
+    { text: "Are caught drinking sparkling wine or prosecco (once per drink)",   pub: 7 },
+    { text: "Buzzballs",   pub: 7 },
 ];
 
 const DEFAULT_RULES_OTHERS = [
+    { text: "Drink a full glass of milk",           pub: 1 },
+    { text: "Manage to split the G",                pub: 2 },
+    { text: "Challenge and win a boat race",        pub: 3 },
+    { text: "Buy Tom a shot",                       pub: 3 },
+    { text: "Buy another player a drink",           pub: 5 },
     { text: "Wear the gamer vest for a whole pub",  pub: 7 },
-    { text: "Drink a full glass of milk",           pub: 8 },
+    { text: "Eat a dog treat",                      pub: 3 },
 ];
 
 // ── Card suits (assigned per card number for corner pips) ─────────────────────
@@ -129,6 +136,20 @@ function loadRules() {
     return null;
 }
 
+const PLAYERS_KEY = 'birthdayPlayers';
+
+function savePlayers() {
+    try { localStorage.setItem(PLAYERS_KEY, JSON.stringify(players)); } catch (e) {}
+}
+
+function loadPlayers() {
+    try {
+        const raw = localStorage.getItem(PLAYERS_KEY);
+        if (raw) return JSON.parse(raw);
+    } catch (e) {}
+    return null;
+}
+
 // ── Card Definitions ──────────────────────────────────────────────────────────
 
 const DEFAULT_CARDS = [
@@ -178,6 +199,7 @@ let shortTimerInterval = null;
 let currentPub = 1;
 let drawRules = [];
 let makeOthersRules = [];
+let players = [];
 
 // ── Init ──────────────────────────────────────────────────────────────────────
 
@@ -190,6 +212,7 @@ function init() {
         drawRules = [...DEFAULT_RULES_DRAW];
         makeOthersRules = [...DEFAULT_RULES_OTHERS];
     }
+    players = loadPlayers() ?? [...DEFAULT_PLAYERS];
     renderRulesPanel();
     buildNameChips();
     const saved = loadState();
@@ -355,16 +378,19 @@ function clearAllData() {
     clearHistory();
     clearPubCount();
     localStorage.removeItem(RULES_KEY);
+    localStorage.removeItem(PLAYERS_KEY);
     deck    = [...DEFAULT_CARDS];
     history = [];
     lastCard  = null;
     currentPub = 1;
     drawRules = [...DEFAULT_RULES_DRAW];
     makeOthersRules = [...DEFAULT_RULES_OTHERS];
+    players = [...DEFAULT_PLAYERS];
     activeLongTimers.forEach(t => clearInterval(t.intervalId));
     activeLongTimers = [];
     renderTimerTray();
     renderRulesPanel();
+    buildNameChips();
     updateCounter();
     updateHistoryBtn();
     applyRuleVisibility();
@@ -402,7 +428,7 @@ function resetAll() {
 function buildNameChips() {
     const container = document.getElementById('name-picker-btns');
     container.innerHTML = '';
-    PLAYERS.forEach(name => {
+    players.forEach(name => {
         const btn = document.createElement('button');
         btn.className = 'name-chip';
         btn.textContent = name;
@@ -799,6 +825,112 @@ document.getElementById('confirm-overlay').addEventListener('click', function (e
     if (e.target === this) this.classList.add('hidden');
 });
 
+// ── Player manager ────────────────────────────────────────────────────────────
+
+function openPlayerManager() {
+    renderPlayerManager();
+    document.getElementById('player-manager-overlay').classList.remove('hidden');
+}
+
+function closePlayerManager() {
+    document.getElementById('player-manager-overlay').classList.add('hidden');
+}
+
+function renderPlayerManager() {
+    const container = document.getElementById('pm-player-list');
+    container.innerHTML = '';
+    if (players.length === 0) {
+        const empty = document.createElement('div');
+        empty.className = 'rm-empty';
+        empty.textContent = 'No players added.';
+        container.appendChild(empty);
+        return;
+    }
+    players.forEach((name, i) => {
+        const count = history.filter(h => h.assignee === name).length;
+        const el = document.createElement('div');
+        el.className = 'pm-player-item';
+
+        const nameSpan = document.createElement('span');
+        nameSpan.className = 'pm-player-name';
+        nameSpan.textContent = name;
+
+        const countBadge = document.createElement('span');
+        countBadge.className = 'pm-card-count';
+        countBadge.textContent = count === 1 ? '1 card' : `${count} cards`;
+
+        const editBtn = document.createElement('button');
+        editBtn.className = 'rm-delete-btn';
+        editBtn.setAttribute('aria-label', 'Rename player');
+        editBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>';
+        editBtn.addEventListener('click', () => startRenamePlayer(i, el, nameSpan));
+
+        const delBtn = document.createElement('button');
+        delBtn.className = 'rm-delete-btn';
+        delBtn.setAttribute('aria-label', 'Remove player');
+        delBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+        delBtn.addEventListener('click', () => removePlayer(i));
+
+        el.appendChild(nameSpan);
+        el.appendChild(countBadge);
+        el.appendChild(editBtn);
+        el.appendChild(delBtn);
+        container.appendChild(el);
+    });
+}
+
+function startRenamePlayer(index, el, nameSpan) {
+    const oldName = players[index];
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.value = oldName;
+    input.className = 'pm-rename-input';
+    el.replaceChild(input, nameSpan);
+    input.focus();
+    input.select();
+
+    let committed = false;
+    const commit = () => {
+        if (committed) return;
+        committed = true;
+        const newName = input.value.trim();
+        if (newName && newName !== oldName) {
+            history.forEach(h => { if (h.assignee === oldName) h.assignee = newName; });
+            saveHistory(history);
+            players[index] = newName;
+            savePlayers();
+            buildNameChips();
+        }
+        renderPlayerManager();
+    };
+
+    input.addEventListener('blur', commit);
+    input.addEventListener('keydown', e => {
+        if (e.key === 'Enter') input.blur();
+        if (e.key === 'Escape') { committed = true; renderPlayerManager(); }
+    });
+}
+
+function addPlayer() {
+    const input = document.getElementById('pm-input');
+    const name = input.value.trim();
+    if (!name || players.includes(name)) return;
+    players.push(name);
+    input.value = '';
+    savePlayers();
+    buildNameChips();
+    renderPlayerManager();
+}
+
+function removePlayer(index) {
+    players.splice(index, 1);
+    savePlayers();
+    buildNameChips();
+    renderPlayerManager();
+}
+
+// ── Event listeners ───────────────────────────────────────────────────────────
+
 document.getElementById('next-pub').addEventListener('click', nextPub);
 
 document.getElementById('clear-cookies-btn').addEventListener('click', () => {
@@ -816,6 +948,20 @@ document.getElementById('cookie-confirm-no').addEventListener('click', () => {
 
 document.getElementById('cookie-confirm-overlay').addEventListener('click', function (e) {
     if (e.target === this) this.classList.add('hidden');
+});
+
+document.getElementById('player-manager-btn').addEventListener('click', openPlayerManager);
+
+document.getElementById('player-manager-close').addEventListener('click', closePlayerManager);
+
+document.getElementById('player-manager-overlay').addEventListener('click', function (e) {
+    if (e.target === this) closePlayerManager();
+});
+
+document.getElementById('pm-add').addEventListener('click', addPlayer);
+
+document.getElementById('pm-input').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') addPlayer();
 });
 
 document.getElementById('rule-manager-btn').addEventListener('click', openRuleManager);

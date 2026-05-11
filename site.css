@@ -311,6 +311,57 @@ body {
 }
 .admin-btn-cookie:hover { background: rgba(212, 133, 74, 0.12); }
 
+.admin-btn-people {
+    color: #5ba3c9;
+    border-color: rgba(91, 163, 201, 0.4);
+}
+.admin-btn-people:hover { background: rgba(91, 163, 201, 0.12); }
+
+/* ── Player manager items ── */
+
+.pm-player-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border-subtle);
+    border-radius: 8px;
+}
+
+.pm-player-name {
+    flex: 1;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-on-felt);
+}
+
+.pm-card-count {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--gold-dim);
+    background: rgba(212, 168, 67, 0.1);
+    border: 1px solid rgba(212, 168, 67, 0.2);
+    border-radius: 20px;
+    padding: 2px 8px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.pm-rename-input {
+    flex: 1;
+    padding: 3px 8px;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(212, 168, 67, 0.5);
+    border-radius: 6px;
+    color: var(--text-on-felt);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    outline: none;
+    user-select: text;
+}
+
 .rules-late {
     margin-top: 18px;
     font-size: 14px;
