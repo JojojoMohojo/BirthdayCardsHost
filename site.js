@@ -1,9 +1,9 @@
 'use strict';
 
 // ── Players ───────────────────────────────────────────────────────────────────
-// Edit this list before the night. Keep it short — max ~8 names looks best.
+// Edit this list before the night. No limit on names — chips wrap onto multiple rows.
 
-const PLAYERS = ['Joe', 'Liam', 'Monty', 'Hannah', 'Tom'];
+const PLAYERS = ['Joe', 'Liam', 'Monty', 'Hannah', 'Tom', 'Player 7', 'Player 8', 'Player 9', 'Player 10', 'Player 11', 'Player 12', 'Player 13', 'Player 14', 'Player 15'];
 
 // ── Card suits (assigned per card number for corner pips) ─────────────────────
 
@@ -156,6 +156,11 @@ function resetAll() {
     renderTimerTray();
     updateCounter();
     updateHistoryBtn();
+    // Restore draw button in case it was in reset mode
+    const drawBtn = document.getElementById('draw');
+    drawBtn.disabled = false;
+    drawBtn.textContent = 'Draw Card';
+    drawBtn.dataset.mode = '';
     showRules();
 }
 
@@ -213,7 +218,6 @@ function renderCard(entry, animate) {
     ['pip-tl-num', 'pip-br-num'].forEach(id => document.getElementById(id).textContent = pipNum);
     ['pip-tl-suit', 'pip-br-suit'].forEach(id => document.getElementById(id).textContent = pipSuit);
 
-    document.getElementById('CardNumber').textContent = '#' + cardDef.number;
     document.getElementById('CardTitle').textContent  = cardDef.title;
     document.getElementById('CardText').textContent   = resolvedText;
 
@@ -474,8 +478,18 @@ function startDrawCooldown(btn) {
 // ── Event listeners ───────────────────────────────────────────────────────────
 
 document.getElementById('draw').addEventListener('click', function () {
+    // Guard: ignore if this is acting as a reset button mid-click
+    if (this.dataset.mode === 'reset') {
+        resetAll();
+        this.dataset.mode = '';
+        this.textContent = 'Draw Card';
+        return;
+    }
+
     let cardDef;
+    let isDeckEmpty = false;
     if (deck.length === 0) {
+        isDeckEmpty = true;
         cardDef = { number: '??', timer: TIMER.NONE, title: 'Out of Cards', text: "The deck is empty. You get a free pass while it's reloaded." };
     } else {
         const idx = randomIndex(deck);
@@ -484,14 +498,27 @@ document.getElementById('draw').addEventListener('click', function () {
         saveState(deck);
     }
 
-    const entry = { cardDef, resolvedText: resolveCardText(cardDef), assignee: null };
+    // Resolve text immediately and synchronously before storing
+    const resolvedText = resolveCardText(cardDef);
+    const entry = { cardDef, resolvedText, assignee: null };
     lastCard = entry;
-    history.unshift(entry);
-    saveHistory(history);
-    updateHistoryBtn();
+
+    if (!isDeckEmpty) {
+        history.unshift(entry);
+        saveHistory(history);
+        updateHistoryBtn();
+    }
+
     updateCounter();
     renderCard(entry, true);
-    startDrawCooldown(this);
+
+    if (isDeckEmpty) {
+        // Swap draw button to instant reset
+        this.textContent = 'Reload Deck';
+        this.dataset.mode = 'reset';
+    } else {
+        startDrawCooldown(this);
+    }
 
     try { navigator.vibrate(40); } catch (e) {}
 });

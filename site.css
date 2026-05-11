@@ -304,17 +304,15 @@ body {
     background: linear-gradient(90deg, var(--card-accent), var(--card-accent-2), var(--card-accent));
 }
 
-.card-inner::after {
-    content: '♠ ♥ ♣ ♦';
-    position: absolute;
-    bottom: 12px;
-    left: 0;
-    right: 0;
+/* Suit symbols sit below all content as a static decorative row */
+.card-suits-row {
     text-align: center;
     font-size: 20px;
     color: rgba(139, 26, 26, 0.18);
     letter-spacing: 8px;
     pointer-events: none;
+    margin-top: 16px;
+    padding-bottom: 4px;
 }
 
 /* ── Corner Pips ── */
@@ -327,39 +325,25 @@ body {
     line-height: 1.1;
 }
 
-.card-pip-tl { top: 14px; left: 10px; }
+.card-pip-tl { top: 14px; left: 12px; }
 
 .card-pip-br {
-    bottom: 14px; right: 10px;
+    bottom: 14px; right: 12px;
     transform: rotate(180deg);
 }
 
 .pip-num {
     font-family: 'Playfair Display', serif;
-    font-size: 14px;
+    font-size: 20px;
     font-weight: 700;
     color: var(--card-accent);
-    opacity: 0.5;
+    opacity: 0.55;
 }
 
 .pip-suit {
-    font-size: 12px;
+    font-size: 17px;
     color: var(--card-accent);
-    opacity: 0.4;
-}
-
-/* ── Card Content ── */
-
-.card-number {
-    font-family: 'Playfair Display', serif;
-    font-size: 18px;
-    font-weight: 700;
-    color: var(--card-accent);
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    margin-bottom: 10px;
-    opacity: 0.7;
-    padding-left: 22px;
+    opacity: 0.45;
 }
 
 .card-title {
@@ -466,8 +450,9 @@ body {
     padding-top: 12px;
     border-top: 1px solid rgba(139, 26, 26, 0.15);
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 14px;
+    gap: 12px;
 }
 
 .card-timer-btn {
