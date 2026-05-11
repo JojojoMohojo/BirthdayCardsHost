@@ -3,7 +3,7 @@
 // ── Players ───────────────────────────────────────────────────────────────────
 // Edit this list before the night. No limit on names — chips wrap onto multiple rows.
 
-const PLAYERS = ['Joe', 'Liam', 'Monty', 'Hannah', 'Tom', 'Player 7', 'Player 8', 'Player 9', 'Player 10', 'Player 11', 'Player 12', 'Player 13', 'Player 14', 'Player 15'];
+const PLAYERS = ['Joe', 'Liam', 'Monty', 'Hannah', 'Tom', 'Faith', 'Player 8', 'Player 9', 'Player 10', 'Player 11', 'Player 12', 'Player 13', 'Player 14', 'Player 15'];
 
 // ── Card suits (assigned per card number for corner pips) ─────────────────────
 
