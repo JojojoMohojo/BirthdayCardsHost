@@ -62,7 +62,7 @@ body {
 }
 
 .header-title {
-    font-family: 'Playfair Display', serif;
+    /**/
     font-size: 22px;
     font-weight: 900;
     color: var(--gold);
@@ -98,7 +98,7 @@ body {
 }
 
 .deck-fraction {
-    font-family: 'Playfair Display', serif;
+    
     font-size: 24px;
     font-weight: 700;
     color: var(--gold);
@@ -181,7 +181,7 @@ body {
 }
 
 .tray-timer-count {
-    font-family: 'Playfair Display', serif;
+    
     font-size: 20px;
     font-weight: 700;
     color: var(--gold);
@@ -223,7 +223,7 @@ body {
 .rules-panel { animation: fadeIn 0.25s ease; }
 
 .rules-heading {
-    font-family: 'Playfair Display', serif;
+    /**/
     font-size: 20px;
     font-weight: 700;
     color: var(--gold);
@@ -294,6 +294,7 @@ body {
     position: relative;
     border: 1px solid rgba(212, 168, 67, 0.4);
     overflow: hidden;
+    min-height: 500px;
 }
 
 .card-inner::before {
@@ -333,7 +334,7 @@ body {
 }
 
 .pip-num {
-    font-family: 'Playfair Display', serif;
+    /**/
     font-size: 20px;
     font-weight: 700;
     color: var(--card-accent);
@@ -347,7 +348,7 @@ body {
 }
 
 .card-title {
-    font-family: 'Playfair Display', serif;
+    /**/
     font-size: 24px;
     font-weight: 900;
     color: var(--card-text);
@@ -512,7 +513,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: 'Playfair Display', serif;
+    /**/
     font-size: 15px;
     font-weight: 700;
     color: var(--card-accent);
@@ -676,7 +677,7 @@ body {
 }
 
 .history-title {
-    font-family: 'Playfair Display', serif;
+    /**/
     font-size: 18px;
     font-weight: 700;
     color: var(--gold);
@@ -709,7 +710,7 @@ body {
 }
 
 .history-num {
-    font-family: 'Playfair Display', serif;
+    /**/
     font-size: 13px;
     font-weight: 700;
     color: var(--gold-dim);
