@@ -5,6 +5,22 @@
 
 const PLAYERS = ['Joe', 'Liam', 'Monty', 'Hannah', 'Tom', 'Faith', 'Player 8', 'Player 9', 'Player 10', 'Player 11', 'Player 12', 'Player 13', 'Player 14', 'Player 15'];
 
+// ── Default rules ─────────────────────────────────────────────────────────────
+
+const DEFAULT_RULES_DRAW = [
+    { text: "Tom tells you to draw a card — his word is final",                  pub: 1 },
+    { text: "Place your drink within a thumb's length of the table",             pub: 2 },
+    { text: "Are caught drinking sparkling wine or prosecco (once per drink)",   pub: 3 },
+    { text: "Wish Tom a happy birthday",                                         pub: 4 },
+    { text: "Fail to split the G",                                               pub: 5 },
+    { text: "Take a piss at the pub (first piss per pub is free)",               pub: 6 },
+];
+
+const DEFAULT_RULES_OTHERS = [
+    { text: "Wear the gamer vest for a whole pub",  pub: 7 },
+    { text: "Drink a full glass of milk",           pub: 8 },
+];
+
 // ── Card suits (assigned per card number for corner pips) ─────────────────────
 
 const SUITS = ['♠', '♥', '♣', '♦'];
@@ -78,6 +94,41 @@ function clearHistory() {
     try { localStorage.removeItem(HISTORY_KEY); } catch (e) {}
 }
 
+const PUB_KEY = 'birthdayPubCount';
+
+function savePubCount(n) {
+    try { localStorage.setItem(PUB_KEY, String(n)); } catch (e) {}
+}
+
+function loadPubCount() {
+    try {
+        const raw = localStorage.getItem(PUB_KEY);
+        if (raw !== null) return Math.max(1, parseInt(raw, 10));
+    } catch (e) {}
+    return 1;
+}
+
+function clearPubCount() {
+    try { localStorage.removeItem(PUB_KEY); } catch (e) {}
+}
+
+const RULES_KEY = 'birthdayRules';
+
+function saveRules() {
+    try { localStorage.setItem(RULES_KEY, JSON.stringify({ draw: drawRules, others: makeOthersRules })); } catch (e) {}
+}
+
+function loadRules() {
+    try {
+        const raw = localStorage.getItem(RULES_KEY);
+        if (raw) {
+            const p = JSON.parse(raw);
+            return { draw: Array.isArray(p.draw) ? p.draw : [], others: Array.isArray(p.others) ? p.others : [] };
+        }
+    } catch (e) {}
+    return null;
+}
+
 // ── Card Definitions ──────────────────────────────────────────────────────────
 
 const DEFAULT_CARDS = [
@@ -124,16 +175,30 @@ let lastCard  = null;   // { cardDef, resolvedText, assignee }
 let history   = [];     // [{ cardDef, resolvedText, assignee }, ...]  newest first
 let activeLongTimers = []; // [{ id, label, remaining, intervalId }, ...]
 let shortTimerInterval = null;
+let currentPub = 1;
+let drawRules = [];
+let makeOthersRules = [];
 
 // ── Init ──────────────────────────────────────────────────────────────────────
 
 function init() {
+    const savedRules = loadRules();
+    if (savedRules) {
+        drawRules = savedRules.draw;
+        makeOthersRules = savedRules.others;
+    } else {
+        drawRules = [...DEFAULT_RULES_DRAW];
+        makeOthersRules = [...DEFAULT_RULES_OTHERS];
+    }
+    renderRulesPanel();
     buildNameChips();
     const saved = loadState();
     deck    = saved !== null ? saved : [...DEFAULT_CARDS];
     history = loadHistory();
+    currentPub = loadPubCount();
     updateCounter();
     updateHistoryBtn();
+    applyRuleVisibility();
 }
 
 // ── Counter ───────────────────────────────────────────────────────────────────
@@ -143,19 +208,187 @@ function updateCounter() {
     document.getElementById('totalCards').textContent     = '/' + DEFAULT_CARDS.length;
 }
 
-// ── Reset ─────────────────────────────────────────────────────────────────────
+// ── Pub progression ───────────────────────────────────────────────────────────
+
+function applyRuleVisibility() {
+    document.getElementById('pubNumber').textContent = currentPub;
+    document.querySelectorAll('#rules-list-1 li').forEach((li, i) => {
+        li.classList.toggle('hidden', !drawRules[i] || currentPub < drawRules[i].pub);
+    });
+    document.querySelectorAll('#rules-list-2 li').forEach((li, i) => {
+        li.classList.toggle('hidden', !makeOthersRules[i] || currentPub < makeOthersRules[i].pub);
+    });
+    const anyOthersVisible = makeOthersRules.some(r => currentPub >= r.pub);
+    document.getElementById('rules-subheading-2').classList.toggle('hidden', !anyOthersVisible);
+    document.getElementById('rules-list-2').classList.toggle('hidden', !anyOthersVisible);
+    const allRules = [...drawRules, ...makeOthersRules];
+    const maxPub = allRules.length > 0 ? Math.max(...allRules.map(r => r.pub)) : 1;
+    document.getElementById('next-pub').disabled = currentPub >= maxPub;
+}
+
+function nextPub() {
+    currentPub++;
+    savePubCount(currentPub);
+    applyRuleVisibility();
+}
+
+// ── Rules panel rendering ─────────────────────────────────────────────────────
+
+function renderRulesPanel() {
+    const list1 = document.getElementById('rules-list-1');
+    const list2 = document.getElementById('rules-list-2');
+    list1.innerHTML = '';
+    list2.innerHTML = '';
+    drawRules.forEach(r => {
+        const li = document.createElement('li');
+        li.textContent = r.text;
+        list1.appendChild(li);
+    });
+    makeOthersRules.forEach(r => {
+        const li = document.createElement('li');
+        li.textContent = r.text;
+        list2.appendChild(li);
+    });
+}
+
+// ── Rule manager ──────────────────────────────────────────────────────────────
+
+function openRuleManager() {
+    renderRuleManager();
+    document.getElementById('rule-manager-overlay').classList.remove('hidden');
+}
+
+function closeRuleManager() {
+    document.getElementById('rule-manager-overlay').classList.add('hidden');
+}
+
+function renderRuleManager() {
+    renderRmSection('rm-draw-list', drawRules, 'draw');
+    renderRmSection('rm-others-list', makeOthersRules, 'others');
+}
+
+function renderRmSection(containerId, rules, section) {
+    const container = document.getElementById(containerId);
+    container.innerHTML = '';
+    if (rules.length === 0) {
+        const empty = document.createElement('div');
+        empty.className = 'rm-empty';
+        empty.textContent = 'No rules in this section.';
+        container.appendChild(empty);
+        return;
+    }
+    rules.forEach((rule, i) => {
+        const el = document.createElement('div');
+        el.className = 'rm-rule-item';
+
+        const pubInput = document.createElement('input');
+        pubInput.type = 'number';
+        pubInput.min = '1';
+        pubInput.max = '99';
+        pubInput.value = String(rule.pub);
+        pubInput.className = 'rm-pub-badge';
+        pubInput.setAttribute('aria-label', 'Reveal at pub number');
+        pubInput.addEventListener('change', () => updateRulePub(section, i, pubInput.value));
+
+        const text = document.createElement('span');
+        text.className = 'rm-rule-text';
+        text.textContent = rule.text;
+
+        const btn = document.createElement('button');
+        btn.className = 'rm-delete-btn';
+        btn.setAttribute('aria-label', 'Remove rule');
+        btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+        btn.addEventListener('click', () => removeRule(section, i));
+
+        el.appendChild(pubInput);
+        el.appendChild(text);
+        el.appendChild(btn);
+        container.appendChild(el);
+    });
+}
+
+function updateRulePub(section, index, value) {
+    const pub = Math.max(1, parseInt(value, 10) || 1);
+    const rule = section === 'draw' ? drawRules[index] : makeOthersRules[index];
+    if (rule) {
+        rule.pub = pub;
+        saveRules();
+        applyRuleVisibility();
+    }
+}
+
+function addRule() {
+    const input = document.getElementById('rm-input');
+    const section = document.getElementById('rm-section').value;
+    const text = input.value.trim();
+    if (!text) return;
+    const pub = Math.max(1, parseInt(document.getElementById('rm-pub').value, 10) || 1);
+    const rule = { text, pub };
+    if (section === 'draw') {
+        drawRules.push(rule);
+    } else {
+        makeOthersRules.push(rule);
+    }
+    input.value = '';
+    saveRules();
+    renderRulesPanel();
+    applyRuleVisibility();
+    renderRuleManager();
+}
+
+function removeRule(section, index) {
+    if (section === 'draw') {
+        drawRules.splice(index, 1);
+    } else {
+        makeOthersRules.splice(index, 1);
+    }
+    saveRules();
+    renderRulesPanel();
+    applyRuleVisibility();
+    renderRuleManager();
+}
+
+// ── Reset & clear ─────────────────────────────────────────────────────────────
+
+function clearAllData() {
+    clearState();
+    clearHistory();
+    clearPubCount();
+    localStorage.removeItem(RULES_KEY);
+    deck    = [...DEFAULT_CARDS];
+    history = [];
+    lastCard  = null;
+    currentPub = 1;
+    drawRules = [...DEFAULT_RULES_DRAW];
+    makeOthersRules = [...DEFAULT_RULES_OTHERS];
+    activeLongTimers.forEach(t => clearInterval(t.intervalId));
+    activeLongTimers = [];
+    renderTimerTray();
+    renderRulesPanel();
+    updateCounter();
+    updateHistoryBtn();
+    applyRuleVisibility();
+    const drawBtn = document.getElementById('draw');
+    drawBtn.disabled = false;
+    drawBtn.textContent = 'Draw Card';
+    drawBtn.dataset.mode = '';
+    showRules();
+}
 
 function resetAll() {
     clearState();
     clearHistory();
+    clearPubCount();
     deck    = [...DEFAULT_CARDS];
     history = [];
     lastCard  = null;
+    currentPub = 1;
     activeLongTimers.forEach(t => clearInterval(t.intervalId));
     activeLongTimers = [];
     renderTimerTray();
     updateCounter();
     updateHistoryBtn();
+    applyRuleVisibility();
     // Restore draw button in case it was in reset mode
     const drawBtn = document.getElementById('draw');
     drawBtn.disabled = false;
@@ -564,6 +797,39 @@ document.getElementById('confirm-no').addEventListener('click', () => {
 
 document.getElementById('confirm-overlay').addEventListener('click', function (e) {
     if (e.target === this) this.classList.add('hidden');
+});
+
+document.getElementById('next-pub').addEventListener('click', nextPub);
+
+document.getElementById('clear-cookies-btn').addEventListener('click', () => {
+    document.getElementById('cookie-confirm-overlay').classList.remove('hidden');
+});
+
+document.getElementById('cookie-confirm-yes').addEventListener('click', () => {
+    document.getElementById('cookie-confirm-overlay').classList.add('hidden');
+    clearAllData();
+});
+
+document.getElementById('cookie-confirm-no').addEventListener('click', () => {
+    document.getElementById('cookie-confirm-overlay').classList.add('hidden');
+});
+
+document.getElementById('cookie-confirm-overlay').addEventListener('click', function (e) {
+    if (e.target === this) this.classList.add('hidden');
+});
+
+document.getElementById('rule-manager-btn').addEventListener('click', openRuleManager);
+
+document.getElementById('rule-manager-close').addEventListener('click', closeRuleManager);
+
+document.getElementById('rule-manager-overlay').addEventListener('click', function (e) {
+    if (e.target === this) closeRuleManager();
+});
+
+document.getElementById('rm-add').addEventListener('click', addRule);
+
+document.getElementById('rm-input').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') addRule();
 });
 
 // ── Boot ──────────────────────────────────────────────────────────────────────
