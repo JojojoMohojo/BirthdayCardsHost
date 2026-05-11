@@ -2,47 +2,73 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8"/>
-    <meta http-equiv="X-UA Compatible" content="IE=edge"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
+    <title>Tom's Birthday</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="site.css"/>
 </head>
 <body>
-    <div class="container">
-        <div id="Rules">
-            <h3>THE RULES</h3>
-            <div>You will have to draw a card if any of the following happens</div>
-            <ol>
-                <li>Tom tells you to draw a card, his word is final</li>
-                <li>You place your drinks within the length of a thumb to the table</li>
-                <li>You are caught drinking sparkling wine/prosecco (once per drink)</li>
-                <li>You wish Tom a happy birthday</li>
-                <li>Fail to split the G</li>
-                <li>For each piss you do at the pub (first piss per pub is free)</li>
-            </ol>
-            <div>You can make someone else draw a card if you do any of the following</div>
-            <ol>
-                <li>Wear the gamer vest for a whole pub</li>
-                <li>You drink a glass of milk</li>
-            </ol>
-            <div style="font-weight: bold;">You also have to draw one card for each hour you are late to arrive</div>
-        </div>
-        <div id="Card" class="hidden">
-            <div id="CardTitle"></div>
-            <div id="CardText"></div>
-            <div id="CardNumber"></div>
-        </div>
-        <div class="bottom-container">
-            <div class="button-container">
-                <button id="draw" class="button">Draw Card</button>
+    <div class="app">
+
+        <header class="header">
+            <div class="header-title">Tom's Birthday</div>
+            <div class="deck-counter">
+                <span id="remainingCards">??</span>
+                <span class="deck-label">cards left</span>
             </div>
-            <div class="button-container">
-                <button id="rules" class="button hidden">Show Rules</button>
+        </header>
+
+        <main class="main">
+
+            <div id="rules-panel" class="panel rules-panel">
+                <h2 class="rules-heading">The Rules</h2>
+                <p class="rules-subheading">Draw a card if you:</p>
+                <ol class="rules-list">
+                    <li>Tom tells you to draw a card — his word is final</li>
+                    <li>Place your drink within a thumb's length of the table</li>
+                    <li>Are caught drinking sparkling wine or prosecco (once per drink)</li>
+                    <li>Wish Tom a happy birthday</li>
+                    <li>Fail to split the G</li>
+                    <li>Take a piss at the pub (first piss per pub is free)</li>
+                </ol>
+                <p class="rules-subheading">Make someone else draw if you:</p>
+                <ol class="rules-list">
+                    <li>Wear the gamer vest for a whole pub</li>
+                    <li>Drink a full glass of milk</li>
+                </ol>
+                <p class="rules-late">Draw one card for each hour you arrive late.</p>
             </div>
-            <div class="button-container">
-                <div id="cards-remaining" class="button">Cards remaining: <span id="remainingCards">??</span></div>
+
+            <div id="card-panel" class="panel card-panel hidden">
+                <div class="card-inner">
+                    <div class="card-number" id="CardNumber"></div>
+                    <div class="card-title" id="CardTitle"></div>
+                    <div class="card-divider"></div>
+                    <div class="card-text" id="CardText"></div>
+                </div>
+            </div>
+
+        </main>
+
+        <footer class="footer">
+            <button id="draw" class="btn btn-draw">Draw Card</button>
+            <button id="rules-toggle" class="btn btn-secondary hidden">Show Rules</button>
+            <button id="reset" class="btn btn-danger">Reset Deck</button>
+        </footer>
+
+    </div>
+
+    <div id="confirm-overlay" class="overlay hidden">
+        <div class="confirm-box">
+            <p class="confirm-text">Reset the deck? This puts all cards back in.</p>
+            <div class="confirm-actions">
+                <button id="confirm-yes" class="btn btn-danger">Reset</button>
+                <button id="confirm-no" class="btn btn-secondary">Cancel</button>
             </div>
         </div>
     </div>
+
     <script src="site.js"></script>
 </body>
 </html>
