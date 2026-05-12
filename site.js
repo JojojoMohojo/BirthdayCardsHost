@@ -812,13 +812,19 @@ function renderCard(entry, animate) {
         longWrap.classList.add('hidden');
     }
 
-    // Panel visibility + animation
+    // Panel visibility + flip animation
     const panel = document.getElementById('card-panel');
-    if (animate) {
-        panel.classList.add('hidden');
-        void panel.offsetWidth;
-    }
+    const flipper = document.getElementById('card-flipper');
     panel.classList.remove('hidden');
+    if (animate) {
+        flipper.style.transition = 'none';
+        flipper.classList.remove('is-flipped');
+        void flipper.offsetWidth;
+        flipper.style.transition = '';
+        flipper.classList.add('is-flipped');
+    } else {
+        flipper.classList.add('is-flipped');
+    }
 
     document.getElementById('rules-panel').classList.add('hidden');
     document.getElementById('rules-toggle').classList.remove('hidden');

@@ -91,6 +91,14 @@
             </div>
 
             <div id="card-panel" class="panel card-panel hidden">
+                <div class="card-flip-scene">
+                <div class="card-flipper" id="card-flipper">
+
+                <div class="card-face card-face--back" aria-hidden="true">
+                    <img src="tom-face.png" class="card-back-photo" alt="">
+                </div>
+
+                <div class="card-face card-face--front">
                 <div class="card-inner">
                     <div class="card-pip card-pip-tl">
                         <span class="pip-num" id="pip-tl-num"></span>
@@ -137,7 +145,11 @@
                     </div>
 
                     <div class="card-suits-row">♠ ♥ ♣ ♦</div>
-                </div>
+                </div><!-- card-inner -->
+                </div><!-- card-face--front -->
+
+                </div><!-- card-flipper -->
+                </div><!-- card-flip-scene -->
             </div>
 
         </main>
