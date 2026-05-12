@@ -12,10 +12,11 @@ const DEFAULT_RULES_DRAW = [
     { text: "Fail to split the G",                                               pub: 2 },
     { text: "Place your drink within a thumb's length of the table",             pub: 2 },
     { text: "Take a piss at the pub (first piss per pub is free)",               pub: 3 },
+    { text: "If you are the only one outside the pub at any point",              pub: 4 },
     { text: "Drink with your left hand",                                         pub: 5 },
     { text: "Accidently rhyme",                                                  pub: 6 },
     { text: "Are caught drinking sparkling wine or prosecco (once per drink)",   pub: 7 },
-    { text: "Buzzballs",   pub: 7 },
+    { text: "Buzzballs",                                                         pub: 7 },
 ];
 
 const DEFAULT_RULES_OTHERS = [
@@ -23,9 +24,9 @@ const DEFAULT_RULES_OTHERS = [
     { text: "Manage to split the G",                pub: 2 },
     { text: "Challenge and win a boat race",        pub: 3 },
     { text: "Buy Tom a shot",                       pub: 3 },
+    { text: "Eat a dog treat (Once per pub)",       pub: 3 },
     { text: "Buy another player a drink",           pub: 5 },
     { text: "Wear the gamer vest for a whole pub",  pub: 7 },
-    { text: "Eat a dog treat",                      pub: 3 },
 ];
 
 // ── Card suits (assigned per card number for corner pips) ─────────────────────
@@ -186,7 +187,11 @@ const DEFAULT_CARDS = [
     { number: 31, timer: TIMER.NONE,  title: "Blue Moon!", text: "Tom has finally shown up on Discord! What a treat! Buy yourself a Blue Moon or a Blue Lagoon to drink" },
     { number: 32, timer: TIMER.NONE,  title: "5v5", text: "Challenge the person sat closest opposite you to Rock, Paper, Scissors. Loser downs their drink. Best of 3" },
     { number: 33, timer: TIMER.NONE,  title: "Tom's Favourite Meme", text: "Keep your toddlers on a leash! Go ask for 'The Pitbull of Drinks' at the bar and enjoy it" },
-    { number: 34, timer: TIMER.NONE,  title: "Butt Text, Sorry!", text: "Tom sat on your phone and somehow managed to send a text on it. Tom is allowed to send one text to anyone on your phone (excluding work and parents). If you refuse, take a shot" }
+    { number: 34, timer: TIMER.NONE, title: "Butt Text, Sorry!", text: "Tom sat on your phone and somehow managed to send a text on it. Tom is allowed to send one text to anyone on your phone (excluding work and parents). If you refuse, take a shot" },
+
+    //New ones
+    { number: 19, timer: TIMER.LONG, timerSeconds: 300, timerLabel: "5 min heaven rule", title: "Tom wishes he was dead, show him the way", text: "For the next 5 minutes any time you point to heaven (Tom's dream) everyone else must point too, the last one has to take 3 slips" },
+
 ];
 
 // ── State ─────────────────────────────────────────────────────────────────────
