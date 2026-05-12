@@ -1,34 +1,9 @@
 'use strict';
 
 // ── Players ───────────────────────────────────────────────────────────────────
+// Edit this list before the night. No limit on names — chips wrap onto multiple rows.
 
-const DEFAULT_PLAYERS = ['Joe', 'Liam', 'Monty', 'Hannah', 'Tom', 'Faith', 'Ellen', 'Matt', 'Brandon', 'Imogen', 'Ashley', 'Cameron', 'Ellie'];
-
-// ── Default rules ─────────────────────────────────────────────────────────────
-
-const DEFAULT_RULES_DRAW = [
-    { text: "Tom tells you to draw a card — his word is final",                  pub: 1 },
-    { text: "Use any players first name (or shorted version)",                   pub: 1 },
-    { text: "Fail to split the G",                                               pub: 2 },
-    { text: "Place your drink within a thumb's length of the table",             pub: 2 },
-    { text: "Take a piss at the pub (first piss per pub is free)",               pub: 3 },
-    { text: "If you are the only one outside the pub at any point",              pub: 4 },
-    { text: "Drink with your left hand",                                         pub: 5 },
-    { text: "Accidentally rhyme",                                                pub: 6 },
-    { text: "Are caught drinking sparkling wine or prosecco (once per drink)",   pub: 7 },
-    { text: "Buzzballs",                                                         pub: 7 },
-    { text: "If you do a poo, the group",                                                  pub: 7 },
-];
-
-const DEFAULT_RULES_OTHERS = [
-    { text: "Drink a full glass of milk",           pub: 1 },
-    { text: "Manage to split the G",                pub: 2 },
-    { text: "Challenge and win a boat race",        pub: 3 },
-    { text: "Buy Tom a shot",                       pub: 3 },
-    { text: "Eat a dog treat (Once per pub)",       pub: 3 },
-    { text: "Buy another player a drink",           pub: 5 },
-    { text: "Wear the gamer vest for a whole pub",  pub: 7 },
-];
+const PLAYERS = ['Joe', 'Liam', 'Monty', 'Hannah', 'Tom', 'Player 7', 'Player 8', 'Player 9', 'Player 10', 'Player 11', 'Player 12', 'Player 13', 'Player 14', 'Player 15'];
 
 // ── Card suits (assigned per card number for corner pips) ─────────────────────
 
@@ -97,179 +72,86 @@ function clearHistory() {
     try { localStorage.removeItem(HISTORY_KEY); } catch (e) {}
 }
 
-const PUB_KEY = 'birthdayPubCount';
-
-function savePubCount(n) {
-    try { localStorage.setItem(PUB_KEY, String(n)); } catch (e) {}
-}
-
-function loadPubCount() {
-    try {
-        const raw = localStorage.getItem(PUB_KEY);
-        if (raw !== null) return Math.max(1, parseInt(raw, 10));
-    } catch (e) {}
-    return 1;
-}
-
-function clearPubCount() {
-    try { localStorage.removeItem(PUB_KEY); } catch (e) {}
-}
-
-const RULES_KEY = 'birthdayRules';
-
-function saveRules() {
-    try { localStorage.setItem(RULES_KEY, JSON.stringify({ draw: drawRules, others: makeOthersRules })); } catch (e) {}
-}
-
-function loadRules() {
-    try {
-        const raw = localStorage.getItem(RULES_KEY);
-        if (raw) {
-            const p = JSON.parse(raw);
-            return { draw: Array.isArray(p.draw) ? p.draw : [], others: Array.isArray(p.others) ? p.others : [] };
-        }
-    } catch (e) {}
-    return null;
-}
-
-const PLAYERS_KEY = 'birthdayPlayers';
-
-function savePlayers() {
-    try { localStorage.setItem(PLAYERS_KEY, JSON.stringify(players)); } catch (e) {}
-}
-
-function loadPlayers() {
-    try {
-        const raw = localStorage.getItem(PLAYERS_KEY);
-        if (raw) return JSON.parse(raw);
-    } catch (e) {}
-    return null;
-}
-
-const CARDS_KEY = 'birthdayCards';
-
-function saveCards() {
-    try {
-        const serializable = cards.map(c => {
-            if (c.textFn) {
-                const { textFn, ...rest } = c;
-                if (!rest.text) rest.text = textFn();
-                return rest;
-            }
-            return c;
-        });
-        localStorage.setItem(CARDS_KEY, JSON.stringify(serializable));
-    } catch (e) {}
-    reconcileDeck();
-}
-
-function reconcileDeck() {
-    const cardMap = new Map(cards.map(c => [c.number, c]));
-    const drawnNums = new Set(history.map(h => h.cardDef.number));
-
-    // Replace/remove existing deck entries based on current card definitions
-    deck = deck.filter(d => cardMap.has(d.number)).map(d => cardMap.get(d.number));
-
-    // Add any newly created cards that haven't been drawn
-    const deckNums = new Set(deck.map(d => d.number));
-    for (const c of cards) {
-        if (!deckNums.has(c.number) && !drawnNums.has(c.number)) deck.push(c);
-    }
-
-    saveState(deck);
-    updateCounter();
-}
-
-function loadCards() {
-    try {
-        const raw = localStorage.getItem(CARDS_KEY);
-        if (raw) {
-            const parsed = JSON.parse(raw);
-            return parsed.map(c => {
-                if (c.text) return c;
-                const orig = DEFAULT_CARDS.find(d => d.number === c.number);
-                if (!orig) return c;
-                return orig.textFn ? { ...c, textFn: orig.textFn } : { ...c, text: orig.text || '' };
-            });
-        }
-    } catch (e) {}
-    return null;
-}
-
 // ── Card Definitions ──────────────────────────────────────────────────────────
 
 const DEFAULT_CARDS = [
     {
         number: 1,
         timer: TIMER.NONE,
-        title: "It's not 11 o'clock yet!",
-        text: "Tom is still working overtime and can't drink. Everyone down his drink for him so he can focus on work"
+        title: "Back at BCOT",
+        text: "Tom used to love his white chocolate Starbucks at college. Your next drink must be coffee based"
     },
     {
         number: 2,
         timer: TIMER.NONE,
-        title: "The Classic Attire",
-        text: "He never leaves the house without it. You have to wear Tom's hawaiian shirt until this card is next drawn. Or take a shot of spirit."
+        title: "Short Shorts",
+        text: "Tom wore his tight chino shorts out and has ripped them, revealing his bussy. Poke him in the arse quick!"
     },
     {
         number: 3,
         timer: TIMER.NONE,
-        title: "Hannah's Quiz Time",
-        text: "Hannah asks you a question about Tom. If you get it wrong, and someone else answers correctly, then you have to down half your drink"
+        title: "Pummel Party",
+        text: "You picked up an Arcade Challenge! Challenge someone to a game of pong. Loser takes 5 sips. (Joe has the app on his phone)"
     },
     {
         number: 4,
         timer: TIMER.NONE,
-        title: "Big Man's Choice",
-        text: "You and Tom decide the next drink everyone has to order at the next pub"
+        title: "Sussy ChigBungus",
+        text: "Hudson just got voted in as Reforms new leader. Ask him to record a Nigel Farage style Cameo, Tom gets to choose who it's sent to"
     },
     {
         number: 5,
-        timer: TIMER.SHORT,
-        title: "Who's That Pokémon?",
-        text: "Tom tells you three pokemon names, but one of them is false. You must guess the false one, or Tom draws it on your arm in sharpie"
+        timer: TIMER.NONE,
+        title: "Here's My Spout",
+        text: "Top up the drink with the least left using your own, acting like a teapot"
     },
     {
         number: 6,
         timer: TIMER.NONE,
-        title: "Guitar Hero Pro",
-        text: "Tom loves to belt out some tunes on the Wii. Let the group record a new ringtone for you and leave your phone on loudspeaker for the rest of the night — or down your drink and someone else's"
+        title: "Bring out your scrap!",
+        text: "If you have any loose change, use it to enact 'Save the Queen' on unsuspecting victims"
+    },
+    {
+        number: 7,
+        timer: TIMER.NONE,
+        title: "Super Smash Bros.",
+        text: "It's a game of categories, but the only category allowed is Super Smash Bros characters. You start. Loser takes 3 drinks"
     },
     {
         number: 8,
+        timer: TIMER.NONE,
+        title: "Picnic game",
+        text: "Host a game of the packing game. Last to guess the rule must down your drink"
+    },
+    {
+        number: 9,
         timer: TIMER.NONE,
         title: "Soaking wet",
         text: "Grippin' and fartin' and gripping and hugging got dat dookie hole soaking wet, soaking wet. Neck a pint of water in one go or take a shot"
     },
     {
-        number: 9,
-        timer: TIMER.NONE,
-        title: "Chance Time!",
-        text: "You landed on a Chance Time space. Swap everyone's drinks around — you choose who gets what"
-    },
-    {
         number: 10,
         timer: TIMER.NONE,
-        title: "In the Doghouse",
-        text: "You've drank too much and are snoring loudly. Hannah is making you sleep on the sofa tonight. You have to finish your drink at a table by yourself"
+        title: "Big Man's Choice",
+        text: "You and Tom decide the next drink everyone has to order at the next pub"
     },
     {
         number: 11,
         timer: TIMER.NONE,
-        title: "Back in Action",
-        text: "Just like Tom, your legs are now stronger than ever! Choose someone to carry back to the train. They cannot have been picked before"
+        title: "Tom's Favourite Meme",
+        text: "Keep your toddlers on a leash! Go ask for 'The Pitbull of Drinks' at the bar and enjoy it"
     },
     {
         number: 12,
         timer: TIMER.NONE,
-        title: "Epic Gamer Moment",
-        text: "You are an epic gamer my guy. You must wear the gamer shirt until someone else draws this card or decides to wear it themselves. If you decline, take a shot of spirit. (You are NOT allowed to say the gamer word)"
+        title: "Buzzballs",
+        text: ""
     },
     {
         number: 13,
         timer: TIMER.NONE,
-        title: "Super Smash Bros.",
-        text: "It's a game of categories, but the only category allowed is Super Smash Bros characters. You start. Loser takes 3 drinks"
+        title: "In the Doghouse",
+        text: "You've drank too much and are snoring loudly. Hannah is making you sleep on the sofa tonight. You have to finish your drink at a table by yourself"
     },
     {
         number: 14,
@@ -280,46 +162,60 @@ const DEFAULT_CARDS = [
     {
         number: 15,
         timer: TIMER.NONE,
-        title: "Strong Bones!",
-        text: "Don't end up like Tom with rickets. Drink a glass of milk, and you must finish it before you can return to your drink"
-    },
-    {
-        number: 17,
-        timer: TIMER.NONE,
         title: "Liam's Round",
         text: "Liam is buying your next drink but has forgotten your order. Drink whatever he brings back for you. (Liam does not have to pay for you unless he's feeling nice)"
     },
     {
-        number: 19,
+        number: 16,
+        timer: TIMER.NONE,
+        title: "Hannah's Quiz Time",
+        text: "Hannah asks you a question about Tom. If you get it wrong, and someone else answers correctly, then you have to down half your drink"
+    },
+    {
+        number: 17,
         timer: TIMER.LONG,
         timerSeconds: 300,
-        timerLabel: "5 min eyes rule",
-        title: "Sleeping with Both Eyes Open",
-        text: "You drank so much last night you slept with your eyes open, now they're all sticky and bloodshot. Anyone who looks you in the eyes for the next 5 minutes must take a drink"
+        timerLabel: "5 min Ug rule",
+        title: "Hat of Ug",
+        text: "You can only talk in one syllable words for 5 minutes, else take 5 sips"
+    },
+    {
+        number: 18,
+        timer: TIMER.LONG,
+        timerSeconds: 300,
+        timerLabel: "5 min heaven rule",
+        title: "Tom wishes he was dead, show him the way",
+        text: "For the next 5 minutes any time you point to heaven (Tom's dream) everyone else must point too, the last one has to take 3 slips"
+    },
+    {
+        number: 19,
+        timer: TIMER.SHORT,
+        title: "Who's That Pokémon?",
+        text: "Tom tells you three pokemon names, but one of them is false. You must guess the false one, or Tom draws it on your arm in sharpie"
     },
     {
         number: 20,
         timer: TIMER.NONE,
-        title: "Here's My Spout",
-        text: "Top up the drink with the least left using your own, acting like a teapot"
+        title: "Back in Action",
+        text: "Just like Tom, your legs are now stronger than ever! Choose someone to carry back to the train. They cannot have been picked before"
     },
     {
         number: 21,
-        timer: TIMER.NONE,
-        title: "Well That's Written Off...",
-        text: "Tom just hit ANOTHER deer on the road and now his car is totalled. Buy Tom a drink since he's skint from car repairs"
+        timer: TIMER.SHORT,
+        title: "Absolute Bullshit",
+        text: "It's time for a Mario Party mini-game! Give your best impression of a Mario Party character and Tom has to guess. If Tom can't guess correctly within 15 seconds, you must both take 3 drinks"
     },
     {
         number: 22,
         timer: TIMER.NONE,
-        title: "Rawr xD",
-        text: "No one really understood secondary school emo Tom, but you can feel a little closer to how he felt if you don the wig and sing/shout 'Can you smell my fart'"
+        title: "Blind man and dog",
+        text: "You are now blind. Choose a guide dog to guide you while you are blindfolded until the next pub"
     },
     {
         number: 23,
-        timer: TIMER.SHORT,
-        title: "Absolute Bullshit",
-        text: "It's time for a Mario Party mini-game! Give your best impression of a Mario Party character and Tom has to guess. If Tom can't guess correctly within 15 seconds, you must both take 3 drinks"
+        timer: TIMER.NONE,
+        title: "Pokémon Trivia",
+        text: "Ask Tom a question about Pokémon (feel free to google a question). If he gets it right, you have to buy him his favourite drink. If he gets it wrong, you can buy him any drink"
     },
     {
         number: 24,
@@ -330,378 +226,155 @@ const DEFAULT_CARDS = [
     {
         number: 25,
         timer: TIMER.NONE,
-        title: "Horses Don't Have Hands!",
-        text: "You is a horse. Horses don't have hands. Let Tom feed you the rest of his drink"
+        title: "The Classic Attire",
+        text: "He never leaves the house without it. You have to wear Tom's hawaiian shirt until this card is next drawn. Or take a shot of spirit."
+    },
+    {
+        number: 26,
+        timer: TIMER.NONE,
+        title: "Would you rather?",
+        text: "Video call Hudson and tell him a 'Would you rather?'. If he doesn't approve, take 5 sips."
     },
     {
         number: 27,
-        timer: TIMER.NONE,
-        title: "Pokémon Trivia",
-        text: "Ask Tom a question about Pokémon (feel free to google a question). If he gets it right, you have to buy him his favourite drink. If he gets it wrong, you can buy him any drink"
+        timer: TIMER.LONG,
+        timerSeconds: 300,
+        timerLabel: "5 min eyes rule",
+        title: "Sleeping with Both Eyes Open",
+        text: "You drank so much last night you slept with your eyes open, now they're all sticky and bloodshot. Anyone who looks you in the eyes for the next 5 minutes must take a drink"
     },
     {
         number: 28,
         timer: TIMER.NONE,
-        title: "Back at BCOT",
-        text: "Tom used to love his white chocolate Starbucks at college. Your next drink must be coffee based"
+        title: "Follow that tune!",
+        text: "Do the Gym Skin dance to the music currently playing. If there is none, go follow that tune!"
     },
     {
         number: 29,
         timer: TIMER.NONE,
-        title: "Pummel Party",
-        text: "You picked up an Arcade Challenge! Challenge someone to a game of pong. Loser takes 5 sips. (Joe has the app on his phone)"
+        title: "Horses Don't Have Hands!",
+        text: "You is a horse. Horses don't have hands. Let Tom feed you the rest of his drink"
     },
     {
         number: 30,
         timer: TIMER.NONE,
-        title: "Short Shorts",
-        text: "Tom wore his tight chino shorts out and has ripped them, revealing his bussy. Poke him in the arse quick!"
+        title: "Anti-Clavicular",
+        text: "Challenge someone to an anti-mog on mogging.com. Whoever gets the higher score loses, and has to drink half a drink"
+    },
+    {
+        number: 31,
+        timer: TIMER.NONE,
+        title: "It's not 11 o'clock yet!",
+        text: "Tom is still working overtime and can't drink. Everyone down his drink for him so he can focus on work"
     },
     {
         number: 32,
         timer: TIMER.NONE,
-        title: "JANKENPON",
-        text: "Challenge the person sat closest opposite you to Rock, Paper, Scissors. Loser downs their drink. Best of 3"
+        title: "Chance Time!",
+        text: "You landed on a Chance Time space. Swap everyone's drinks around — you choose who gets what"
     },
     {
         number: 33,
         timer: TIMER.NONE,
-        title: "Tom's Favourite Meme",
-        text: "Keep your toddlers on a leash! Go ask for 'The Pitbull of Drinks' at the bar and enjoy it"
+        title: "Rawr xD",
+        text: "No one really understood secondary school emo Tom, but you can feel a little closer to how he felt if you don the wig and sing/shout 'Can you smell my fart'"
     },
     {
         number: 34,
         timer: TIMER.NONE,
+        title: "Strong Bones!",
+        text: "Don't end up like Tom with rickets. Drink a glass of milk, and you must finish it before you can return to your drink"
+    },
+    {
+        number: 35,
+        timer: TIMER.NONE,
         title: "Butt Text, Sorry!",
         text: "Tom sat on your phone and somehow managed to send a text on it. Tom is allowed to send one text to anyone on your phone (excluding work and parents). If you refuse, down your drink"
     },
-
-    // New ones
     {
-        number: 19,
-        timer: TIMER.LONG,
-        timerSeconds: 300,
-        timerLabel: "5 min heaven rule",
-        title: "Tom wishes he was dead, show him the way",
-        text: "For the next 5 minutes any time you point to heaven (Tom's dream) everyone else must point too, the last one has to take 3 slips"
-    },
-    {
-        number: 19,
-        timer: TIMER.LONG,
-        timerSeconds: 300,
-        timerLabel: "5 min Ug rule",
-        title: "Hat of Ug",
-        text: "You can only talk in one syllable words for 5 minutes, else take 5 sips"
-    },
-    {
-        number: 19,
+        number: 36,
         timer: TIMER.NONE,
-        title: "Picnic game",
-        text: "Host a game of the packing game. Last to guess the rule must down your drink"
+        title: "Epic Gamer Moment",
+        text: "You are an epic gamer my guy. You must wear the gamer shirt until someone else draws this card or decides to wear it themselves. If you decline, take a shot of spirit. (You are NOT allowed to say the gamer word)"
     },
     {
-        number: 19,
+        number: 37,
         timer: TIMER.NONE,
-        title: "Bing chilling",
-        text: "Order a pint of Chinese guinness from the bar"
+        title: "Well That's Written Off...",
+        text: "Tom just hit ANOTHER deer on the road and now his car is totalled. Buy Tom a drink since he's skint from car repairs"
     },
     {
-        number: 19,
-        timer: TIMER.NONE,
-        title: "Bring out your scrap!",
-        text: "If you have any loose change, use it to enact 'Save the Queen' on unsuspecting victims"
-    },
-    {
-        number: 19,
+        number: 38,
         timer: TIMER.NONE,
         title: "Last orders",
         text: "If anyone has a third or less of drink left in their glass, they have to finish it off"
     },
     {
-        number: 19,
+        number: 39,
         timer: TIMER.NONE,
-        title: "Blind man and dog",
-        text: "You are now blind. Choose a guide dog to guide you while you are blindfolded until the next pub"
+        title: "JANKENPON",
+        text: "Challenge the person sat closest opposite you to Rock, Paper, Scissors. Loser downs their drink. Best of 3"
     },
     {
-        number: 19,
+        number: 40,
         timer: TIMER.NONE,
-        title: "Buzzballs",
-        text: ""
+        title: "Guitar Hero Pro",
+        text: "Tom loves to belt out some tunes on the Wii. Let the group record a new ringtone for you and leave your phone on loudspeaker for the rest of the night — or down your drink and someone else's"
     },
     {
-        number: 19,
+        number: 41,
         timer: TIMER.LONG,
         timerSeconds: 300,
         title: "We are Charlie Kirk",
         text: "We carrrry the flame! You must end every sentence with 'We are Charlie Kirk' for the next 5 minutes. If you forget, take a drink"
     },
     {
-        number: 19,
+        number: 42,
         timer: TIMER.NONE,
-        title: "Follow that tune!",
-        text: "Do the Gym Skin dance to the music currently playing. If there is none, go follow that tune!"
-    },
-    {
-        number: 19,
-        timer: TIMER.NONE,
-        title: "Anti-Clavicular",
-        text: "Challenge someone to an anti-mog on mogging.com. Whoever gets the higher score loses, and has to drink half a drink"
-    },
-    {
-        number: 19,
-        timer: TIMER.NONE,
-        title: "Sussy ChigBungus",
-        text: "Hudson just got voted in as Reforms new leader. Ask him to record a Nigel Farage style Cameo, Tom gets to choose who it's sent to"
-    },
-    {
-        number: 19,
-        timer: TIMER.NONE,
-        title: "Would you rather?",
-        text: "Video call Hudson and tell him a 'Would you rather?'. If he doesn't approve, take 5 sips."
-    },
-    {
-        number: 19,
-        timer: TIMER.NONE,
-        title: "Would you rather?",
-        text: "Video call Hudson and tell him a 'Would you rather?'. If he doesn't approve, take 5 sips."
+        title: "Bing chilling",
+        text: "Order a pint of Chinese guinness from the bar"
     }
 ];
 
 // ── State ─────────────────────────────────────────────────────────────────────
 
-let cards   = [];
 let deck    = [];
 let lastCard  = null;   // { cardDef, resolvedText, assignee }
 let history   = [];     // [{ cardDef, resolvedText, assignee }, ...]  newest first
 let activeLongTimers = []; // [{ id, label, remaining, intervalId }, ...]
 let shortTimerInterval = null;
-let currentPub = 1;
-let drawRules = [];
-let makeOthersRules = [];
-let players = [];
 
 // ── Init ──────────────────────────────────────────────────────────────────────
 
 function init() {
-    const savedRules = loadRules();
-    if (savedRules) {
-        drawRules = savedRules.draw;
-        makeOthersRules = savedRules.others;
-    } else {
-        drawRules = [...DEFAULT_RULES_DRAW];
-        makeOthersRules = [...DEFAULT_RULES_OTHERS];
-    }
-    players = loadPlayers() ?? [...DEFAULT_PLAYERS];
-    const savedCards = loadCards();
-    cards = savedCards !== null ? savedCards : [...DEFAULT_CARDS];
-    renderRulesPanel();
     buildNameChips();
-    history = loadHistory();
     const saved = loadState();
-    deck = saved !== null ? saved : [...cards];
-    // Reconcile deck against current card definitions so edits/adds/deletes
-    // and textFn stripping are reflected without needing a manual deck reset.
-    reconcileDeck();
-    currentPub = loadPubCount();
+    deck    = saved !== null ? saved : [...DEFAULT_CARDS];
+    history = loadHistory();
+    updateCounter();
     updateHistoryBtn();
-    applyRuleVisibility();
 }
 
 // ── Counter ───────────────────────────────────────────────────────────────────
 
 function updateCounter() {
     document.getElementById('remainingCards').textContent = deck.length;
-    document.getElementById('totalCards').textContent     = '/' + cards.length;
+    document.getElementById('totalCards').textContent     = '/' + DEFAULT_CARDS.length;
 }
 
-// ── Pub progression ───────────────────────────────────────────────────────────
-
-function applyRuleVisibility() {
-    document.getElementById('pubNumber').textContent = currentPub;
-    document.querySelectorAll('#rules-list-1 li').forEach((li, i) => {
-        li.classList.toggle('hidden', !drawRules[i] || currentPub < drawRules[i].pub);
-    });
-    document.querySelectorAll('#rules-list-2 li').forEach((li, i) => {
-        li.classList.toggle('hidden', !makeOthersRules[i] || currentPub < makeOthersRules[i].pub);
-    });
-    const anyOthersVisible = makeOthersRules.some(r => currentPub >= r.pub);
-    document.getElementById('rules-subheading-2').classList.toggle('hidden', !anyOthersVisible);
-    document.getElementById('rules-list-2').classList.toggle('hidden', !anyOthersVisible);
-    const allRules = [...drawRules, ...makeOthersRules];
-    const maxPub = allRules.length > 0 ? Math.max(...allRules.map(r => r.pub)) : 1;
-    document.getElementById('next-pub').disabled = currentPub >= maxPub;
-}
-
-function nextPub() {
-    currentPub++;
-    savePubCount(currentPub);
-    applyRuleVisibility();
-}
-
-// ── Rules panel rendering ─────────────────────────────────────────────────────
-
-function renderRulesPanel() {
-    const list1 = document.getElementById('rules-list-1');
-    const list2 = document.getElementById('rules-list-2');
-    list1.innerHTML = '';
-    list2.innerHTML = '';
-    drawRules.forEach(r => {
-        const li = document.createElement('li');
-        li.textContent = r.text;
-        list1.appendChild(li);
-    });
-    makeOthersRules.forEach(r => {
-        const li = document.createElement('li');
-        li.textContent = r.text;
-        list2.appendChild(li);
-    });
-}
-
-// ── Rule manager ──────────────────────────────────────────────────────────────
-
-function openRuleManager() {
-    renderRuleManager();
-    document.getElementById('rule-manager-overlay').classList.remove('hidden');
-}
-
-function closeRuleManager() {
-    document.getElementById('rule-manager-overlay').classList.add('hidden');
-}
-
-function renderRuleManager() {
-    renderRmSection('rm-draw-list', drawRules, 'draw');
-    renderRmSection('rm-others-list', makeOthersRules, 'others');
-}
-
-function renderRmSection(containerId, rules, section) {
-    const container = document.getElementById(containerId);
-    container.innerHTML = '';
-    if (rules.length === 0) {
-        const empty = document.createElement('div');
-        empty.className = 'rm-empty';
-        empty.textContent = 'No rules in this section.';
-        container.appendChild(empty);
-        return;
-    }
-    rules.forEach((rule, i) => {
-        const el = document.createElement('div');
-        el.className = 'rm-rule-item';
-
-        const pubInput = document.createElement('input');
-        pubInput.type = 'number';
-        pubInput.min = '1';
-        pubInput.max = '99';
-        pubInput.value = String(rule.pub);
-        pubInput.className = 'rm-pub-badge';
-        pubInput.setAttribute('aria-label', 'Reveal at pub number');
-        pubInput.addEventListener('change', () => updateRulePub(section, i, pubInput.value));
-
-        const text = document.createElement('span');
-        text.className = 'rm-rule-text';
-        text.textContent = rule.text;
-
-        const btn = document.createElement('button');
-        btn.className = 'rm-delete-btn';
-        btn.setAttribute('aria-label', 'Remove rule');
-        btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
-        btn.addEventListener('click', () => removeRule(section, i));
-
-        el.appendChild(pubInput);
-        el.appendChild(text);
-        el.appendChild(btn);
-        container.appendChild(el);
-    });
-}
-
-function updateRulePub(section, index, value) {
-    const pub = Math.max(1, parseInt(value, 10) || 1);
-    const rule = section === 'draw' ? drawRules[index] : makeOthersRules[index];
-    if (rule) {
-        rule.pub = pub;
-        saveRules();
-        applyRuleVisibility();
-    }
-}
-
-function addRule() {
-    const input = document.getElementById('rm-input');
-    const section = document.getElementById('rm-section').value;
-    const text = input.value.trim();
-    if (!text) return;
-    const pub = Math.max(1, parseInt(document.getElementById('rm-pub').value, 10) || 1);
-    const rule = { text, pub };
-    if (section === 'draw') {
-        drawRules.push(rule);
-    } else {
-        makeOthersRules.push(rule);
-    }
-    input.value = '';
-    saveRules();
-    renderRulesPanel();
-    applyRuleVisibility();
-    renderRuleManager();
-}
-
-function removeRule(section, index) {
-    if (section === 'draw') {
-        drawRules.splice(index, 1);
-    } else {
-        makeOthersRules.splice(index, 1);
-    }
-    saveRules();
-    renderRulesPanel();
-    applyRuleVisibility();
-    renderRuleManager();
-}
-
-// ── Reset & clear ─────────────────────────────────────────────────────────────
-
-function clearAllData() {
-    clearState();
-    clearHistory();
-    clearPubCount();
-    localStorage.removeItem(RULES_KEY);
-    localStorage.removeItem(PLAYERS_KEY);
-    localStorage.removeItem(CARDS_KEY);
-    cards   = [...DEFAULT_CARDS];
-    deck    = [...cards];
-    history = [];
-    lastCard  = null;
-    currentPub = 1;
-    drawRules = [...DEFAULT_RULES_DRAW];
-    makeOthersRules = [...DEFAULT_RULES_OTHERS];
-    players = [...DEFAULT_PLAYERS];
-    activeLongTimers.forEach(t => clearInterval(t.intervalId));
-    activeLongTimers = [];
-    renderTimerTray();
-    renderRulesPanel();
-    buildNameChips();
-    updateCounter();
-    updateHistoryBtn();
-    applyRuleVisibility();
-    const drawBtn = document.getElementById('draw');
-    drawBtn.disabled = false;
-    drawBtn.textContent = 'Draw Card';
-    drawBtn.dataset.mode = '';
-    showRules();
-}
+// ── Reset ─────────────────────────────────────────────────────────────────────
 
 function resetAll() {
     clearState();
     clearHistory();
-    clearPubCount();
-    deck    = [...cards];
-    saveState(deck);
+    deck    = [...DEFAULT_CARDS];
     history = [];
     lastCard  = null;
-    currentPub = 1;
     activeLongTimers.forEach(t => clearInterval(t.intervalId));
     activeLongTimers = [];
     renderTimerTray();
     updateCounter();
     updateHistoryBtn();
-    applyRuleVisibility();
     // Restore draw button in case it was in reset mode
     const drawBtn = document.getElementById('draw');
     drawBtn.disabled = false;
@@ -715,7 +388,7 @@ function resetAll() {
 function buildNameChips() {
     const container = document.getElementById('name-picker-btns');
     container.innerHTML = '';
-    players.forEach(name => {
+    PLAYERS.forEach(name => {
         const btn = document.createElement('button');
         btn.className = 'name-chip';
         btn.textContent = name;
@@ -752,11 +425,7 @@ function skipPlayer() {
 // ── Card rendering ────────────────────────────────────────────────────────────
 
 function resolveCardText(cardDef) {
-    if (cardDef.textFn) return cardDef.textFn();
-    if (cardDef.text) return cardDef.text;
-    // Recover text from DEFAULT_CARDS for cards whose text was stripped (e.g. old saves)
-    const orig = DEFAULT_CARDS.find(c => c.number === cardDef.number);
-    return orig ? (orig.textFn ? orig.textFn() : (orig.text || '')) : '';
+    return cardDef.textFn ? cardDef.textFn() : cardDef.text;
 }
 
 function renderCard(entry, animate) {
@@ -812,19 +481,13 @@ function renderCard(entry, animate) {
         longWrap.classList.add('hidden');
     }
 
-    // Panel visibility + flip animation
+    // Panel visibility + animation
     const panel = document.getElementById('card-panel');
-    const flipper = document.getElementById('card-flipper');
-    panel.classList.remove('hidden');
     if (animate) {
-        flipper.style.transition = 'none';
-        flipper.classList.remove('is-flipped');
-        void flipper.offsetWidth;
-        flipper.style.transition = '';
-        flipper.classList.add('is-flipped');
-    } else {
-        flipper.classList.add('is-flipped');
+        panel.classList.add('hidden');
+        void panel.offsetWidth;
     }
+    panel.classList.remove('hidden');
 
     document.getElementById('rules-panel').classList.add('hidden');
     document.getElementById('rules-toggle').classList.remove('hidden');
@@ -1120,387 +783,6 @@ document.getElementById('confirm-no').addEventListener('click', () => {
 
 document.getElementById('confirm-overlay').addEventListener('click', function (e) {
     if (e.target === this) this.classList.add('hidden');
-});
-
-// ── Player manager ────────────────────────────────────────────────────────────
-
-function openPlayerManager() {
-    renderPlayerManager();
-    document.getElementById('player-manager-overlay').classList.remove('hidden');
-}
-
-function closePlayerManager() {
-    document.getElementById('player-manager-overlay').classList.add('hidden');
-}
-
-function renderPlayerManager() {
-    const container = document.getElementById('pm-player-list');
-    container.innerHTML = '';
-    if (players.length === 0) {
-        const empty = document.createElement('div');
-        empty.className = 'rm-empty';
-        empty.textContent = 'No players added.';
-        container.appendChild(empty);
-        return;
-    }
-    players.forEach((name, i) => {
-        const count = history.filter(h => h.assignee === name).length;
-        const el = document.createElement('div');
-        el.className = 'pm-player-item';
-
-        const nameSpan = document.createElement('span');
-        nameSpan.className = 'pm-player-name';
-        nameSpan.textContent = name;
-
-        const countBadge = document.createElement('span');
-        countBadge.className = 'pm-card-count';
-        countBadge.textContent = count === 1 ? '1 card' : `${count} cards`;
-
-        const editBtn = document.createElement('button');
-        editBtn.className = 'rm-delete-btn';
-        editBtn.setAttribute('aria-label', 'Rename player');
-        editBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>';
-        editBtn.addEventListener('click', () => startRenamePlayer(i, el, nameSpan));
-
-        const delBtn = document.createElement('button');
-        delBtn.className = 'rm-delete-btn';
-        delBtn.setAttribute('aria-label', 'Remove player');
-        delBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
-        delBtn.addEventListener('click', () => removePlayer(i));
-
-        el.appendChild(nameSpan);
-        el.appendChild(countBadge);
-        el.appendChild(editBtn);
-        el.appendChild(delBtn);
-        container.appendChild(el);
-    });
-}
-
-function startRenamePlayer(index, el, nameSpan) {
-    const oldName = players[index];
-    const input = document.createElement('input');
-    input.type = 'text';
-    input.value = oldName;
-    input.className = 'pm-rename-input';
-    el.replaceChild(input, nameSpan);
-    input.focus();
-    input.select();
-
-    let committed = false;
-    const commit = () => {
-        if (committed) return;
-        committed = true;
-        const newName = input.value.trim();
-        if (newName && newName !== oldName) {
-            history.forEach(h => { if (h.assignee === oldName) h.assignee = newName; });
-            saveHistory(history);
-            players[index] = newName;
-            savePlayers();
-            buildNameChips();
-        }
-        renderPlayerManager();
-    };
-
-    input.addEventListener('blur', commit);
-    input.addEventListener('keydown', e => {
-        if (e.key === 'Enter') input.blur();
-        if (e.key === 'Escape') { committed = true; renderPlayerManager(); }
-    });
-}
-
-function addPlayer() {
-    const input = document.getElementById('pm-input');
-    const name = input.value.trim();
-    if (!name || players.includes(name)) return;
-    players.push(name);
-    input.value = '';
-    savePlayers();
-    buildNameChips();
-    renderPlayerManager();
-}
-
-function removePlayer(index) {
-    players.splice(index, 1);
-    savePlayers();
-    buildNameChips();
-    renderPlayerManager();
-}
-
-// ── Card manager ──────────────────────────────────────────────────────────────
-
-function openCardManager() {
-    renderCardManager();
-    document.getElementById('card-manager-overlay').classList.remove('hidden');
-}
-
-function closeCardManager() {
-    document.getElementById('card-manager-overlay').classList.add('hidden');
-}
-
-function renderCardManager() {
-    const container = document.getElementById('cm-card-list');
-    container.innerHTML = '';
-    if (cards.length === 0) {
-        const empty = document.createElement('div');
-        empty.className = 'rm-empty';
-        empty.textContent = 'No cards defined.';
-        container.appendChild(empty);
-        return;
-    }
-    cards.forEach((card, i) => {
-        const el = document.createElement('div');
-        el.className = 'cm-card-item';
-        renderCardItemView(el, card, i);
-        container.appendChild(el);
-    });
-}
-
-function renderCardItemView(el, card, i) {
-    el.innerHTML = '';
-    el.classList.remove('cm-card-item--editing');
-
-    const numBadge = document.createElement('span');
-    numBadge.className = 'cm-card-num';
-    numBadge.textContent = card.number;
-
-    const info = document.createElement('div');
-    info.className = 'cm-card-info';
-
-    const titleEl = document.createElement('div');
-    titleEl.className = 'cm-card-title';
-    titleEl.textContent = card.title;
-
-    const textEl = document.createElement('div');
-    textEl.className = 'cm-card-text';
-    textEl.textContent = card.textFn ? '(dynamic text)' : (card.text || '');
-
-    const meta = document.createElement('div');
-    meta.className = 'cm-card-meta';
-    if (card.timer === TIMER.SHORT) {
-        meta.textContent = '15s timer';
-    } else if (card.timer === TIMER.LONG) {
-        meta.textContent = `${formatTime(card.timerSeconds || 0)} timer`;
-    }
-
-    info.appendChild(titleEl);
-    info.appendChild(textEl);
-    if (card.timer !== TIMER.NONE) info.appendChild(meta);
-
-    const editBtn = document.createElement('button');
-    editBtn.className = 'rm-delete-btn';
-    editBtn.setAttribute('aria-label', 'Edit card');
-    editBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>';
-    editBtn.addEventListener('click', () => startEditCard(i, el));
-
-    const delBtn = document.createElement('button');
-    delBtn.className = 'rm-delete-btn';
-    delBtn.setAttribute('aria-label', 'Remove card');
-    delBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
-    delBtn.addEventListener('click', () => removeCard(i));
-
-    el.appendChild(numBadge);
-    el.appendChild(info);
-    el.appendChild(editBtn);
-    el.appendChild(delBtn);
-}
-
-function startEditCard(index, el) {
-    const card = cards[index];
-    el.innerHTML = '';
-    el.classList.add('cm-card-item--editing');
-
-    const titleInput = document.createElement('input');
-    titleInput.type = 'text';
-    titleInput.value = card.title;
-    titleInput.className = 'rm-input';
-    titleInput.maxLength = 100;
-    titleInput.placeholder = 'Card title…';
-
-    const textArea = document.createElement('textarea');
-    textArea.value = card.textFn ? card.textFn() : (card.text || '');
-    textArea.className = 'rm-textarea';
-    textArea.rows = 3;
-    textArea.maxLength = 500;
-    textArea.placeholder = 'Card text…';
-
-    // Timer select
-    const timerSelect = document.createElement('select');
-    timerSelect.className = 'rm-select';
-    timerSelect.innerHTML = `
-        <option value="none">No timer</option>
-        <option value="short">15-second timer</option>
-        <option value="long">Long timer</option>
-    `;
-    timerSelect.value = card.timer || TIMER.NONE;
-
-    // Long timer options row
-    const longOpts = document.createElement('div');
-    longOpts.className = 'cm-long-opts';
-    longOpts.classList.toggle('hidden', card.timer !== TIMER.LONG);
-
-    const secsInput = document.createElement('input');
-    secsInput.type = 'number';
-    secsInput.min = '5';
-    secsInput.max = '3600';
-    secsInput.value = String(card.timerSeconds || 60);
-    secsInput.className = 'rm-pub-input cm-secs-input';
-    secsInput.setAttribute('aria-label', 'Timer duration in seconds');
-
-    const secsLabel = document.createElement('span');
-    secsLabel.className = 'cm-secs-label';
-    secsLabel.textContent = 'seconds';
-
-    const timerLabelInput = document.createElement('input');
-    timerLabelInput.type = 'text';
-    timerLabelInput.value = card.timerLabel || '';
-    timerLabelInput.className = 'rm-input';
-    timerLabelInput.placeholder = 'Tray label…';
-    timerLabelInput.maxLength = 50;
-
-    longOpts.appendChild(secsInput);
-    longOpts.appendChild(secsLabel);
-    longOpts.appendChild(timerLabelInput);
-
-    timerSelect.addEventListener('change', () => {
-        longOpts.classList.toggle('hidden', timerSelect.value !== 'long');
-    });
-
-    const actions = document.createElement('div');
-    actions.className = 'cm-edit-actions';
-
-    const saveBtn = document.createElement('button');
-    saveBtn.className = 'rm-add-btn';
-    saveBtn.textContent = 'Save';
-    saveBtn.addEventListener('click', () => {
-        const newTitle = titleInput.value.trim();
-        const newText  = textArea.value.trim();
-        if (!newTitle) return;
-        const { textFn, timerSeconds, timerLabel, ...rest } = card;
-        const timerFields = timerSelect.value === 'short'
-            ? { timer: TIMER.SHORT }
-            : timerSelect.value === 'long'
-                ? { timer: TIMER.LONG, timerSeconds: Math.max(5, parseInt(secsInput.value, 10) || 60), timerLabel: timerLabelInput.value.trim() || newTitle }
-                : { timer: TIMER.NONE };
-        cards[index] = { ...rest, title: newTitle, text: newText, ...timerFields };
-        saveCards();
-        renderCardManager();
-    });
-
-    const cancelBtn = document.createElement('button');
-    cancelBtn.className = 'cm-cancel-btn';
-    cancelBtn.textContent = 'Cancel';
-    cancelBtn.addEventListener('click', () => renderCardItemView(el, card, index));
-
-    actions.appendChild(cancelBtn);
-    actions.appendChild(saveBtn);
-
-    el.appendChild(titleInput);
-    el.appendChild(textArea);
-    el.appendChild(timerSelect);
-    el.appendChild(longOpts);
-    el.appendChild(actions);
-
-    titleInput.focus();
-    el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-}
-
-function addCard() {
-    const titleInput = document.getElementById('cm-title-input');
-    const textInput  = document.getElementById('cm-text-input');
-    const title = titleInput.value.trim();
-    const text  = textInput.value.trim();
-    if (!title || !text) return;
-    const maxNum = cards.length > 0 ? Math.max(...cards.map(c => typeof c.number === 'number' ? c.number : 0)) : 0;
-    const newCard = { number: maxNum + 1, title, text, ...buildTimerFields('cm-timer-type', 'cm-timer-secs', 'cm-timer-label', title) };
-    cards.push(newCard);
-    titleInput.value = '';
-    textInput.value  = '';
-    document.getElementById('cm-timer-type').value = 'none';
-    document.getElementById('cm-long-timer-opts').classList.add('hidden');
-    document.getElementById('cm-timer-secs').value  = '60';
-    document.getElementById('cm-timer-label').value = '';
-    saveCards();
-    renderCardManager();
-}
-
-function buildTimerFields(typeId, secsId, labelId, fallbackLabel) {
-    const type = typeof typeId === 'string' ? document.getElementById(typeId).value : typeId;
-    if (type === 'short') return { timer: TIMER.SHORT };
-    if (type === 'long') {
-        const secs  = Math.max(5, parseInt(document.getElementById(secsId).value, 10) || 60);
-        const label = document.getElementById(labelId).value.trim() || fallbackLabel;
-        return { timer: TIMER.LONG, timerSeconds: secs, timerLabel: label };
-    }
-    return { timer: TIMER.NONE };
-}
-
-function removeCard(index) {
-    cards.splice(index, 1);
-    saveCards();
-    renderCardManager();
-}
-
-// ── Event listeners ───────────────────────────────────────────────────────────
-
-document.getElementById('next-pub').addEventListener('click', nextPub);
-
-document.getElementById('clear-cookies-btn').addEventListener('click', () => {
-    document.getElementById('cookie-confirm-overlay').classList.remove('hidden');
-});
-
-document.getElementById('cookie-confirm-yes').addEventListener('click', () => {
-    document.getElementById('cookie-confirm-overlay').classList.add('hidden');
-    clearAllData();
-});
-
-document.getElementById('cookie-confirm-no').addEventListener('click', () => {
-    document.getElementById('cookie-confirm-overlay').classList.add('hidden');
-});
-
-document.getElementById('cookie-confirm-overlay').addEventListener('click', function (e) {
-    if (e.target === this) this.classList.add('hidden');
-});
-
-document.getElementById('player-manager-btn').addEventListener('click', openPlayerManager);
-
-document.getElementById('player-manager-close').addEventListener('click', closePlayerManager);
-
-document.getElementById('player-manager-overlay').addEventListener('click', function (e) {
-    if (e.target === this) closePlayerManager();
-});
-
-document.getElementById('pm-add').addEventListener('click', addPlayer);
-
-document.getElementById('pm-input').addEventListener('keydown', function (e) {
-    if (e.key === 'Enter') addPlayer();
-});
-
-document.getElementById('card-manager-btn').addEventListener('click', openCardManager);
-
-document.getElementById('card-manager-close').addEventListener('click', closeCardManager);
-
-document.getElementById('card-manager-overlay').addEventListener('click', function (e) {
-    if (e.target === this) closeCardManager();
-});
-
-document.getElementById('cm-add').addEventListener('click', addCard);
-
-document.getElementById('cm-timer-type').addEventListener('change', function () {
-    document.getElementById('cm-long-timer-opts').classList.toggle('hidden', this.value !== 'long');
-});
-
-document.getElementById('rule-manager-btn').addEventListener('click', openRuleManager);
-
-document.getElementById('rule-manager-close').addEventListener('click', closeRuleManager);
-
-document.getElementById('rule-manager-overlay').addEventListener('click', function (e) {
-    if (e.target === this) closeRuleManager();
-});
-
-document.getElementById('rm-add').addEventListener('click', addRule);
-
-document.getElementById('rm-input').addEventListener('keydown', function (e) {
-    if (e.key === 'Enter') addRule();
 });
 
 // ── Boot ──────────────────────────────────────────────────────────────────────
