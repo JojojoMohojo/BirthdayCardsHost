@@ -3,12 +3,12 @@
   "WorkspaceRootPath": "C:\\Users\\mattpoffley\\source\\repos\\BirthdayCardsHost\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\mattpoffley\\source\\repos\\BirthdayCardsHost\\site.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:site.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\mattpoffley\\source\\repos\\BirthdayCardsHost\\index.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:index.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\mattpoffley\\source\\repos\\BirthdayCardsHost\\site.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:site.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\mattpoffley\\source\\repos\\BirthdayCardsHost\\site.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
@@ -22,21 +22,8 @@
       "DocumentGroups": [
         {
           "DockedWidth": 235,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 18,
           "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "site.js",
-              "DocumentMoniker": "C:\\Users\\mattpoffley\\source\\repos\\BirthdayCardsHost\\site.js",
-              "RelativeDocumentMoniker": "site.js",
-              "ToolTip": "C:\\Users\\mattpoffley\\source\\repos\\BirthdayCardsHost\\site.js",
-              "RelativeToolTip": "site.js",
-              "ViewState": "AgIAAIQAAAAAAAAAAAAAAJ4AAAAgAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
-              "WhenOpened": "2026-05-11T17:29:55.441Z",
-              "EditorCaption": ""
-            },
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{a34b1c5d-6d37-4a0c-a8b0-99f8e8158b48}"
@@ -99,17 +86,34 @@
             },
             {
               "$type": "Bookmark",
-              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+              "Name": "ST:2033337944:0:{71f361cc-493f-47c0-923f-f2570b6f8618}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:1272696032:0:{71f361cc-493f-47c0-923f-f2570b6f8618}"
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
+              "Title": "site.js",
+              "DocumentMoniker": "C:\\Users\\mattpoffley\\source\\repos\\BirthdayCardsHost\\site.js",
+              "RelativeDocumentMoniker": "site.js",
+              "ToolTip": "C:\\Users\\mattpoffley\\source\\repos\\BirthdayCardsHost\\site.js",
+              "RelativeToolTip": "site.js",
+              "ViewState": "AgIAAFEAAAAAAAAAAAAAAKsAAACZAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2026-05-11T17:29:55.441Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
               "Title": "index.html",
               "DocumentMoniker": "C:\\Users\\mattpoffley\\source\\repos\\BirthdayCardsHost\\index.html",
               "RelativeDocumentMoniker": "index.html",
               "ToolTip": "C:\\Users\\mattpoffley\\source\\repos\\BirthdayCardsHost\\index.html",
               "RelativeToolTip": "index.html",
-              "ViewState": "AgIAABgAAAAAAAAAAAAAACcAAABcAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACcAAABcAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
               "WhenOpened": "2026-05-11T17:21:22.279Z",
               "EditorCaption": ""
@@ -124,8 +128,7 @@
               "RelativeToolTip": "site.css",
               "ViewState": "AgIAAP0AAAAAAAAAAAAcwCEBAAAXAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2026-05-11T16:37:13.242Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-11T16:37:13.242Z"
             }
           ]
         },

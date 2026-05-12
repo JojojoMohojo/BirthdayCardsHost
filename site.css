@@ -317,6 +317,12 @@ body {
 }
 .admin-btn-people:hover { background: rgba(91, 163, 201, 0.12); }
 
+.admin-btn-cards {
+    color: #9d7fbd;
+    border-color: rgba(157, 127, 189, 0.4);
+}
+.admin-btn-cards:hover { background: rgba(157, 127, 189, 0.12); }
+
 /* ── Player manager items ── */
 
 .pm-player-item {
@@ -1074,3 +1080,126 @@ body {
 }
 
 .rm-add-btn:hover { background: #e0b84e; }
+
+/* ── Card Manager ── */
+
+.cm-card-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.cm-card-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border-subtle);
+    border-radius: 8px;
+}
+
+.cm-card-item--editing {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+}
+
+.cm-card-num {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(212, 168, 67, 0.1);
+    border: 1px solid rgba(212, 168, 67, 0.3);
+    border-radius: 6px;
+    color: var(--gold);
+    font-size: 12px;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.cm-card-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.cm-card-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-on-felt);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.cm-card-text {
+    font-size: 12px;
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: 2px;
+}
+
+.cm-card-meta {
+    font-size: 11px;
+    color: #9d7fbd;
+    margin-top: 3px;
+    font-weight: 500;
+}
+
+.cm-edit-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+.cm-cancel-btn {
+    padding: 9px 18px;
+    background: var(--btn-secondary-bg);
+    border: 1px solid var(--border-subtle);
+    border-radius: 8px;
+    color: var(--text-on-felt);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.cm-cancel-btn:hover { background: var(--btn-secondary-hover); }
+
+.rm-textarea {
+    width: 100%;
+    padding: 9px 12px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid var(--border-subtle);
+    border-radius: 8px;
+    color: var(--text-on-felt);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    outline: none;
+    user-select: text;
+    resize: vertical;
+    min-height: 72px;
+    line-height: 1.5;
+}
+
+.rm-textarea::placeholder { color: var(--text-muted); }
+.rm-textarea:focus { border-color: rgba(212, 168, 67, 0.5); }
+
+.cm-long-opts {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.cm-secs-input { width: 72px; }
+
+.cm-secs-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    flex-shrink: 0;
+}

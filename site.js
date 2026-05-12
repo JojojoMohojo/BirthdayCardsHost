@@ -151,6 +151,56 @@ function loadPlayers() {
     return null;
 }
 
+const CARDS_KEY = 'birthdayCards';
+
+function saveCards() {
+    try {
+        const serializable = cards.map(c => {
+            if (c.textFn) {
+                const { textFn, ...rest } = c;
+                if (!rest.text) rest.text = textFn();
+                return rest;
+            }
+            return c;
+        });
+        localStorage.setItem(CARDS_KEY, JSON.stringify(serializable));
+    } catch (e) {}
+    reconcileDeck();
+}
+
+function reconcileDeck() {
+    const cardMap = new Map(cards.map(c => [c.number, c]));
+    const drawnNums = new Set(history.map(h => h.cardDef.number));
+
+    // Replace/remove existing deck entries based on current card definitions
+    deck = deck.filter(d => cardMap.has(d.number)).map(d => cardMap.get(d.number));
+
+    // Add any newly created cards that haven't been drawn
+    const deckNums = new Set(deck.map(d => d.number));
+    for (const c of cards) {
+        if (!deckNums.has(c.number) && !drawnNums.has(c.number)) deck.push(c);
+    }
+
+    saveState(deck);
+    updateCounter();
+}
+
+function loadCards() {
+    try {
+        const raw = localStorage.getItem(CARDS_KEY);
+        if (raw) {
+            const parsed = JSON.parse(raw);
+            return parsed.map(c => {
+                if (c.text) return c;
+                const orig = DEFAULT_CARDS.find(d => d.number === c.number);
+                if (!orig) return c;
+                return orig.textFn ? { ...c, textFn: orig.textFn } : { ...c, text: orig.text || '' };
+            });
+        }
+    } catch (e) {}
+    return null;
+}
+
 // ── Card Definitions ──────────────────────────────────────────────────────────
 
 const DEFAULT_CARDS = [
@@ -196,6 +246,7 @@ const DEFAULT_CARDS = [
 
 // ── State ─────────────────────────────────────────────────────────────────────
 
+let cards   = [];
 let deck    = [];
 let lastCard  = null;   // { cardDef, resolvedText, assignee }
 let history   = [];     // [{ cardDef, resolvedText, assignee }, ...]  newest first
@@ -218,13 +269,17 @@ function init() {
         makeOthersRules = [...DEFAULT_RULES_OTHERS];
     }
     players = loadPlayers() ?? [...DEFAULT_PLAYERS];
+    const savedCards = loadCards();
+    cards = savedCards !== null ? savedCards : [...DEFAULT_CARDS];
     renderRulesPanel();
     buildNameChips();
-    const saved = loadState();
-    deck    = saved !== null ? saved : [...DEFAULT_CARDS];
     history = loadHistory();
+    const saved = loadState();
+    deck = saved !== null ? saved : [...cards];
+    // Reconcile deck against current card definitions so edits/adds/deletes
+    // and textFn stripping are reflected without needing a manual deck reset.
+    reconcileDeck();
     currentPub = loadPubCount();
-    updateCounter();
     updateHistoryBtn();
     applyRuleVisibility();
 }
@@ -233,7 +288,7 @@ function init() {
 
 function updateCounter() {
     document.getElementById('remainingCards').textContent = deck.length;
-    document.getElementById('totalCards').textContent     = '/' + DEFAULT_CARDS.length;
+    document.getElementById('totalCards').textContent     = '/' + cards.length;
 }
 
 // ── Pub progression ───────────────────────────────────────────────────────────
@@ -384,7 +439,9 @@ function clearAllData() {
     clearPubCount();
     localStorage.removeItem(RULES_KEY);
     localStorage.removeItem(PLAYERS_KEY);
-    deck    = [...DEFAULT_CARDS];
+    localStorage.removeItem(CARDS_KEY);
+    cards   = [...DEFAULT_CARDS];
+    deck    = [...cards];
     history = [];
     lastCard  = null;
     currentPub = 1;
@@ -410,7 +467,8 @@ function resetAll() {
     clearState();
     clearHistory();
     clearPubCount();
-    deck    = [...DEFAULT_CARDS];
+    deck    = [...cards];
+    saveState(deck);
     history = [];
     lastCard  = null;
     currentPub = 1;
@@ -470,7 +528,11 @@ function skipPlayer() {
 // ── Card rendering ────────────────────────────────────────────────────────────
 
 function resolveCardText(cardDef) {
-    return cardDef.textFn ? cardDef.textFn() : cardDef.text;
+    if (cardDef.textFn) return cardDef.textFn();
+    if (cardDef.text) return cardDef.text;
+    // Recover text from DEFAULT_CARDS for cards whose text was stripped (e.g. old saves)
+    const orig = DEFAULT_CARDS.find(c => c.number === cardDef.number);
+    return orig ? (orig.textFn ? orig.textFn() : (orig.text || '')) : '';
 }
 
 function renderCard(entry, animate) {
@@ -934,6 +996,220 @@ function removePlayer(index) {
     renderPlayerManager();
 }
 
+// ── Card manager ──────────────────────────────────────────────────────────────
+
+function openCardManager() {
+    renderCardManager();
+    document.getElementById('card-manager-overlay').classList.remove('hidden');
+}
+
+function closeCardManager() {
+    document.getElementById('card-manager-overlay').classList.add('hidden');
+}
+
+function renderCardManager() {
+    const container = document.getElementById('cm-card-list');
+    container.innerHTML = '';
+    if (cards.length === 0) {
+        const empty = document.createElement('div');
+        empty.className = 'rm-empty';
+        empty.textContent = 'No cards defined.';
+        container.appendChild(empty);
+        return;
+    }
+    cards.forEach((card, i) => {
+        const el = document.createElement('div');
+        el.className = 'cm-card-item';
+        renderCardItemView(el, card, i);
+        container.appendChild(el);
+    });
+}
+
+function renderCardItemView(el, card, i) {
+    el.innerHTML = '';
+    el.classList.remove('cm-card-item--editing');
+
+    const numBadge = document.createElement('span');
+    numBadge.className = 'cm-card-num';
+    numBadge.textContent = card.number;
+
+    const info = document.createElement('div');
+    info.className = 'cm-card-info';
+
+    const titleEl = document.createElement('div');
+    titleEl.className = 'cm-card-title';
+    titleEl.textContent = card.title;
+
+    const textEl = document.createElement('div');
+    textEl.className = 'cm-card-text';
+    textEl.textContent = card.textFn ? '(dynamic text)' : (card.text || '');
+
+    const meta = document.createElement('div');
+    meta.className = 'cm-card-meta';
+    if (card.timer === TIMER.SHORT) {
+        meta.textContent = '15s timer';
+    } else if (card.timer === TIMER.LONG) {
+        meta.textContent = `${formatTime(card.timerSeconds || 0)} timer`;
+    }
+
+    info.appendChild(titleEl);
+    info.appendChild(textEl);
+    if (card.timer !== TIMER.NONE) info.appendChild(meta);
+
+    const editBtn = document.createElement('button');
+    editBtn.className = 'rm-delete-btn';
+    editBtn.setAttribute('aria-label', 'Edit card');
+    editBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>';
+    editBtn.addEventListener('click', () => startEditCard(i, el));
+
+    const delBtn = document.createElement('button');
+    delBtn.className = 'rm-delete-btn';
+    delBtn.setAttribute('aria-label', 'Remove card');
+    delBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+    delBtn.addEventListener('click', () => removeCard(i));
+
+    el.appendChild(numBadge);
+    el.appendChild(info);
+    el.appendChild(editBtn);
+    el.appendChild(delBtn);
+}
+
+function startEditCard(index, el) {
+    const card = cards[index];
+    el.innerHTML = '';
+    el.classList.add('cm-card-item--editing');
+
+    const titleInput = document.createElement('input');
+    titleInput.type = 'text';
+    titleInput.value = card.title;
+    titleInput.className = 'rm-input';
+    titleInput.maxLength = 100;
+    titleInput.placeholder = 'Card title…';
+
+    const textArea = document.createElement('textarea');
+    textArea.value = card.textFn ? card.textFn() : (card.text || '');
+    textArea.className = 'rm-textarea';
+    textArea.rows = 3;
+    textArea.maxLength = 500;
+    textArea.placeholder = 'Card text…';
+
+    // Timer select
+    const timerSelect = document.createElement('select');
+    timerSelect.className = 'rm-select';
+    timerSelect.innerHTML = `
+        <option value="none">No timer</option>
+        <option value="short">15-second timer</option>
+        <option value="long">Long timer</option>
+    `;
+    timerSelect.value = card.timer || TIMER.NONE;
+
+    // Long timer options row
+    const longOpts = document.createElement('div');
+    longOpts.className = 'cm-long-opts';
+    longOpts.classList.toggle('hidden', card.timer !== TIMER.LONG);
+
+    const secsInput = document.createElement('input');
+    secsInput.type = 'number';
+    secsInput.min = '5';
+    secsInput.max = '3600';
+    secsInput.value = String(card.timerSeconds || 60);
+    secsInput.className = 'rm-pub-input cm-secs-input';
+    secsInput.setAttribute('aria-label', 'Timer duration in seconds');
+
+    const secsLabel = document.createElement('span');
+    secsLabel.className = 'cm-secs-label';
+    secsLabel.textContent = 'seconds';
+
+    const timerLabelInput = document.createElement('input');
+    timerLabelInput.type = 'text';
+    timerLabelInput.value = card.timerLabel || '';
+    timerLabelInput.className = 'rm-input';
+    timerLabelInput.placeholder = 'Tray label…';
+    timerLabelInput.maxLength = 50;
+
+    longOpts.appendChild(secsInput);
+    longOpts.appendChild(secsLabel);
+    longOpts.appendChild(timerLabelInput);
+
+    timerSelect.addEventListener('change', () => {
+        longOpts.classList.toggle('hidden', timerSelect.value !== 'long');
+    });
+
+    const actions = document.createElement('div');
+    actions.className = 'cm-edit-actions';
+
+    const saveBtn = document.createElement('button');
+    saveBtn.className = 'rm-add-btn';
+    saveBtn.textContent = 'Save';
+    saveBtn.addEventListener('click', () => {
+        const newTitle = titleInput.value.trim();
+        const newText  = textArea.value.trim();
+        if (!newTitle) return;
+        const { textFn, timerSeconds, timerLabel, ...rest } = card;
+        const timerFields = timerSelect.value === 'short'
+            ? { timer: TIMER.SHORT }
+            : timerSelect.value === 'long'
+                ? { timer: TIMER.LONG, timerSeconds: Math.max(5, parseInt(secsInput.value, 10) || 60), timerLabel: timerLabelInput.value.trim() || newTitle }
+                : { timer: TIMER.NONE };
+        cards[index] = { ...rest, title: newTitle, text: newText, ...timerFields };
+        saveCards();
+        renderCardManager();
+    });
+
+    const cancelBtn = document.createElement('button');
+    cancelBtn.className = 'cm-cancel-btn';
+    cancelBtn.textContent = 'Cancel';
+    cancelBtn.addEventListener('click', () => renderCardItemView(el, card, index));
+
+    actions.appendChild(cancelBtn);
+    actions.appendChild(saveBtn);
+
+    el.appendChild(titleInput);
+    el.appendChild(textArea);
+    el.appendChild(timerSelect);
+    el.appendChild(longOpts);
+    el.appendChild(actions);
+
+    titleInput.focus();
+    el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function addCard() {
+    const titleInput = document.getElementById('cm-title-input');
+    const textInput  = document.getElementById('cm-text-input');
+    const title = titleInput.value.trim();
+    const text  = textInput.value.trim();
+    if (!title || !text) return;
+    const maxNum = cards.length > 0 ? Math.max(...cards.map(c => typeof c.number === 'number' ? c.number : 0)) : 0;
+    const newCard = { number: maxNum + 1, title, text, ...buildTimerFields('cm-timer-type', 'cm-timer-secs', 'cm-timer-label', title) };
+    cards.push(newCard);
+    titleInput.value = '';
+    textInput.value  = '';
+    document.getElementById('cm-timer-type').value = 'none';
+    document.getElementById('cm-long-timer-opts').classList.add('hidden');
+    document.getElementById('cm-timer-secs').value  = '60';
+    document.getElementById('cm-timer-label').value = '';
+    saveCards();
+    renderCardManager();
+}
+
+function buildTimerFields(typeId, secsId, labelId, fallbackLabel) {
+    const type = typeof typeId === 'string' ? document.getElementById(typeId).value : typeId;
+    if (type === 'short') return { timer: TIMER.SHORT };
+    if (type === 'long') {
+        const secs  = Math.max(5, parseInt(document.getElementById(secsId).value, 10) || 60);
+        const label = document.getElementById(labelId).value.trim() || fallbackLabel;
+        return { timer: TIMER.LONG, timerSeconds: secs, timerLabel: label };
+    }
+    return { timer: TIMER.NONE };
+}
+
+function removeCard(index) {
+    cards.splice(index, 1);
+    saveCards();
+    renderCardManager();
+}
+
 // ── Event listeners ───────────────────────────────────────────────────────────
 
 document.getElementById('next-pub').addEventListener('click', nextPub);
@@ -967,6 +1243,20 @@ document.getElementById('pm-add').addEventListener('click', addPlayer);
 
 document.getElementById('pm-input').addEventListener('keydown', function (e) {
     if (e.key === 'Enter') addPlayer();
+});
+
+document.getElementById('card-manager-btn').addEventListener('click', openCardManager);
+
+document.getElementById('card-manager-close').addEventListener('click', closeCardManager);
+
+document.getElementById('card-manager-overlay').addEventListener('click', function (e) {
+    if (e.target === this) closeCardManager();
+});
+
+document.getElementById('cm-add').addEventListener('click', addCard);
+
+document.getElementById('cm-timer-type').addEventListener('change', function () {
+    document.getElementById('cm-long-timer-opts').classList.toggle('hidden', this.value !== 'long');
 });
 
 document.getElementById('rule-manager-btn').addEventListener('click', openRuleManager);
