@@ -14,9 +14,10 @@ const DEFAULT_RULES_DRAW = [
     { text: "Take a piss at the pub (first piss per pub is free)",               pub: 3 },
     { text: "If you are the only one outside the pub at any point",              pub: 4 },
     { text: "Drink with your left hand",                                         pub: 5 },
-    { text: "Accidently rhyme",                                                  pub: 6 },
+    { text: "Accidentally rhyme",                                                pub: 6 },
     { text: "Are caught drinking sparkling wine or prosecco (once per drink)",   pub: 7 },
     { text: "Buzzballs",                                                         pub: 7 },
+    { text: "If you do a poo, the group",                                                  pub: 7 },
 ];
 
 const DEFAULT_RULES_OTHERS = [
@@ -48,12 +49,6 @@ const TIMER = { NONE: 'none', SHORT: 'short', LONG: 'long' };
 
 function randomIndex(arr) {
     return Math.floor(Math.random() * arr.length);
-}
-
-function randomOrdinal(min, max) {
-    const suffixes = { 1: '1st', 2: '2nd', 3: '3rd' };
-    const n = Math.floor(Math.random() * (max - min + 1)) + min;
-    return suffixes[n] || n + 'th';
 }
 
 function formatTime(seconds) {
@@ -204,44 +199,273 @@ function loadCards() {
 // ── Card Definitions ──────────────────────────────────────────────────────────
 
 const DEFAULT_CARDS = [
-    { number: 1,  timer: TIMER.NONE,  title: "It's not 11 o'clock yet!", text: "Tom is still working overtime and can't drink. Everyone down his drink for him so he can focus on work" },
-    { number: 2,  timer: TIMER.NONE,  title: "The Classic Attire", text: "He never leaves the house without it. You have to wear Tom's hawaiian shirt. Or take a shot of spirit" },
-    { number: 3,  timer: TIMER.NONE,  title: "Hannah's Quiz Time", text: "Hannah asks a question about Tom. If you get it wrong, someone else can answer — then you have to down half your drink" },
-    { number: 4,  timer: TIMER.NONE,  title: "Big Man's Choice", text: "You and Tom decide the next drink everyone has to order at the next pub" },
-    { number: 5,  timer: TIMER.SHORT, title: "Who's That Pokémon?", textFn: () => `You must pretend to be a Pokémon from the ${randomOrdinal(1, 3)} generation so Tom can guess. If Tom can't guess correctly within 15 seconds, Tom must draw the Pokémon onto your arm` },
-    { number: 6,  timer: TIMER.NONE,  title: "Guitar Hero Pro", text: "Tom loves to belt out some tunes on the Wii. Let the group record a new ringtone for you and leave your phone on loudspeaker for the rest of the night — or down your drink and someone else's" },
-    { number: 7,  timer: TIMER.NONE,  title: "You Gotta Open That Case Boy", text: "You just opened a CS2 case, but since it's Tom's birthday he deserves a reward. Transfer Tom a skin from your inventory. (If you don't play CS2, buy Tom a drink)" },
-    { number: 8,  timer: TIMER.NONE,  title: "Squirtle Squirtle!", text: "You little squirtle. Neck a pint of water in one go or take a shot" },
-    { number: 9,  timer: TIMER.NONE,  title: "Chance Time!", text: "You landed on a Chance Time space. Swap everyone's drinks around — you choose who gets what" },
-    { number: 10, timer: TIMER.NONE,  title: "In the Doghouse", text: "You've drank too much and are snoring loudly. Hannah is making you sleep on the sofa tonight. You have to finish your drink at a table by yourself" },
-    { number: 11, timer: TIMER.NONE,  title: "Back in Action", text: "Just like Tom, your legs are now stronger than ever! Choose someone to carry to the next pub. They cannot have been picked before" },
-    { number: 12, timer: TIMER.NONE,  title: "Epic Gamer Moment", text: "You are an epic gamer my guy. You must wear the gamer shirt until someone else draws this card or decides to wear it themselves. If you decline, take a shot of spirit. (You are NOT allowed to say the gamer word)" },
-    { number: 13, timer: TIMER.NONE,  title: "Super Smash Bros.", text: "It's a game of categories, but the only category allowed is Super Smash Bros characters. You start. Loser takes 3 drinks" },
-    { number: 14, timer: TIMER.NONE,  title: "Drink for the Fallen", text: "Take a drink for each person who has gone home. If no one has left yet, down your drink as a toast in advance" },
-    { number: 15, timer: TIMER.NONE,  title: "Strong Bones!", text: "Don't end up like Tom with rickets. Drink a glass of milk, and you must finish it before you can return to your drink" },
-    { number: 16, timer: TIMER.NONE,  title: "No. 5 Large", text: "Tom has gotten too drunk. Perk him up with the saviour food, Mr Cod. (Or similar if not possible)" },
-    { number: 17, timer: TIMER.NONE,  title: "Liam's Round", text: "Liam is buying your next drink but has forgotten your order. Drink whatever he brings back for you. (Liam does not have to pay for you unless he's feeling nice)" },
-    { number: 18, timer: TIMER.NONE,  title: "Tommy Says", text: "The group must only drink with their non-dominant hand for this pub. Anyone caught out takes a drink. (With their non-dominant hand, you mug)" },
-    { number: 19, timer: TIMER.LONG,  timerSeconds: 300, timerLabel: "5 min eyes rule", title: "Sleeping with Both Eyes Open", text: "You drank so much last night you slept with your eyes open, now they're all sticky and bloodshot. Anyone who looks you in the eyes for the next 5 minutes must take a drink" },
-    { number: 20, timer: TIMER.NONE,  title: "Here's My Spout", text: "Top up Tom's drink with your own, acting like a teapot" },
-    { number: 21, timer: TIMER.NONE,  title: "Well That's Written Off...", text: "Tom just hit ANOTHER deer on the road and now his car is totalled. He must buy you a drink as thanks for driving him around" },
-    { number: 22, timer: TIMER.NONE,  title: "Rawr xD", text: "No one really understood secondary school emo Tom, but you can feel a little closer to how he felt if you don the wig and sing/shout 'Can you feel my heart'" },
-    { number: 23, timer: TIMER.SHORT, title: "Absolute Bullshit", text: "It's time for a Mario Party mini-game! Give your best impression of a Mario Party character and Tom has to guess. If Tom can't guess correctly within 15 seconds, you must both take 3 drinks" },
-    { number: 24, timer: TIMER.NONE,  title: "Monttttyyyyyy!", text: "Monty burnt a penis into the roof of Tom's car, now he's drawing one on you. Let Monty draw a penis onto a place of your choosing. (Must be visible)" },
-    { number: 25, timer: TIMER.NONE,  title: "Horses Don't Have Hands!", text: "Tom is a horse. Horses don't have hands. Feed Tom the rest of his drink" },
-    { number: 26, timer: TIMER.NONE,  title: "Bloody Bastard", text: "You tried to give Tom birthday beats, but you've realised you're Ed Brown! Tom gets to give you 26 birthday beats" },
-    { number: 27, timer: TIMER.NONE,  title: "Pokémon Trivia", text: "Ask Tom a question about Pokémon. If he gets it right, you have to buy him his favourite drink. If he gets it wrong, you can buy him any drink" },
-    { number: 28, timer: TIMER.NONE,  title: "Back at BCOT", text: "Tom used to love his white chocolate Starbucks at college. Order and drink a white mocha from the bar. If you can't get one, order and drink a black coffee — Tom loves those now" },
-    { number: 29, timer: TIMER.NONE,  title: "Pummel Party", text: "You picked up an Arcade Challenge! Challenge someone to a game of pong. Loser buys the winner a drink. (Joe has the app on his phone)" },
-    { number: 30, timer: TIMER.NONE,  title: "Short Shorts", text: "Tom wore his tight chino shorts out and has ripped them, revealing his bussy. Poke him in the arse quick!" },
-    { number: 31, timer: TIMER.NONE,  title: "Blue Moon!", text: "Tom has finally shown up on Discord! What a treat! Buy yourself a Blue Moon or a Blue Lagoon to drink" },
-    { number: 32, timer: TIMER.NONE,  title: "5v5", text: "Challenge the person sat closest opposite you to Rock, Paper, Scissors. Loser downs their drink. Best of 3" },
-    { number: 33, timer: TIMER.NONE,  title: "Tom's Favourite Meme", text: "Keep your toddlers on a leash! Go ask for 'The Pitbull of Drinks' at the bar and enjoy it" },
-    { number: 34, timer: TIMER.NONE, title: "Butt Text, Sorry!", text: "Tom sat on your phone and somehow managed to send a text on it. Tom is allowed to send one text to anyone on your phone (excluding work and parents). If you refuse, take a shot" },
+    {
+        number: 1,
+        timer: TIMER.NONE,
+        title: "It's not 11 o'clock yet!",
+        text: "Tom is still working overtime and can't drink. Everyone down his drink for him so he can focus on work"
+    },
+    {
+        number: 2,
+        timer: TIMER.NONE,
+        title: "The Classic Attire",
+        text: "He never leaves the house without it. You have to wear Tom's hawaiian shirt until this card is next drawn. Or take a shot of spirit."
+    },
+    {
+        number: 3,
+        timer: TIMER.NONE,
+        title: "Hannah's Quiz Time",
+        text: "Hannah asks you a question about Tom. If you get it wrong, and someone else answers correctly, then you have to down half your drink"
+    },
+    {
+        number: 4,
+        timer: TIMER.NONE,
+        title: "Big Man's Choice",
+        text: "You and Tom decide the next drink everyone has to order at the next pub"
+    },
+    {
+        number: 5,
+        timer: TIMER.SHORT,
+        title: "Who's That Pokémon?",
+        text: "Tom tells you three pokemon names, but one of them is false. You must guess the false one, or Tom draws it on your arm in sharpie"
+    },
+    {
+        number: 6,
+        timer: TIMER.NONE,
+        title: "Guitar Hero Pro",
+        text: "Tom loves to belt out some tunes on the Wii. Let the group record a new ringtone for you and leave your phone on loudspeaker for the rest of the night — or down your drink and someone else's"
+    },
+    {
+        number: 8,
+        timer: TIMER.NONE,
+        title: "Soaking wet",
+        text: "Grippin' and fartin' and gripping and hugging got dat dookie hole soaking wet, soaking wet. Neck a pint of water in one go or take a shot"
+    },
+    {
+        number: 9,
+        timer: TIMER.NONE,
+        title: "Chance Time!",
+        text: "You landed on a Chance Time space. Swap everyone's drinks around — you choose who gets what"
+    },
+    {
+        number: 10,
+        timer: TIMER.NONE,
+        title: "In the Doghouse",
+        text: "You've drank too much and are snoring loudly. Hannah is making you sleep on the sofa tonight. You have to finish your drink at a table by yourself"
+    },
+    {
+        number: 11,
+        timer: TIMER.NONE,
+        title: "Back in Action",
+        text: "Just like Tom, your legs are now stronger than ever! Choose someone to carry back to the train. They cannot have been picked before"
+    },
+    {
+        number: 12,
+        timer: TIMER.NONE,
+        title: "Epic Gamer Moment",
+        text: "You are an epic gamer my guy. You must wear the gamer shirt until someone else draws this card or decides to wear it themselves. If you decline, take a shot of spirit. (You are NOT allowed to say the gamer word)"
+    },
+    {
+        number: 13,
+        timer: TIMER.NONE,
+        title: "Super Smash Bros.",
+        text: "It's a game of categories, but the only category allowed is Super Smash Bros characters. You start. Loser takes 3 drinks"
+    },
+    {
+        number: 14,
+        timer: TIMER.NONE,
+        title: "Drink for the Fallen",
+        text: "Take a drink for each person who has gone home. If no one has left yet, down your drink as a toast in advance"
+    },
+    {
+        number: 15,
+        timer: TIMER.NONE,
+        title: "Strong Bones!",
+        text: "Don't end up like Tom with rickets. Drink a glass of milk, and you must finish it before you can return to your drink"
+    },
+    {
+        number: 17,
+        timer: TIMER.NONE,
+        title: "Liam's Round",
+        text: "Liam is buying your next drink but has forgotten your order. Drink whatever he brings back for you. (Liam does not have to pay for you unless he's feeling nice)"
+    },
+    {
+        number: 19,
+        timer: TIMER.LONG,
+        timerSeconds: 300,
+        timerLabel: "5 min eyes rule",
+        title: "Sleeping with Both Eyes Open",
+        text: "You drank so much last night you slept with your eyes open, now they're all sticky and bloodshot. Anyone who looks you in the eyes for the next 5 minutes must take a drink"
+    },
+    {
+        number: 20,
+        timer: TIMER.NONE,
+        title: "Here's My Spout",
+        text: "Top up the drink with the least left using your own, acting like a teapot"
+    },
+    {
+        number: 21,
+        timer: TIMER.NONE,
+        title: "Well That's Written Off...",
+        text: "Tom just hit ANOTHER deer on the road and now his car is totalled. Buy Tom a drink since he's skint from car repairs"
+    },
+    {
+        number: 22,
+        timer: TIMER.NONE,
+        title: "Rawr xD",
+        text: "No one really understood secondary school emo Tom, but you can feel a little closer to how he felt if you don the wig and sing/shout 'Can you smell my fart'"
+    },
+    {
+        number: 23,
+        timer: TIMER.SHORT,
+        title: "Absolute Bullshit",
+        text: "It's time for a Mario Party mini-game! Give your best impression of a Mario Party character and Tom has to guess. If Tom can't guess correctly within 15 seconds, you must both take 3 drinks"
+    },
+    {
+        number: 24,
+        timer: TIMER.NONE,
+        title: "Monttttyyyyyy!",
+        text: "Monty burnt a penis into the roof of Tom's car, now he's drawing one on you. Let Monty (or Tom if he's not present) draw a penis onto a place of your choosing. (Must be visible)"
+    },
+    {
+        number: 25,
+        timer: TIMER.NONE,
+        title: "Horses Don't Have Hands!",
+        text: "You is a horse. Horses don't have hands. Let Tom feed you the rest of his drink"
+    },
+    {
+        number: 27,
+        timer: TIMER.NONE,
+        title: "Pokémon Trivia",
+        text: "Ask Tom a question about Pokémon (feel free to google a question). If he gets it right, you have to buy him his favourite drink. If he gets it wrong, you can buy him any drink"
+    },
+    {
+        number: 28,
+        timer: TIMER.NONE,
+        title: "Back at BCOT",
+        text: "Tom used to love his white chocolate Starbucks at college. Your next drink must be coffee based"
+    },
+    {
+        number: 29,
+        timer: TIMER.NONE,
+        title: "Pummel Party",
+        text: "You picked up an Arcade Challenge! Challenge someone to a game of pong. Loser takes 5 sips. (Joe has the app on his phone)"
+    },
+    {
+        number: 30,
+        timer: TIMER.NONE,
+        title: "Short Shorts",
+        text: "Tom wore his tight chino shorts out and has ripped them, revealing his bussy. Poke him in the arse quick!"
+    },
+    {
+        number: 32,
+        timer: TIMER.NONE,
+        title: "JANKENPON",
+        text: "Challenge the person sat closest opposite you to Rock, Paper, Scissors. Loser downs their drink. Best of 3"
+    },
+    {
+        number: 33,
+        timer: TIMER.NONE,
+        title: "Tom's Favourite Meme",
+        text: "Keep your toddlers on a leash! Go ask for 'The Pitbull of Drinks' at the bar and enjoy it"
+    },
+    {
+        number: 34,
+        timer: TIMER.NONE,
+        title: "Butt Text, Sorry!",
+        text: "Tom sat on your phone and somehow managed to send a text on it. Tom is allowed to send one text to anyone on your phone (excluding work and parents). If you refuse, down your drink"
+    },
 
-    //New ones
-    { number: 19, timer: TIMER.LONG, timerSeconds: 300, timerLabel: "5 min heaven rule", title: "Tom wishes he was dead, show him the way", text: "For the next 5 minutes any time you point to heaven (Tom's dream) everyone else must point too, the last one has to take 3 slips" },
-
+    // New ones
+    {
+        number: 19,
+        timer: TIMER.LONG,
+        timerSeconds: 300,
+        timerLabel: "5 min heaven rule",
+        title: "Tom wishes he was dead, show him the way",
+        text: "For the next 5 minutes any time you point to heaven (Tom's dream) everyone else must point too, the last one has to take 3 slips"
+    },
+    {
+        number: 19,
+        timer: TIMER.LONG,
+        timerSeconds: 300,
+        timerLabel: "5 min Ug rule",
+        title: "Hat of Ug",
+        text: "You can only talk in one syllable words for 5 minutes, else take 5 sips"
+    },
+    {
+        number: 19,
+        timer: TIMER.NONE,
+        title: "Picnic game",
+        text: "Host a game of the packing game. Last to guess the rule must down your drink"
+    },
+    {
+        number: 19,
+        timer: TIMER.NONE,
+        title: "Bing chilling",
+        text: "Order a pint of Chinese guinness from the bar"
+    },
+    {
+        number: 19,
+        timer: TIMER.NONE,
+        title: "Bring out your scrap!",
+        text: "If you have any loose change, use it to enact 'Save the Queen' on unsuspecting victims"
+    },
+    {
+        number: 19,
+        timer: TIMER.NONE,
+        title: "Last orders",
+        text: "If anyone has a third or less of drink left in their glass, they have to finish it off"
+    },
+    {
+        number: 19,
+        timer: TIMER.NONE,
+        title: "Blind man and dog",
+        text: "You are now blind. Choose a guide dog to guide you while you are blindfolded until the next pub"
+    },
+    {
+        number: 19,
+        timer: TIMER.NONE,
+        title: "Buzzballs",
+        text: ""
+    },
+    {
+        number: 19,
+        timer: TIMER.LONG,
+        timerSeconds: 300,
+        title: "We are Charlie Kirk",
+        text: "We carrrry the flame! You must end every sentence with 'We are Charlie Kirk' for the next 5 minutes. If you forget, take a drink"
+    },
+    {
+        number: 19,
+        timer: TIMER.NONE,
+        title: "Follow that tune!",
+        text: "Do the Gym Skin dance to the music currently playing. If there is none, go follow that tune!"
+    },
+    {
+        number: 19,
+        timer: TIMER.NONE,
+        title: "Anti-Clavicular",
+        text: "Challenge someone to an anti-mog on mogging.com. Whoever gets the higher score loses, and has to drink half a drink"
+    },
+    {
+        number: 19,
+        timer: TIMER.NONE,
+        title: "Sussy ChigBungus",
+        text: "Hudson just got voted in as Reforms new leader. Ask him to record a Nigel Farage style Cameo, Tom gets to choose who it's sent to"
+    },
+    {
+        number: 19,
+        timer: TIMER.NONE,
+        title: "Would you rather?",
+        text: "Video call Hudson and tell him a 'Would you rather?'. If he doesn't approve, take 5 sips."
+    },
+    {
+        number: 19,
+        timer: TIMER.NONE,
+        title: "Would you rather?",
+        text: "Video call Hudson and tell him a 'Would you rather?'. If he doesn't approve, take 5 sips."
+    }
 ];
 
 // ── State ─────────────────────────────────────────────────────────────────────
