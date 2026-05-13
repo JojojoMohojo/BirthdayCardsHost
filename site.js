@@ -468,7 +468,7 @@ const DEFAULT_CARDS = [
     },
     {
         number: 44,
-        title: "Would you Rather - Redux",
+        title: "Would you Rather? - Redux",
         timer: TIMER.SHORT,
         timerSeconds: 120,
         text: "A good 'Would you rather' could unite even Israel and Palestine. You have 2 minutes to come up one for the table. After everyone answers, take one sip for each person difference between the two choices."
@@ -482,11 +482,13 @@ const DEFAULT_CARDS = [
     },
     {
         number: 46,
+        timer: TIMER.NONE,
         title: "Paul Hudson, Wingman Extraordinaire",
         text: "You've spotted someone interesting in the pub and desperately want to know more about them. Call Hudson and let him give you a question to ask the stranger. If you refuse, take a shot of"
     },
     {
         number: 47,
+        timer: TIMER.NONE,
         title: "Your Biggest Fan",
         text: "You've noticed one of your all time idols is working behind the bar. You can't pass up the opportunity, go get a selfie with them!"
     }
@@ -1430,11 +1432,7 @@ function renderCardItemView(el, card, i) {
 
     const meta = document.createElement('div');
     meta.className = 'cm-card-meta';
-    if (card.timer === TIMER.SHORT) {
-        meta.textContent = '15s timer';
-    } else if (card.timer === TIMER.LONG) {
-        meta.textContent = `${formatTime(card.timerSeconds || 0)} timer`;
-    }
+    if (card.timer !== TIMER.NONE) meta.textContent = `${formatTime(card.timerSeconds || 0)} timer`;
 
     info.appendChild(titleEl);
     info.appendChild(textEl);
