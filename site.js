@@ -464,21 +464,21 @@ const DEFAULT_CARDS = [
         timer: TIMER.SHORT,
         timerSeconds: 120,
         title: "LET THEM COOK!",
-        text: "Hold up, let them cook. Come up with an unpopular opinion/conspiracy, ou have 2 minutes to convince the table to your side. Take a sip for each you are unable to win over."
+        text: "Hold up, let them cook. Come up with an unpopular opinion/conspiracy, you have 2 minutes to convince the table to your side. Take a sip for each player you are unable to win over."
     },
     {
         number: 44,
         title: "Would you Rather? - Redux",
         timer: TIMER.SHORT,
         timerSeconds: 120,
-        text: "A good 'Would you rather' could unite even Israel and Palestine. You have 2 minutes to come up one for the table. After everyone answers, take one sip for each person difference between the two choices."
+        text: "A good 'Would you rather' could unite even Israel and Palestine. You have 2 minutes to come up with one for the table. After everyone answers, take the totals of each side and drink the difference."
     },
     {
         number: 45,
         title: "Charades",
         timer: TIMER.SHORT,
         timerSeconds: 60,
-        text: "A good ol' fashioned round of charades. Someone must guess within 60 seconds, or else take 3 sips"
+        text: "A good ol' fashioned round of charades. Someone must guess within 60 seconds, or else take 3 sips. If guessed, both players give out two sips"
     },
     {
         number: 46,
@@ -1229,6 +1229,10 @@ document.getElementById('draw').addEventListener('click', function () {
     }
 
     try { navigator.vibrate(40); } catch (e) {}
+
+    if (Math.random() < 0.01) {
+        try { new Audio('Black Eyed Peas - Lets Get Retarded - short.mp3').play(); } catch (e) {}
+    }
 });
 
 // rules-toggle is re-cloned by renderHistoryCard, so we use a live delegated listener on the footer
