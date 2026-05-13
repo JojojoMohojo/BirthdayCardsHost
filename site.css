@@ -546,6 +546,38 @@ body {
     opacity: 0.45;
 }
 
+.card-ai-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(157, 127, 189, 0.12);
+    border: 1px solid rgba(157, 127, 189, 0.35);
+    border-radius: 20px;
+    padding: 3px 10px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #9d7fbd;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+}
+
+.cm-ai-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.cm-ai-check {
+    width: 15px;
+    height: 15px;
+    accent-color: #9d7fbd;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
 .card-title {
     /**/
     font-size: 24px;

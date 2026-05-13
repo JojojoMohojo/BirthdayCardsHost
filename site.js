@@ -491,7 +491,53 @@ const DEFAULT_CARDS = [
         timer: TIMER.NONE,
         title: "Your Biggest Fan",
         text: "You've noticed one of your all time idols is working behind the bar. You can't pass up the opportunity, go get a selfie with them!"
-    }
+    },
+    {
+        number: 48,
+        timer: TIMER.NONE,
+        title: "Go straight to jail",
+        text: "Tom's traveller background has caught up with him and you. You must be handcuffed together until the next pub"
+    },
+    {
+        number: 49,
+        timer: TIMER.SHORT,
+        timerSeconds: 60,
+        title: "Pub Quiz Wildcard",
+        text: "Someone picks any subject, you have 60 seconds to name as many things in that category as possible. Under 10? Take a sip for each you were short",
+        ai: true
+    },
+    {
+        number: 50,
+        timer: TIMER.SHORT,
+        timerSeconds: 30,
+        title: "Name That Banger",
+        text: "Hum the first song that comes to mind. The table has 30 seconds to guess it. If no one gets it, everyone has 3 sips",
+        ai: true
+    },
+    {
+        number: 51,
+        timer: TIMER.NONE,
+        title: "Speed Round",
+        text: "You and the person to your left simultaneously describe each other in one word to the group. If the table agrees yours is more accurate, they take 3 sips. If theirs is, you do",
+        ai: true
+    },
+    {
+        number: 52,
+        timer: TIMER.LONG,
+        timerSeconds: 300,
+        timerLabel: "5 Min Accent Rule",
+        title: "Gap Yah",
+        text: "Tom once considered doing a gap year to 'find himself'. For the next 5 minutes you must speak in a posh gap year accent. Every time you break character, take 2 sips",
+        ai: true
+    },
+    {
+        number: 53,
+        timer: TIMER.SHORT,
+        timerSeconds: 30,
+        title: "Invisible Pint",
+        text: "Mime drinking a pint as realistically as possible. The table votes — if less than half believe you, you have to drink the real thing in the same time you mimed it",
+        ai: true
+    },
 ];
 
 // ── State ─────────────────────────────────────────────────────────────────────
@@ -808,6 +854,7 @@ function renderCard(entry, animate) {
 
     document.getElementById('CardTitle').textContent  = cardDef.title;
     document.getElementById('CardText').textContent   = resolvedText;
+    document.getElementById('card-ai-badge').classList.toggle('hidden', !cardDef.ai);
 
     // Assignee
     const assigneeEl = document.getElementById('card-assignee');
@@ -1051,6 +1098,7 @@ function renderHistoryCard(entry) {
 
     document.getElementById('CardTitle').textContent = cardDef.title;
     document.getElementById('CardText').textContent  = resolvedText;
+    document.getElementById('card-ai-badge').classList.toggle('hidden', !cardDef.ai);
 
     refreshHistoryCardAssignee(entry);
 
@@ -1436,11 +1484,14 @@ function renderCardItemView(el, card, i) {
 
     const meta = document.createElement('div');
     meta.className = 'cm-card-meta';
-    if (card.timer !== TIMER.NONE) meta.textContent = `${formatTime(card.timerSeconds || 0)} timer`;
+    const metaParts = [];
+    if (card.timer !== TIMER.NONE) metaParts.push(`${formatTime(card.timerSeconds || 0)} timer`);
+    if (card.ai) metaParts.push('✦ AI');
+    if (metaParts.length) meta.textContent = metaParts.join(' · ');
 
     info.appendChild(titleEl);
     info.appendChild(textEl);
-    if (card.timer !== TIMER.NONE) info.appendChild(meta);
+    if (metaParts.length) info.appendChild(meta);
 
     const editBtn = document.createElement('button');
     editBtn.className = 'rm-delete-btn';
@@ -1528,6 +1579,18 @@ function startEditCard(index, el) {
         timerLabelInput.classList.toggle('hidden', val !== 'long');
     });
 
+    const aiRow = document.createElement('label');
+    aiRow.className = 'cm-ai-row';
+    const aiCheck = document.createElement('input');
+    aiCheck.type = 'checkbox';
+    aiCheck.className = 'cm-ai-check';
+    aiCheck.checked = !!card.ai;
+    const aiLabel = document.createElement('span');
+    aiLabel.className = 'cm-secs-label';
+    aiLabel.textContent = 'AI generated';
+    aiRow.appendChild(aiCheck);
+    aiRow.appendChild(aiLabel);
+
     const actions = document.createElement('div');
     actions.className = 'cm-edit-actions';
 
@@ -1544,7 +1607,7 @@ function startEditCard(index, el) {
             : timerSelect.value === 'long'
                 ? { timer: TIMER.LONG, timerSeconds: Math.max(5, parseInt(secsInput.value, 10) || 60), timerLabel: timerLabelInput.value.trim() || newTitle }
                 : { timer: TIMER.NONE };
-        cards[index] = { ...rest, title: newTitle, text: newText, ...timerFields };
+        cards[index] = { ...rest, title: newTitle, text: newText, ...timerFields, ai: aiCheck.checked };
         saveCards();
         renderCardManager();
     });
@@ -1561,6 +1624,7 @@ function startEditCard(index, el) {
     el.appendChild(textArea);
     el.appendChild(timerSelect);
     el.appendChild(longOpts);
+    el.appendChild(aiRow);
     el.appendChild(actions);
 
     titleInput.focus();
@@ -1573,8 +1637,9 @@ function addCard() {
     const title = titleInput.value.trim();
     const text  = textInput.value.trim();
     if (!title || !text) return;
+    const aiCheck = document.getElementById('cm-ai-check');
     const maxNum = cards.length > 0 ? Math.max(...cards.map(c => typeof c.number === 'number' ? c.number : 0)) : 0;
-    const newCard = { number: maxNum + 1, title, text, ...buildTimerFields('cm-timer-type', 'cm-timer-secs', 'cm-timer-label', title) };
+    const newCard = { number: maxNum + 1, title, text, ...buildTimerFields('cm-timer-type', 'cm-timer-secs', 'cm-timer-label', title), ai: aiCheck.checked };
     cards.push(newCard);
     titleInput.value = '';
     textInput.value  = '';
@@ -1582,6 +1647,7 @@ function addCard() {
     document.getElementById('cm-long-timer-opts').classList.add('hidden');
     document.getElementById('cm-timer-secs').value  = '60';
     document.getElementById('cm-timer-label').value = '';
+    aiCheck.checked = false;
     saveCards();
     renderCardManager();
 }
