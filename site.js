@@ -16,7 +16,6 @@ const DEFAULT_RULES_DRAW = [
     { text: "Drink with your left hand",                                         pub: 5 },
     { text: "Accidentally rhyme",                                                pub: 6 },
     { text: "Are caught drinking sparkling wine or prosecco (once per drink)",   pub: 7 },
-    { text: "Buzzballs",                                                         pub: 7 },
 ];
 
 const DEFAULT_RULES_OTHERS = [
@@ -706,25 +705,27 @@ function resetAll() {
 
 // ── Name picker ───────────────────────────────────────────────────────────────
 
-function buildNameChips() {
+function buildNameChips(entry) {
     const container = document.getElementById('name-picker-btns');
     container.innerHTML = '';
     players.forEach(name => {
         const btn = document.createElement('button');
         btn.className = 'name-chip';
         btn.textContent = name;
-        btn.addEventListener('click', () => selectPlayer(name));
+        if (entry && entry.assignee === name) btn.classList.add('selected');
+        btn.addEventListener('click', () => selectPlayer(name, entry || null));
         container.appendChild(btn);
     });
 }
 
-function selectPlayer(name) {
-    if (!lastCard) return;
-    lastCard.assignee = name;
+function selectPlayer(name, entry) {
+    const target = entry || lastCard;
+    if (!target) return;
+    target.assignee = name;
 
-    // Update history entry for this card
-    const existing = history.find(h => h === lastCard);
-    if (!existing) history.unshift(lastCard);
+    // Ensure in history
+    const existing = history.find(h => h === target);
+    if (!existing) history.unshift(target);
     else existing.assignee = name;
     saveHistory(history);
     updateHistoryBtn();
@@ -734,13 +735,9 @@ function selectPlayer(name) {
         c.classList.toggle('selected', c.textContent === name)
     );
     document.getElementById('name-picker').classList.add('hidden');
-    const assignee = document.getElementById('card-assignee');
-    assignee.textContent = name;
-    assignee.classList.remove('hidden');
-}
-
-function skipPlayer() {
-    document.getElementById('name-picker').classList.add('hidden');
+    const assigneeEl = document.getElementById('card-assignee');
+    assigneeEl.textContent = name;
+    assigneeEl.classList.remove('hidden');
 }
 
 // ── Card rendering ────────────────────────────────────────────────────────────
@@ -988,7 +985,7 @@ function renderHistoryCard(entry) {
     document.getElementById('CardTitle').textContent = cardDef.title;
     document.getElementById('CardText').textContent  = resolvedText;
 
-    // Show assignee, hide name picker
+    // Assignee + name picker — always show picker for history cards so player can be assigned/changed
     const assigneeEl = document.getElementById('card-assignee');
     if (assignee) {
         assigneeEl.textContent = assignee;
@@ -996,7 +993,8 @@ function renderHistoryCard(entry) {
     } else {
         assigneeEl.classList.add('hidden');
     }
-    document.getElementById('name-picker').classList.add('hidden');
+    buildNameChips(entry);
+    document.getElementById('name-picker').classList.remove('hidden');
 
     // Hide timers — history cards don't re-trigger timers
     document.getElementById('card-timer').classList.add('hidden');
@@ -1014,17 +1012,20 @@ function renderHistoryCard(entry) {
 
     document.getElementById('rules-panel').classList.add('hidden');
 
-    // Footer: show "Back to History" and "Back to Card" (if there's a live lastCard)
-    document.getElementById('rules-toggle').classList.remove('hidden');
-    document.getElementById('rules-toggle').textContent = 'Back to History';
+    // Footer: "Back to History" replaces "Show Rules" temporarily
+    const rulesToggleBtn = document.getElementById('rules-toggle');
+    rulesToggleBtn.classList.remove('hidden');
+    rulesToggleBtn.textContent = 'Back to History';
     const rulesToggleHandler = () => {
-        document.getElementById('rules-toggle').textContent = 'Show Rules';
-        document.getElementById('rules-toggle').removeEventListener('click', rulesToggleHandler);
-        document.getElementById('rules-toggle').addEventListener('click', showRules, { once: true });
+        rulesToggleBtn.textContent = 'Show Rules';
+        rulesToggleBtn.removeEventListener('click', rulesToggleHandler);
+        rulesToggleBtn.addEventListener('click', showRules, { once: true });
+        // Rebuild chips bound to lastCard before reopening history
+        buildNameChips();
         openHistory();
     };
-    document.getElementById('rules-toggle').removeEventListener('click', showRules);
-    document.getElementById('rules-toggle').addEventListener('click', rulesToggleHandler, { once: true });
+    rulesToggleBtn.removeEventListener('click', showRules);
+    rulesToggleBtn.addEventListener('click', rulesToggleHandler, { once: true });
 
     document.getElementById('back-to-card').classList.toggle('hidden', !lastCard || entry === lastCard);
 }
@@ -1164,8 +1165,6 @@ document.getElementById('long-timer-start').addEventListener('click', () => {
         startLongTimer(lastCard.cardDef, lastCard.assignee);
     }
 });
-
-document.getElementById('name-skip').addEventListener('click', skipPlayer);
 
 document.getElementById('history-btn').addEventListener('click', openHistory);
 
