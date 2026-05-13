@@ -1231,7 +1231,7 @@ document.getElementById('draw').addEventListener('click', function () {
     try { navigator.vibrate(40); } catch (e) {}
 
     if (Math.random() < 0.01) {
-        try { new Audio('Black Eyed Peas - Lets Get Retarded - short.mp3').play(); } catch (e) {}
+        try { new Audio('Black Eyed Peas - Lets Get Retarded.mp3').play(); } catch (e) {}
     }
 });
 
