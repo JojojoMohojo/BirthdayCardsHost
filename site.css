@@ -198,6 +198,16 @@ body {
 
 .tray-timer-count.urgent { color: #e07070; }
 
+@keyframes timerDone {
+    0%   { background: rgba(255,255,255,0.06); border-color: var(--border-subtle); }
+    50%  { background: rgba(212, 168, 67, 0.22); border-color: var(--gold); box-shadow: 0 0 14px rgba(212,168,67,0.4); }
+    100% { background: rgba(255,255,255,0.06); border-color: var(--border-subtle); }
+}
+
+.tray-timer--done {
+    animation: timerDone 0.7s ease-in-out 4;
+}
+
 .tray-timer-dismiss {
     background: none;
     border: none;
@@ -383,8 +393,9 @@ body {
 
 .card-panel {
     display: flex;
-    align-items: flex-start;
-    justify-content: center;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
 }
 
 /* ── Card flip ── */
@@ -392,13 +403,17 @@ body {
 .card-flip-scene {
     perspective: 1200px;
     width: 100%;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
 }
 
 .card-flipper {
     width: 100%;
+    flex: 1;
     position: relative;
     transform-style: preserve-3d;
-    transition: transform 0.65s cubic-bezier(0.4, 0.2, 0.2, 1);
+    transition: transform 0.9s cubic-bezier(0.4, 0.2, 0.2, 1);
     transform: rotateY(180deg);
 }
 
@@ -412,7 +427,9 @@ body {
 }
 
 .card-face--front {
-    display: block;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 }
 
 .card-face--back {
@@ -472,10 +489,11 @@ body {
     padding: 28px 26px 20px;
     box-shadow: var(--shadow-card);
     width: 100%;
+    flex: 1;
     position: relative;
     border: 1px solid rgba(212, 168, 67, 0.4);
-    overflow: hidden;
-    min-height: 500px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .card-inner::before {
@@ -717,6 +735,17 @@ body {
 }
 
 .ring-count.urgent { color: #c0392b; }
+
+@keyframes ringDone {
+    0%   { box-shadow: 0 0 0 0 rgba(139,26,26,0); }
+    50%  { box-shadow: 0 0 0 8px rgba(139,26,26,0.25); }
+    100% { box-shadow: 0 0 0 0 rgba(139,26,26,0); }
+}
+
+.ring--done {
+    animation: ringDone 0.6s ease-in-out 4;
+    border-radius: 50%;
+}
 
 /* ── Long Timer Start ── */
 

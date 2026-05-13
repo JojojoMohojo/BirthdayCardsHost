@@ -731,10 +731,13 @@ function selectPlayer(name, entry) {
     saveHistory(history);
     updateHistoryBtn();
 
-    // Also update any running long timer that belongs to this card
-    activeLongTimers
-        .filter(t => t.cardNumber === target.cardDef.number && !t.assignee)
-        .forEach(t => { t.assignee = name; updateTimerTrayItem(t, false); });
+    // Also update the most recent running long timer that belongs to this card (if unassigned)
+    const unassignedTimers = activeLongTimers.filter(t => t.cardNumber === target.cardDef.number && !t.assignee);
+    if (unassignedTimers.length > 0) {
+        const latest = unassignedTimers[unassignedTimers.length - 1];
+        latest.assignee = name;
+        updateTimerTrayItem(latest, false);
+    }
 
     if (entry) {
         // History card — use the dedicated refresh so the × button appears
@@ -808,12 +811,8 @@ function renderCard(entry, animate) {
     const longBtn  = document.getElementById('long-timer-start');
     if (cardDef.timer === TIMER.LONG) {
         longWrap.classList.remove('hidden');
-        document.getElementById('long-timer-label').textContent =
-            `Start ${formatTime(cardDef.timerSeconds)} timer`;
         const alreadyRunning = activeLongTimers.some(t => t.cardNumber === cardDef.number);
         longBtn.disabled = alreadyRunning;
-        longBtn.textContent = ''; // reset
-        const icon = document.createElementNS ? null : null;
         longBtn.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5,3 19,12 5,21"/></svg> <span>${alreadyRunning ? 'Timer running' : 'Start ' + formatTime(cardDef.timerSeconds) + ' timer'}</span>`;
     } else {
         longWrap.classList.add('hidden');
@@ -849,6 +848,7 @@ function resetShortTimer() {
         clearInterval(shortTimerInterval);
         shortTimerInterval = null;
     }
+    document.getElementById('card-timer-ring').classList.remove('ring--done');
 }
 
 function startShortTimer() {
@@ -885,6 +885,8 @@ function startShortTimer() {
             shortTimerInterval = null;
             countEl.textContent = '✓';
             try { navigator.vibrate([80, 60, 80]); } catch (e) {}
+            playTimerAlarm();
+            document.getElementById('card-timer-ring').classList.add('ring--done');
         }
     }, 1000);
 }
@@ -892,6 +894,13 @@ function startShortTimer() {
 // ── Long timers ───────────────────────────────────────────────────────────────
 
 let longTimerIdCounter = 0;
+
+function playTimerAlarm() {
+    try {
+        const audio = new Audio('Football Commentator Screams _Hes Done It_ - Sound Effect.mp3');
+        audio.play();
+    } catch (e) {}
+}
 
 function startLongTimer(cardDef, assignee) {
     const id = ++longTimerIdCounter;
@@ -910,11 +919,22 @@ function startLongTimer(cardDef, assignee) {
         if (timer.remaining <= 0) {
             clearInterval(timer.intervalId);
             try { navigator.vibrate([100, 80, 100, 80, 100]); } catch (e) {}
+            playTimerAlarm();
             // Mark done but keep visible for 5s then remove
             updateTimerTrayItem(timer, true);
+            const doneEl = document.getElementById('tray-timer-' + timer.id);
+            if (doneEl) doneEl.classList.add('tray-timer--done');
             setTimeout(() => {
                 activeLongTimers = activeLongTimers.filter(t => t.id !== id);
                 renderTimerTray();
+                // Re-enable the start button if the current card matches
+                if (lastCard && lastCard.cardDef.number === cardDef.number) {
+                    const btn = document.getElementById('long-timer-start');
+                    if (btn && !activeLongTimers.some(t => t.cardNumber === cardDef.number)) {
+                        btn.disabled = false;
+                        btn.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5,3 19,12 5,21"/></svg> <span>Start ${formatTime(cardDef.timerSeconds)} timer</span>`;
+                    }
+                }
             }, 5000);
             return;
         }
@@ -924,7 +944,7 @@ function startLongTimer(cardDef, assignee) {
     activeLongTimers.push(timer);
     renderTimerTray();
 
-    // Disable the start button on the current card if it matches
+    // Lock the start button on the current card if it matches
     if (lastCard && lastCard.cardDef.number === cardDef.number) {
         const btn = document.getElementById('long-timer-start');
         if (btn) {
