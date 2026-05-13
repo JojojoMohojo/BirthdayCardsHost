@@ -783,6 +783,9 @@ function renderCard(entry, animate) {
     resetShortTimer();
     const cardTimerEl = document.getElementById('card-timer');
     if (cardDef.timer === TIMER.SHORT) {
+        currentShortDuration = cardDef.timerSeconds || 15;
+        document.getElementById('card-timer-start').textContent = '';
+        document.getElementById('card-timer-start').innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5,3 19,12 5,21"/></svg> Start ${formatTime(currentShortDuration)} timer`;
         cardTimerEl.classList.remove('hidden');
         document.getElementById('card-timer-display').classList.add('hidden');
         document.getElementById('card-timer-start').disabled = false;
@@ -827,7 +830,7 @@ function renderCard(entry, animate) {
 
 // ── Short timer ───────────────────────────────────────────────────────────────
 
-const SHORT_DURATION = 15;
+let currentShortDuration = 15;
 
 function resetShortTimer() {
     if (shortTimerInterval) {
@@ -842,11 +845,13 @@ function startShortTimer() {
     const countEl     = document.getElementById('card-timer-count');
     const ringEl      = document.getElementById('ring-progress');
     const circumference = 100;
+    const duration = currentShortDuration;
+    const urgentThreshold = Math.max(5, Math.round(duration * 0.2));
 
     startBtn.disabled = true;
     displayEl.classList.remove('hidden');
 
-    let remaining = SHORT_DURATION;
+    let remaining = duration;
     countEl.textContent = remaining;
     ringEl.style.strokeDashoffset = 0;
     countEl.classList.remove('urgent');
@@ -855,10 +860,10 @@ function startShortTimer() {
     shortTimerInterval = setInterval(() => {
         remaining--;
         countEl.textContent = remaining;
-        const offset = circumference * (1 - remaining / SHORT_DURATION);
+        const offset = circumference * (1 - remaining / duration);
         ringEl.style.strokeDashoffset = offset;
 
-        if (remaining <= 5) {
+        if (remaining <= urgentThreshold) {
             countEl.classList.add('urgent');
             ringEl.classList.add('urgent');
         }
@@ -876,13 +881,14 @@ function startShortTimer() {
 
 let longTimerIdCounter = 0;
 
-function startLongTimer(cardDef) {
+function startLongTimer(cardDef, assignee) {
     const id = ++longTimerIdCounter;
     const timer = {
         id,
         cardNumber: cardDef.number,
         label: cardDef.timerLabel || cardDef.title,
         cardTitle: cardDef.title,
+        assignee: assignee || null,
         remaining: cardDef.timerSeconds,
         intervalId: null
     };
@@ -952,10 +958,13 @@ function updateTimerTrayItem(timer, done) {
 function timerTrayItemHTML(timer, done) {
     const urgent = timer.remaining <= 30 && !done;
     const display = done ? 'Done!' : formatTime(timer.remaining);
+    const playerLine = timer.assignee
+        ? `<div class="tray-timer-sub">${timer.assignee} · ${timer.cardTitle}</div>`
+        : `<div class="tray-timer-sub">${timer.cardTitle}</div>`;
     return `
         <div class="tray-timer-info">
             <div class="tray-timer-name">${timer.label}</div>
-            <div class="tray-timer-sub">${timer.cardTitle}</div>
+            ${playerLine}
         </div>
         <div class="tray-timer-right">
             <div class="tray-timer-count${urgent ? ' urgent' : ''}">${display}</div>
@@ -966,6 +975,58 @@ function timerTrayItemHTML(timer, done) {
             </button>
         </div>
     `;
+}
+
+function renderHistoryCard(entry) {
+    const { cardDef, resolvedText, assignee } = entry;
+
+    const pipNum  = typeof cardDef.number === 'number' ? String(cardDef.number) : '?';
+    const pipSuit = suitForCard(cardDef.number);
+    ['pip-tl-num', 'pip-br-num'].forEach(id => document.getElementById(id).textContent = pipNum);
+    ['pip-tl-suit', 'pip-br-suit'].forEach(id => document.getElementById(id).textContent = pipSuit);
+
+    document.getElementById('CardTitle').textContent = cardDef.title;
+    document.getElementById('CardText').textContent  = resolvedText;
+
+    // Show assignee, hide name picker
+    const assigneeEl = document.getElementById('card-assignee');
+    if (assignee) {
+        assigneeEl.textContent = assignee;
+        assigneeEl.classList.remove('hidden');
+    } else {
+        assigneeEl.classList.add('hidden');
+    }
+    document.getElementById('name-picker').classList.add('hidden');
+
+    // Hide timers — history cards don't re-trigger timers
+    document.getElementById('card-timer').classList.add('hidden');
+    document.getElementById('long-timer-wrap').classList.add('hidden');
+
+    // Show card, flip it in
+    const panel = document.getElementById('card-panel');
+    const flipper = document.getElementById('card-flipper');
+    panel.classList.remove('hidden');
+    flipper.style.transition = 'none';
+    flipper.classList.remove('is-flipped');
+    void flipper.offsetWidth;
+    flipper.style.transition = '';
+    flipper.classList.add('is-flipped');
+
+    document.getElementById('rules-panel').classList.add('hidden');
+
+    // Footer: show "Back to History" and "Back to Card" (if there's a live lastCard)
+    document.getElementById('rules-toggle').classList.remove('hidden');
+    document.getElementById('rules-toggle').textContent = 'Back to History';
+    const rulesToggleHandler = () => {
+        document.getElementById('rules-toggle').textContent = 'Show Rules';
+        document.getElementById('rules-toggle').removeEventListener('click', rulesToggleHandler);
+        document.getElementById('rules-toggle').addEventListener('click', showRules, { once: true });
+        openHistory();
+    };
+    document.getElementById('rules-toggle').removeEventListener('click', showRules);
+    document.getElementById('rules-toggle').addEventListener('click', rulesToggleHandler, { once: true });
+
+    document.getElementById('back-to-card').classList.toggle('hidden', !lastCard || entry === lastCard);
 }
 
 // ── View management ───────────────────────────────────────────────────────────
@@ -992,14 +1053,31 @@ function openHistory() {
     } else {
         history.forEach((entry, i) => {
             const el = document.createElement('div');
-            el.className = 'history-item';
+            el.className = 'history-item history-item--tappable';
+            el.setAttribute('role', 'button');
+            el.setAttribute('tabindex', '0');
+            el.setAttribute('aria-label', `View card: ${entry.cardDef.title}`);
             el.innerHTML = `
                 <div class="history-num">#${entry.cardDef.number}</div>
                 <div class="history-info">
                     <div class="history-card-title">${entry.cardDef.title}</div>
                     <div class="history-card-player">${entry.assignee || 'Unassigned'}</div>
                 </div>
+                <div class="history-item-arrow">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                </div>
             `;
+            const viewCard = () => {
+                document.getElementById('history-overlay').classList.add('hidden');
+                // If this is the lastCard just render it, otherwise render read-only
+                if (entry === lastCard) {
+                    renderCard(entry, false);
+                } else {
+                    renderHistoryCard(entry);
+                }
+            };
+            el.addEventListener('click', viewCard);
+            el.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') viewCard(); });
             list.appendChild(el);
         });
     }
@@ -1083,7 +1161,7 @@ document.getElementById('card-timer-start').addEventListener('click', startShort
 
 document.getElementById('long-timer-start').addEventListener('click', () => {
     if (lastCard && lastCard.cardDef.timer === TIMER.LONG) {
-        startLongTimer(lastCard.cardDef);
+        startLongTimer(lastCard.cardDef, lastCard.assignee);
     }
 });
 
@@ -1322,21 +1400,21 @@ function startEditCard(index, el) {
     timerSelect.className = 'rm-select';
     timerSelect.innerHTML = `
         <option value="none">No timer</option>
-        <option value="short">15-second timer</option>
-        <option value="long">Long timer</option>
+        <option value="short">Short timer (inline)</option>
+        <option value="long">Long timer (background tray)</option>
     `;
     timerSelect.value = card.timer || TIMER.NONE;
 
-    // Long timer options row
-    const longOpts = document.createElement('div');
-    longOpts.className = 'cm-long-opts';
-    longOpts.classList.toggle('hidden', card.timer !== TIMER.LONG);
+    // Seconds row — shown for both short and long
+    const secsRow = document.createElement('div');
+    secsRow.className = 'cm-long-opts';
+    secsRow.classList.toggle('hidden', card.timer === TIMER.NONE);
 
     const secsInput = document.createElement('input');
     secsInput.type = 'number';
     secsInput.min = '5';
     secsInput.max = '3600';
-    secsInput.value = String(card.timerSeconds || 60);
+    secsInput.value = String(card.timerSeconds || (card.timer === TIMER.SHORT ? 15 : 60));
     secsInput.className = 'rm-pub-input cm-secs-input';
     secsInput.setAttribute('aria-label', 'Timer duration in seconds');
 
@@ -1344,19 +1422,26 @@ function startEditCard(index, el) {
     secsLabel.className = 'cm-secs-label';
     secsLabel.textContent = 'seconds';
 
+    // Long timer label — only shown for long
     const timerLabelInput = document.createElement('input');
     timerLabelInput.type = 'text';
     timerLabelInput.value = card.timerLabel || '';
-    timerLabelInput.className = 'rm-input';
-    timerLabelInput.placeholder = 'Tray label…';
+    timerLabelInput.className = 'rm-input cm-timer-label-input';
+    timerLabelInput.placeholder = 'Tray label (long timers only)…';
     timerLabelInput.maxLength = 50;
+    timerLabelInput.classList.toggle('hidden', card.timer !== TIMER.LONG);
 
-    longOpts.appendChild(secsInput);
-    longOpts.appendChild(secsLabel);
-    longOpts.appendChild(timerLabelInput);
+    secsRow.appendChild(secsInput);
+    secsRow.appendChild(secsLabel);
+    secsRow.appendChild(timerLabelInput);
+
+    // Keep a separate alias for the old longOpts reference used below
+    const longOpts = secsRow;
 
     timerSelect.addEventListener('change', () => {
-        longOpts.classList.toggle('hidden', timerSelect.value !== 'long');
+        const val = timerSelect.value;
+        secsRow.classList.toggle('hidden', val === 'none');
+        timerLabelInput.classList.toggle('hidden', val !== 'long');
     });
 
     const actions = document.createElement('div');
@@ -1371,7 +1456,7 @@ function startEditCard(index, el) {
         if (!newTitle) return;
         const { textFn, timerSeconds, timerLabel, ...rest } = card;
         const timerFields = timerSelect.value === 'short'
-            ? { timer: TIMER.SHORT }
+            ? { timer: TIMER.SHORT, timerSeconds: Math.max(5, parseInt(secsInput.value, 10) || 15) }
             : timerSelect.value === 'long'
                 ? { timer: TIMER.LONG, timerSeconds: Math.max(5, parseInt(secsInput.value, 10) || 60), timerLabel: timerLabelInput.value.trim() || newTitle }
                 : { timer: TIMER.NONE };
@@ -1419,7 +1504,10 @@ function addCard() {
 
 function buildTimerFields(typeId, secsId, labelId, fallbackLabel) {
     const type = typeof typeId === 'string' ? document.getElementById(typeId).value : typeId;
-    if (type === 'short') return { timer: TIMER.SHORT };
+    if (type === 'short') {
+        const secs = Math.max(5, parseInt(document.getElementById(secsId).value, 10) || 15);
+        return { timer: TIMER.SHORT, timerSeconds: secs };
+    }
     if (type === 'long') {
         const secs  = Math.max(5, parseInt(document.getElementById(secsId).value, 10) || 60);
         const label = document.getElementById(labelId).value.trim() || fallbackLabel;
@@ -1480,7 +1568,10 @@ document.getElementById('card-manager-overlay').addEventListener('click', functi
 document.getElementById('cm-add').addEventListener('click', addCard);
 
 document.getElementById('cm-timer-type').addEventListener('change', function () {
-    document.getElementById('cm-long-timer-opts').classList.toggle('hidden', this.value !== 'long');
+    const isNone = this.value === 'none';
+    document.getElementById('cm-long-timer-opts').classList.toggle('hidden', isNone);
+    document.getElementById('cm-timer-label').classList.toggle('hidden', this.value !== 'long');
+    document.getElementById('cm-timer-secs').value = this.value === 'short' ? '15' : '60';
 });
 
 document.getElementById('rule-manager-btn').addEventListener('click', openRuleManager);

@@ -260,13 +260,13 @@
                     <textarea id="cm-text-input" class="rm-textarea" placeholder="Card text…" maxlength="500" rows="3"></textarea>
                     <select id="cm-timer-type" class="rm-select">
                         <option value="none">No timer</option>
-                        <option value="short">15-second timer</option>
-                        <option value="long">Long timer</option>
+                        <option value="short">Short timer (inline)</option>
+                        <option value="long">Long timer (background tray)</option>
                     </select>
                     <div id="cm-long-timer-opts" class="cm-long-opts hidden">
-                        <input type="number" id="cm-timer-secs" class="rm-pub-input cm-secs-input" min="5" max="3600" value="60" aria-label="Timer duration in seconds"/>
+                        <input type="number" id="cm-timer-secs" class="rm-pub-input cm-secs-input" min="5" max="3600" value="15" aria-label="Timer duration in seconds"/>
                         <span class="cm-secs-label">seconds</span>
-                        <input type="text" id="cm-timer-label" class="rm-input" placeholder="Tray label…" maxlength="50"/>
+                        <input type="text" id="cm-timer-label" class="rm-input cm-timer-label-input hidden" placeholder="Tray label (long timers only)…" maxlength="50"/>
                     </div>
                     <div style="display:flex;justify-content:flex-end">
                         <button id="cm-add" class="rm-add-btn">Add Card</button>

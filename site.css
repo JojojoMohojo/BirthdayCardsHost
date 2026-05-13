@@ -891,6 +891,23 @@ body {
     border-radius: 8px;
 }
 
+.history-item--tappable {
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.history-item--tappable:hover,
+.history-item--tappable:active {
+    background: rgba(255,255,255,0.1);
+}
+
+.history-item-arrow {
+    color: var(--text-muted);
+    flex-shrink: 0;
+    margin-top: 2px;
+    opacity: 0.6;
+}
+
 .history-num {
     /**/
     font-size: 13px;
@@ -1256,3 +1273,4 @@ body {
     color: var(--text-muted);
     flex-shrink: 0;
 }
+.cm-timer-label-input.hidden { display: none !important; }
