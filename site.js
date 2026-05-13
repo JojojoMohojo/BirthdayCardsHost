@@ -464,27 +464,27 @@ const DEFAULT_CARDS = [
         timer: TIMER.SHORT,
         timerSeconds: 120,
         title: "LET THEM COOK!",
-        text: "Hold up, let them cook. Come up with an unpopular opinion/conspiracy, ou have 2 minutes to convince the table to your side. Take a sip for each you are unable o win over."
+        text: "Hold up, let them cook. Come up with an unpopular opinion/conspiracy, you have 2 minutes to convince the table to your side. Take a sip for each player you are unable to win over."
     },
     {
         number: 44,
         title: "Would you Rather? - Redux",
         timer: TIMER.SHORT,
         timerSeconds: 120,
-        text: "A good 'Would you rather' could unite even Israel and Palestine. You have 2 minutes to come up one for the table. After everyone answers, take one sip for each person difference between the two choices."
+        text: "A good 'Would you rather' could unite even Israel and Palestine. You have 2 minutes to come up with one for the table. After everyone answers, take the totals of each side and drink the difference."
     },
     {
         number: 45,
         title: "Charades",
         timer: TIMER.SHORT,
         timerSeconds: 60,
-        text: "A good ol' fashioned round of charades. Someone must guess within 60 seconds, or else take 3 sips"
+        text: "A good ol' fashioned round of charades. Someone must guess within 60 seconds, or else take 3 sips. If guessed, both players give out two sips"
     },
     {
         number: 46,
         timer: TIMER.NONE,
         title: "Paul Hudson, Wingman Extraordinaire",
-        text: "You've spotted someone interesting in the pub and desperately want to know more about them. Call Hudson and let him give you a question to ask the stranger. If you refuse, take a shot of"
+        text: "You've spotted someone interesting in the pub and desperately want to know more about them. Call Hudson and let him give you a question to ask the stranger. If you refuse, take a shot of spirit"
     },
     {
         number: 47,
