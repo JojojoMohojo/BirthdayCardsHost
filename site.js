@@ -464,7 +464,7 @@ const DEFAULT_CARDS = [
         timer: TIMER.SHORT,
         timerSeconds: 120,
         title: "LET THEM COOK!",
-        text: "Hold up, let them cook. Come up with an unpopular opinion/conspiracy, ou have 2 minutes to convince the table to your side. Take a sip for each you are unable o win over."
+        text: "Hold up, let them cook. Come up with an unpopular opinion/conspiracy, ou have 2 minutes to convince the table to your side. Take a sip for each you are unable to win over."
     },
     {
         number: 44,
@@ -484,7 +484,7 @@ const DEFAULT_CARDS = [
         number: 46,
         timer: TIMER.NONE,
         title: "Paul Hudson, Wingman Extraordinaire",
-        text: "You've spotted someone interesting in the pub and desperately want to know more about them. Call Hudson and let him give you a question to ask the stranger. If you refuse, take a shot of"
+        text: "You've spotted someone interesting in the pub and desperately want to know more about them. Call Hudson and let him give you a question to ask the stranger. If you refuse, take a shot of spirit"
     },
     {
         number: 47,
