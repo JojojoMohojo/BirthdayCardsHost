@@ -452,7 +452,22 @@ body {
 }
 
 .card-inner {
-    background: var(--card-bg);
+    background-color: var(--card-bg);
+    background-image:
+        repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 3px,
+            rgba(139, 100, 50, 0.03) 3px,
+            rgba(139, 100, 50, 0.03) 4px
+        ),
+        repeating-linear-gradient(
+            90deg,
+            transparent,
+            transparent 3px,
+            rgba(139, 100, 50, 0.03) 3px,
+            rgba(139, 100, 50, 0.03) 4px
+        );
     border-radius: 12px;
     padding: 28px 26px 20px;
     box-shadow: var(--shadow-card);
@@ -609,6 +624,22 @@ body {
     content: '👤';
     font-size: 12px;
 }
+
+.assignee-remove-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #b07060;
+    padding: 2px;
+    display: flex;
+    align-items: center;
+    border-radius: 3px;
+    opacity: 0.7;
+    transition: opacity 0.15s;
+    margin-left: 2px;
+}
+
+.assignee-remove-btn:hover { opacity: 1; }
 
 /* ── In-card Short Timer ── */
 

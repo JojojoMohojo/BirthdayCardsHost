@@ -16,6 +16,7 @@ const DEFAULT_RULES_DRAW = [
     { text: "Drink with your left hand",                                         pub: 5 },
     { text: "Accidentally rhyme",                                                pub: 6 },
     { text: "Are caught drinking sparkling wine or prosecco (once per drink)",   pub: 7 },
+    { text: "Buzzballs",                                                         pub: 7 },
 ];
 
 const DEFAULT_RULES_OTHERS = [
@@ -730,14 +731,25 @@ function selectPlayer(name, entry) {
     saveHistory(history);
     updateHistoryBtn();
 
-    // Update UI
-    document.querySelectorAll('.name-chip').forEach(c =>
-        c.classList.toggle('selected', c.textContent === name)
-    );
-    document.getElementById('name-picker').classList.add('hidden');
-    const assigneeEl = document.getElementById('card-assignee');
-    assigneeEl.textContent = name;
-    assigneeEl.classList.remove('hidden');
+    // Also update any running long timer that belongs to this card
+    activeLongTimers
+        .filter(t => t.cardNumber === target.cardDef.number && !t.assignee)
+        .forEach(t => { t.assignee = name; updateTimerTrayItem(t, false); });
+
+    if (entry) {
+        // History card — use the dedicated refresh so the × button appears
+        refreshHistoryCardAssignee(entry);
+    } else {
+        // Live card — standard hide/show
+        document.querySelectorAll('.name-chip').forEach(c =>
+            c.classList.toggle('selected', c.textContent === name)
+        );
+        document.getElementById('name-picker').classList.add('hidden');
+        const assigneeEl = document.getElementById('card-assignee');
+        assigneeEl.innerHTML = '';
+        assigneeEl.textContent = name;
+        assigneeEl.classList.remove('hidden');
+    }
 }
 
 // ── Card rendering ────────────────────────────────────────────────────────────
@@ -765,6 +777,7 @@ function renderCard(entry, animate) {
     // Assignee
     const assigneeEl = document.getElementById('card-assignee');
     if (assignee) {
+        assigneeEl.innerHTML = '';
         assigneeEl.textContent = assignee;
         assigneeEl.classList.remove('hidden');
         document.getElementById('name-picker').classList.add('hidden');
@@ -821,7 +834,9 @@ function renderCard(entry, animate) {
     }
 
     document.getElementById('rules-panel').classList.add('hidden');
-    document.getElementById('rules-toggle').classList.remove('hidden');
+    const rt = document.getElementById('rules-toggle');
+    rt.classList.remove('hidden');
+    rt.textContent = 'Show Rules';
     document.getElementById('back-to-card').classList.add('hidden');
 }
 
@@ -975,7 +990,7 @@ function timerTrayItemHTML(timer, done) {
 }
 
 function renderHistoryCard(entry) {
-    const { cardDef, resolvedText, assignee } = entry;
+    const { cardDef, resolvedText } = entry;
 
     const pipNum  = typeof cardDef.number === 'number' ? String(cardDef.number) : '?';
     const pipSuit = suitForCard(cardDef.number);
@@ -985,16 +1000,7 @@ function renderHistoryCard(entry) {
     document.getElementById('CardTitle').textContent = cardDef.title;
     document.getElementById('CardText').textContent  = resolvedText;
 
-    // Assignee + name picker — always show picker for history cards so player can be assigned/changed
-    const assigneeEl = document.getElementById('card-assignee');
-    if (assignee) {
-        assigneeEl.textContent = assignee;
-        assigneeEl.classList.remove('hidden');
-    } else {
-        assigneeEl.classList.add('hidden');
-    }
-    buildNameChips(entry);
-    document.getElementById('name-picker').classList.remove('hidden');
+    refreshHistoryCardAssignee(entry);
 
     // Hide timers — history cards don't re-trigger timers
     document.getElementById('card-timer').classList.add('hidden');
@@ -1012,22 +1018,43 @@ function renderHistoryCard(entry) {
 
     document.getElementById('rules-panel').classList.add('hidden');
 
-    // Footer: "Back to History" replaces "Show Rules" temporarily
-    const rulesToggleBtn = document.getElementById('rules-toggle');
-    rulesToggleBtn.classList.remove('hidden');
-    rulesToggleBtn.textContent = 'Back to History';
-    const rulesToggleHandler = () => {
-        rulesToggleBtn.textContent = 'Show Rules';
-        rulesToggleBtn.removeEventListener('click', rulesToggleHandler);
-        rulesToggleBtn.addEventListener('click', showRules, { once: true });
-        // Rebuild chips bound to lastCard before reopening history
-        buildNameChips();
-        openHistory();
-    };
-    rulesToggleBtn.removeEventListener('click', showRules);
-    rulesToggleBtn.addEventListener('click', rulesToggleHandler, { once: true });
+    // Footer: rules-toggle shows as "Show Rules" — handled by footer delegation
+    document.getElementById('rules-toggle').classList.remove('hidden');
+    document.getElementById('rules-toggle').textContent = 'Show Rules';
 
     document.getElementById('back-to-card').classList.toggle('hidden', !lastCard || entry === lastCard);
+}
+
+// Refreshes just the assignee/picker area of a history card without re-rendering the whole card
+function refreshHistoryCardAssignee(entry) {
+    const assigneeEl  = document.getElementById('card-assignee');
+    const namePickerEl = document.getElementById('name-picker');
+
+    if (entry.assignee) {
+        // Show badge with an × to unassign
+        assigneeEl.innerHTML = '';
+        const nameSpan = document.createElement('span');
+        nameSpan.textContent = entry.assignee;
+        const removeBtn = document.createElement('button');
+        removeBtn.className = 'assignee-remove-btn';
+        removeBtn.setAttribute('aria-label', 'Remove assignee');
+        removeBtn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+        removeBtn.addEventListener('click', () => {
+            entry.assignee = null;
+            saveHistory(history);
+            updateHistoryBtn();
+            refreshHistoryCardAssignee(entry);
+        });
+        assigneeEl.appendChild(nameSpan);
+        assigneeEl.appendChild(removeBtn);
+        assigneeEl.classList.remove('hidden');
+        namePickerEl.classList.add('hidden');
+    } else {
+        // No assignee — show picker
+        assigneeEl.classList.add('hidden');
+        buildNameChips(entry);
+        namePickerEl.classList.remove('hidden');
+    }
 }
 
 // ── View management ───────────────────────────────────────────────────────────
@@ -1152,7 +1179,13 @@ document.getElementById('draw').addEventListener('click', function () {
     try { navigator.vibrate(40); } catch (e) {}
 });
 
-document.getElementById('rules-toggle').addEventListener('click', showRules);
+// rules-toggle is re-cloned by renderHistoryCard, so we use a live delegated listener on the footer
+document.querySelector('.footer').addEventListener('click', function(e) {
+    const btn = e.target.closest('#rules-toggle');
+    if (!btn) return;
+    buildNameChips();
+    showRules();
+});
 
 document.getElementById('back-to-card').addEventListener('click', () => {
     if (lastCard) renderCard(lastCard, false);
@@ -1523,7 +1556,22 @@ function removeCard(index) {
 
 // ── Event listeners ───────────────────────────────────────────────────────────
 
-document.getElementById('next-pub').addEventListener('click', nextPub);
+document.getElementById('next-pub').addEventListener('click', () => {
+    document.getElementById('pub-confirm-overlay').classList.remove('hidden');
+});
+
+document.getElementById('pub-confirm-yes').addEventListener('click', () => {
+    document.getElementById('pub-confirm-overlay').classList.add('hidden');
+    nextPub();
+});
+
+document.getElementById('pub-confirm-no').addEventListener('click', () => {
+    document.getElementById('pub-confirm-overlay').classList.add('hidden');
+});
+
+document.getElementById('pub-confirm-overlay').addEventListener('click', function (e) {
+    if (e.target === this) this.classList.add('hidden');
+});
 
 document.getElementById('clear-cookies-btn').addEventListener('click', () => {
     document.getElementById('cookie-confirm-overlay').classList.remove('hidden');
