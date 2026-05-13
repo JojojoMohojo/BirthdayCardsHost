@@ -15,8 +15,7 @@ const DEFAULT_RULES_DRAW = [
     { text: "If you are the only one outside the pub at any point",              pub: 4 },
     { text: "Drink with your left hand",                                         pub: 5 },
     { text: "Accidentally rhyme",                                                pub: 6 },
-    { text: "Are caught drinking sparkling wine or prosecco (once per drink)",   pub: 7 },
-    { text: "Buzzballs",                                                         pub: 7 },
+    { text: "Are caught drinking sparkling wine or prossecco (once per drink)",  pub: 7 },
 ];
 
 const DEFAULT_RULES_OTHERS = [
@@ -214,7 +213,7 @@ const DEFAULT_CARDS = [
         number: 3,
         timer: TIMER.NONE,
         title: "Pummel Party",
-        text: "You picked up an Arcade Challenge! Challenge someone to a game of pong. Loser takes 5 sips. (Joe has the app on his phone)"
+        text: "You picked up an Arcade Challenge! Challenge someone to a game of 'Crappy Turd', highest score across 3 attempts. Loser takes 5 sips. Access the game here: https://jojomohojo.itch.io/crappy-turd"
     },
     {
         number: 4,
@@ -238,7 +237,7 @@ const DEFAULT_CARDS = [
         number: 7,
         timer: TIMER.NONE,
         title: "Super Smash Bros.",
-        text: "It's a game of categories, but the only category allowed is Super Smash Bros characters, you start. Loser takes 3 drinks"
+        text: "It's a game of categories, but the only category allowed is Super Smash Bros characters, you start. Loser takes 3 sips"
     },
     {
         number: 8,
@@ -268,7 +267,7 @@ const DEFAULT_CARDS = [
         number: 12,
         timer: TIMER.NONE,
         title: "Buzzballs",
-        text: ""
+        text: "Buzzballs"
     },
     {
         number: 13,
@@ -298,15 +297,15 @@ const DEFAULT_CARDS = [
         number: 17,
         timer: TIMER.LONG,
         timerSeconds: 300,
-        timerLabel: "5 min Ug rule",
+        timerLabel: "5 Min Ug Rule",
         title: "Hat of Ug",
-        text: "You can only talk in one syllable words for 5 minutes, else take 5 sips"
+        text: "You must talk in small word for five time length. Each time you fail, take two sips"
     },
     {
         number: 18,
         timer: TIMER.LONG,
         timerSeconds: 300,
-        timerLabel: "5 min heaven rule",
+        timerLabel: "5 Min Heaven Rule",
         title: "Tom wishes he was dead, show him the way",
         text: "For the next 5 minutes any time you point to heaven  - Tom's dream - everyone else must point too, the last one has to take 3 sips"
     },
@@ -328,12 +327,12 @@ const DEFAULT_CARDS = [
         timer: TIMER.SHORT,
         timerSeconds: 15,
         title: "Absolute Bullshit",
-        text: "It's time for a Mario Party mini-game! Give your best impression of a Mario Party character and Tom has to guess. If Tom can't guess correctly within 15 seconds, you must both take 3 drinks"
+        text: "It's time for a Mario Party mini-game! Give your best impression of a Mario Party character and Tom has to guess. If Tom can't guess correctly within 15 seconds, you must both take 3 sips"
     },
     {
         number: 22,
         timer: TIMER.NONE,
-        title: "Blind man and dog",
+        title: "Blind Man and Dog",
         text: "You are now blind. Choose a guide dog to guide you while you are blindfolded until the next pub"
     },
     {
@@ -357,14 +356,14 @@ const DEFAULT_CARDS = [
     {
         number: 26,
         timer: TIMER.NONE,
-        title: "Would you rather?",
+        title: "God of Would you Rather?",
         text: "Video call Hudson and tell him a 'Would you rather?'. If he doesn't approve, take 5 sips."
     },
     {
         number: 27,
         timer: TIMER.LONG,
         timerSeconds: 300,
-        timerLabel: "5 min eyes rule",
+        timerLabel: "5 Min Eyes Rule",
         title: "Sleeping with Both Eyes Open",
         text: "You drank so much last night you slept with your eyes open, now they're all sticky and bloodshot. Anyone who looks you in the eyes for the next 5 minutes must take a drink"
     },
@@ -384,7 +383,7 @@ const DEFAULT_CARDS = [
         number: 30,
         timer: TIMER.NONE,
         title: "Anti-Clavicular",
-        text: "Challenge someone to an anti-mog on mogging.com. Whoever gets the higher score loses, and has to drink half a drink"
+        text: "Challenge someone to an anti-mog on mogging.com. Whoever gets the higher score loses, and has to drink half a drinks worth"
     },
     {
         number: 31,
@@ -420,7 +419,7 @@ const DEFAULT_CARDS = [
         number: 36,
         timer: TIMER.NONE,
         title: "Avid Gamer Moment",
-        text: "You are an avid gamer. You must wear Ellen's gamer shirt until someone else draws this card or decides to wear it themselves. If you decline, take a shot of spirit"
+        text: "You are an avid gamer. You must wear Ellen's gamer shirt until someone else draws this card or decides to wear it themselves. If you refuse, take a shot of spirit"
     },
     {
         number: 37,
@@ -438,7 +437,7 @@ const DEFAULT_CARDS = [
         number: 39,
         timer: TIMER.NONE,
         title: "JANKENPON!",
-        text: "Challenge the person sat closest opposite you to Rock, Paper, Scissors. Best of 3. Loser downs their drink"
+        text: "Challenge someone to Rock, Paper, Scissors. Best of 3. Loser downs their drink"
     },
     {
         number: 40,
@@ -450,15 +449,46 @@ const DEFAULT_CARDS = [
         number: 41,
         timer: TIMER.LONG,
         timerSeconds: 300,
-        timerLabel: "5 min Charlie Kirk rule",
+        timerLabel: "5 Min Charlie Kirk Rule",
         title: "We are Charlie Kirk!",
-        text: "We carrrry the flame! You must end every sentence with 'We are Charlie Kirk' for the next 5 minutes. If you forget, take a drink"
+        text: "We carrrry the flame! You must end every sentence with 'We are Charlie Kirk' for the next 5 minutes. Each time you forget, take a drink"
     },
     {
         number: 42,
         timer: TIMER.NONE,
         title: "Bing Chilling",
         text: "Order a pint of Chinese guinness from the bar"
+    },
+    {
+        number: 43,
+        timer: TIMER.SHORT,
+        timerSeconds: 120,
+        title: "LET THEM COOK!",
+        text: "Hold up, let them cook. Come up with an unpopular opinion/conspiracy, ou have 2 minutes to convince the table to your side. Take a sip for each you are unable o win over."
+    },
+    {
+        number: 44,
+        title: "Would you Rather - Redux",
+        timer: TIMER.SHORT,
+        timerSeconds: 120,
+        text: "A good 'Would you rather' could unite even Israel and Palestine. You have 2 minutes to come up one for the table. After everyone answers, take one sip for each person difference between the two choices."
+    },
+    {
+        number: 45,
+        title: "Charades",
+        timer: TIMER.SHORT,
+        timerSeconds: 60,
+        text: "A good ol' fashioned round of charades. Someone must guess within 60 seconds, or else take 3 sips"
+    },
+    {
+        number: 46,
+        title: "Paul Hudson, Wingman Extraordinaire",
+        text: "You've spotted someone interesting in the pub and desperately want to know more about them. Call Hudson and let him give you a question to ask the stranger. If you refuse, take a shot of"
+    },
+    {
+        number: 47,
+        title: "Your Biggest Fan",
+        text: "You've noticed one of your all time idols is working behind the bar. You can't pass up the opportunity, go get a selfie with them!"
     }
 ];
 
