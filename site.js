@@ -220,7 +220,7 @@ const DEFAULT_CARDS = [
         number: 4,
         timer: TIMER.NONE,
         title: "Sussy ChigBungus",
-        text: "Hudson just got voted in as Reforms new leader. Ask him to record a Nigel Farage style Cameo, Tom gets to choose who it's sent to"
+        text: "Hudson just got voted in as Reform's new leader. Ask him to record a Nigel Farage style Cameo, Tom gets to choose who it's sent to"
     },
     {
         number: 5,
@@ -231,26 +231,26 @@ const DEFAULT_CARDS = [
     {
         number: 6,
         timer: TIMER.NONE,
-        title: "Bring out your scrap!",
+        title: "Bring out your Scrap!",
         text: "If you have any loose change, use it to enact 'Save the Queen' on unsuspecting victims"
     },
     {
         number: 7,
         timer: TIMER.NONE,
         title: "Super Smash Bros.",
-        text: "It's a game of categories, but the only category allowed is Super Smash Bros characters. You start. Loser takes 3 drinks"
+        text: "It's a game of categories, but the only category allowed is Super Smash Bros characters, you start. Loser takes 3 drinks"
     },
     {
         number: 8,
         timer: TIMER.NONE,
-        title: "Picnic game",
-        text: "Host a game of the packing game. Last to guess the rule must down your drink"
+        title: "Packing Game",
+        text: "Host a round of the packing game. Last to guess the rule must take 5 sips"
     },
     {
         number: 9,
         timer: TIMER.NONE,
-        title: "Soaking wet",
-        text: "Grippin' and fartin' and gripping and hugging got dat dookie hole soaking wet, soaking wet. Neck a pint of water in one go or take a shot"
+        title: "Soaking Wet",
+        text: "Grippin' and fartin' and grippin' and huggin' got dat dookie hole soaking wet, soaking wet. Neck a pint of water in one go or take a shot"
     },
     {
         number: 10,
@@ -286,13 +286,13 @@ const DEFAULT_CARDS = [
         number: 15,
         timer: TIMER.NONE,
         title: "Liam's Round",
-        text: "Liam is buying your next drink but has forgotten your order. Drink whatever he brings back for you. (Liam does not have to pay for you unless he's feeling nice)"
+        text: "Liam is buying your next drink but has forgotten your order. Drink whatever he brings back for you. (Liam doesn't actually have to pay for you)"
     },
     {
         number: 16,
         timer: TIMER.NONE,
         title: "Hannah's Quiz Time",
-        text: "Hannah asks you a question about Tom. If you get it wrong, and someone else answers correctly, then you have to down half your drink"
+        text: "Hannah asks you a question about Tom. If you get it wrong, and someone else answers correctly, take 3 sips"
     },
     {
         number: 17,
@@ -308,13 +308,14 @@ const DEFAULT_CARDS = [
         timerSeconds: 300,
         timerLabel: "5 min heaven rule",
         title: "Tom wishes he was dead, show him the way",
-        text: "For the next 5 minutes any time you point to heaven (Tom's dream) everyone else must point too, the last one has to take 3 slips"
+        text: "For the next 5 minutes any time you point to heaven  - Tom's dream - everyone else must point too, the last one has to take 3 sips"
     },
     {
         number: 19,
         timer: TIMER.SHORT,
+        timerSeconds: 15,
         title: "Who's That Pokémon?",
-        text: "Tom tells you three pokemon names, but one of them is false. You must guess the false one, or Tom draws it on your arm in sharpie"
+        text: "Tom tells you three pokemon names, but one of them is false. You must guess the false one within 15 seconds, or Tom will draw it on your arm in sharpie"
     },
     {
         number: 20,
@@ -325,6 +326,7 @@ const DEFAULT_CARDS = [
     {
         number: 21,
         timer: TIMER.SHORT,
+        timerSeconds: 15,
         title: "Absolute Bullshit",
         text: "It's time for a Mario Party mini-game! Give your best impression of a Mario Party character and Tom has to guess. If Tom can't guess correctly within 15 seconds, you must both take 3 drinks"
     },
@@ -338,13 +340,13 @@ const DEFAULT_CARDS = [
         number: 23,
         timer: TIMER.NONE,
         title: "Pokémon Trivia",
-        text: "Ask Tom a question about Pokémon (feel free to google a question). If he gets it right, you have to buy him his favourite drink. If he gets it wrong, you can buy him any drink"
+        text: "Ask Tom a question about Pokémon - feel free to google a question. If he gets it right, you have to buy him his favourite drink. If he gets it wrong, you can buy him any drink"
     },
     {
         number: 24,
         timer: TIMER.NONE,
         title: "Monttttyyyyyy!",
-        text: "Monty burnt a penis into the roof of Tom's car, now he's drawing one on you. Let Monty (or Tom if he's not present) draw a penis onto a place of your choosing. (Must be visible)"
+        text: "Monty burnt a penis into the roof of Tom's car, now he's drawing one on you. Let Monty - or Tom if he's not present - draw a penis in sharpie onto a exposed part of your body"
     },
     {
         number: 25,
@@ -370,13 +372,13 @@ const DEFAULT_CARDS = [
         number: 28,
         timer: TIMER.NONE,
         title: "Follow that tune!",
-        text: "Do the Gym Skin dance to the music currently playing. If there is none, go follow that tune!"
+        text: "Do the Gym Skin dance to the music currently playing. If there is none, go follow that tune and boogie!"
     },
     {
         number: 29,
         timer: TIMER.NONE,
         title: "Horses Don't Have Hands!",
-        text: "You is a horse. Horses don't have hands. Let Tom feed you the rest of his drink"
+        text: "You is a horse. Horses don't have hands. Let Tom feed you the rest of your drink"
     },
     {
         number: 30,
@@ -412,13 +414,13 @@ const DEFAULT_CARDS = [
         number: 35,
         timer: TIMER.NONE,
         title: "Butt Text, Sorry!",
-        text: "Tom sat on your phone and somehow managed to send a text on it. Tom is allowed to send one text to anyone on your phone (excluding work and parents). If you refuse, down your drink"
+        text: "Tom sat on your phone and somehow managed to send a text on it. Tom is allowed to send one text to anyone on your phone - excluding work and parents. If you refuse, down your drink"
     },
     {
         number: 36,
         timer: TIMER.NONE,
-        title: "Epic Gamer Moment",
-        text: "You are an epic gamer my guy. You must wear the gamer shirt until someone else draws this card or decides to wear it themselves. If you decline, take a shot of spirit. (You are NOT allowed to say the gamer word)"
+        title: "Avid Gamer Moment",
+        text: "You are an avid gamer. You must wear Ellen's gamer shirt until someone else draws this card or decides to wear it themselves. If you decline, take a shot of spirit"
     },
     {
         number: 37,
@@ -429,32 +431,33 @@ const DEFAULT_CARDS = [
     {
         number: 38,
         timer: TIMER.NONE,
-        title: "Last orders",
-        text: "If anyone has a third or less of drink left in their glass, they have to finish it off"
+        title: "Last Orders",
+        text: "The bar just rang the bell! If anyone has a third or less of drink left in their glass, they have to finish it off"
     },
     {
         number: 39,
         timer: TIMER.NONE,
-        title: "JANKENPON",
-        text: "Challenge the person sat closest opposite you to Rock, Paper, Scissors. Loser downs their drink. Best of 3"
+        title: "JANKENPON!",
+        text: "Challenge the person sat closest opposite you to Rock, Paper, Scissors. Best of 3. Loser downs their drink"
     },
     {
         number: 40,
         timer: TIMER.NONE,
         title: "Guitar Hero Pro",
-        text: "Tom loves to belt out some tunes on the Wii. Let the group record a new ringtone for you and leave your phone on loudspeaker for the rest of the night — or down your drink and someone else's"
+        text: "Tom loves to belt out some tunes on the Wii. Let the group record a new ringtone for you and leave your phone on loudspeaker for the rest of the night — or take shot of spirit"
     },
     {
         number: 41,
         timer: TIMER.LONG,
         timerSeconds: 300,
-        title: "We are Charlie Kirk",
+        timerLabel: "5 min Charlie Kirk rule",
+        title: "We are Charlie Kirk!",
         text: "We carrrry the flame! You must end every sentence with 'We are Charlie Kirk' for the next 5 minutes. If you forget, take a drink"
     },
     {
         number: 42,
         timer: TIMER.NONE,
-        title: "Bing chilling",
+        title: "Bing Chilling",
         text: "Order a pint of Chinese guinness from the bar"
     }
 ];
