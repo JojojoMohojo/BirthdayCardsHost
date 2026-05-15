@@ -45,10 +45,11 @@ body {
 .app {
     display: flex;
     flex-direction: column;
-    min-height: 100dvh;
+    height: 100dvh;
     max-width: 480px;
     margin: 0 auto;
     width: 100%;
+    overflow: hidden;
 }
 
 /* ── Header ── */
@@ -226,12 +227,18 @@ body {
 
 .main {
     flex: 1;
-    padding: 16px 20px;
+    padding: 0;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
 }
 
-.panel { flex: 1; }
+.panel {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 16px 20px;
+}
 
 .hidden { display: none !important; }
 
@@ -240,13 +247,36 @@ body {
 .rules-panel { animation: fadeIn 0.25s ease; }
 
 .rules-heading {
-    /**/
     font-size: 20px;
     font-weight: 700;
     color: var(--gold);
-    margin-bottom: 16px;
+    margin-bottom: 12px;
     padding-bottom: 10px;
     border-bottom: 1px solid var(--border-subtle);
+}
+
+/* Permanent rules grid */
+.perma-rules {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 7px;
+    margin-bottom: 16px;
+}
+
+.perma-rule {
+    background: rgba(212, 168, 67, 0.07);
+    border: 1px solid rgba(212, 168, 67, 0.2);
+    border-radius: 8px;
+    padding: 8px 10px;
+    font-size: 12px;
+    line-height: 1.45;
+    color: var(--text-on-felt);
+}
+
+.perma-rule-icon {
+    font-size: 14px;
+    margin-bottom: 3px;
+    display: block;
 }
 
 .rules-subheading {
@@ -378,15 +408,14 @@ body {
     user-select: text;
 }
 
-.rules-late {
-    margin-top: 18px;
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--gold-dim);
-    padding: 10px 14px;
-    border: 1px solid var(--border-subtle);
-    border-radius: 6px;
-    background: rgba(212, 168, 67, 0.06);
+/* New pub rule reveal animation */
+@keyframes ruleReveal {
+    from { opacity: 0; transform: translateX(-8px); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+
+.rule-new {
+    animation: ruleReveal 0.35s ease forwards;
 }
 
 /* ── Card Panel ── */
