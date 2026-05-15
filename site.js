@@ -8,24 +8,23 @@ const DEFAULT_PLAYERS = ['Joe', 'Liam', 'Monty', 'Hannah', 'Tom', 'Faith', 'Elle
 
 const DEFAULT_RULES_DRAW = [
     { text: "Tom tells you to draw a card — his word is final",                  pub: 1 },
-    { text: "Use any players first name (or shorted version)",                   pub: 1 },
+    { text: "Use any players first name, nickname, or abbreviated name",         pub: 1 },
     { text: "Fail to split the G",                                               pub: 2 },
     { text: "Place your drink within a thumb's length of the table",             pub: 2 },
     { text: "Take a piss at the pub (first piss per pub is free)",               pub: 3 },
-    { text: "If you are the only one outside the pub at any point",              pub: 4 },
-    { text: "Drink with your left hand",                                         pub: 5 },
-    { text: "Accidentally rhyme",                                                pub: 6 },
-    { text: "Are caught drinking sparkling wine or prossecco (once per drink)",  pub: 7 },
+    { text: "If you are the only one outside the pub at any point",              pub: 3 },
+    { text: "Drink with your right hand",                                        pub: 4 },
+    { text: "Accidentally rhyme",                                                pub: 4 }
 ];
 
 const DEFAULT_RULES_OTHERS = [
-    { text: "Drink a full glass of milk",           pub: 1 },
-    { text: "Manage to split the G",                pub: 2 },
-    { text: "Challenge and win a boat race",        pub: 3 },
-    { text: "Buy Tom a shot",                       pub: 3 },
-    { text: "Eat a dog treat (Once per pub)",       pub: 3 },
-    { text: "Buy another player a drink",           pub: 5 },
-    { text: "Wear the gamer vest for a whole pub",  pub: 7 },
+    { text: "When leaving a pub, you have the best placed Matt/Ellen slander sticker",  pub: 1 },
+    { text: "Drink a full glass of milk",                                               pub: 1 },
+    { text: "Manage to split the G",                                                    pub: 2 },
+    { text: "Challenge and win a boat race",                                            pub: 2 },
+    { text: "Buy Tom a shot",                                                           pub: 3 },
+    { text: "Eat a dog treat (Once per pub)",                                           pub: 3 },
+    { text: "Wear the gamer vest for a whole pub",                                      pub: 4 },
 ];
 
 // ── Card suits (assigned per card number for corner pips) ─────────────────────
@@ -400,8 +399,8 @@ const DEFAULT_CARDS = [
     {
         number: 33,
         timer: TIMER.NONE,
-        title: "Rawr xD",
-        text: "No one really understood secondary school emo Tom, but you can feel a little closer to how he felt if you don the wig and sing/shout 'Can you smell my fart'"
+        title: "Your Biggest Fan",
+        text: "You've noticed one of your all time idols is working behind the bar. You can't pass up the opportunity, go get a selfie with them!"
     },
     {
         number: 34,
@@ -485,12 +484,6 @@ const DEFAULT_CARDS = [
         timer: TIMER.NONE,
         title: "Paul Hudson, Wingman Extraordinaire",
         text: "You've spotted someone interesting in the pub and desperately want to know more about them. Call Hudson and let him give you a question to ask the stranger. If you refuse, take a shot of spirit"
-    },
-    {
-        number: 47,
-        timer: TIMER.NONE,
-        title: "Your Biggest Fan",
-        text: "You've noticed one of your all time idols is working behind the bar. You can't pass up the opportunity, go get a selfie with them!"
     }
 ];
 
