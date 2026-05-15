@@ -376,7 +376,7 @@ const DEFAULT_CARDS = [
         number: 29,
         timer: TIMER.NONE,
         title: "Horses Don't Have Hands!",
-        text: "You is a horse. Horses don't have hands. Let Tom feed you the rest of his drink"
+        text: "You is a horse. Horses don't have hands. Let Tom feed you the rest of your drink"
     },
     {
         number: 30,
