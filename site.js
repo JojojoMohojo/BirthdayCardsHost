@@ -1076,18 +1076,18 @@ function updateTimerTrayItem(timer, done) {
 function timerTrayItemHTML(timer, done) {
     const urgent = timer.remaining <= 30 && !done;
     const display = done ? 'Done!' : formatTime(timer.remaining);
-    const playerLine = timer.assignee
-        ? `<div class="tray-timer-sub">${timer.assignee} · ${timer.cardTitle}</div>`
-        : `<div class="tray-timer-sub">${timer.cardTitle}</div>`;
+    const playerPart = timer.assignee
+        ? `<span class="tray-timer-sep">·</span><span class="tray-timer-player">${timer.assignee}</span>`
+        : '';
     return `
         <div class="tray-timer-info">
-            <div class="tray-timer-name">${timer.label}</div>
-            ${playerLine}
+            <span class="tray-timer-name">${timer.label}</span>
+            ${playerPart}
         </div>
         <div class="tray-timer-right">
             <div class="tray-timer-count${urgent ? ' urgent' : ''}">${display}</div>
             <button class="tray-timer-dismiss" onclick="dismissLongTimer(${timer.id})" aria-label="Dismiss timer">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
                     <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
                 </svg>
             </button>

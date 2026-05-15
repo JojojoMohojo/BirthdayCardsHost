@@ -156,14 +156,16 @@ body {
     background: rgba(255,255,255,0.06);
     border: 1px solid var(--border-subtle);
     border-radius: 8px;
-    padding: 8px 12px;
+    padding: 6px 10px;
+    gap: 8px;
 }
 
 .tray-timer-info {
     display: flex;
-    flex-direction: column;
-    gap: 2px;
+    align-items: center;
+    gap: 6px;
     min-width: 0;
+    flex: 1;
 }
 
 .tray-timer-name {
@@ -175,25 +177,34 @@ body {
     text-overflow: ellipsis;
 }
 
-.tray-timer-sub {
+.tray-timer-sep {
     font-size: 11px;
     color: var(--text-muted);
+    flex-shrink: 0;
+}
+
+.tray-timer-player {
+    font-size: 12px;
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-shrink: 1;
+    min-width: 0;
 }
 
 .tray-timer-right {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     flex-shrink: 0;
-    margin-left: 12px;
 }
 
 .tray-timer-count {
-    
-    font-size: 20px;
+    font-size: 13px;
     font-weight: 700;
     color: var(--gold);
-    min-width: 52px;
+    min-width: 44px;
     text-align: right;
 }
 
@@ -259,24 +270,18 @@ body {
 .perma-rules {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 7px;
-    margin-bottom: 16px;
+    gap: 6px;
+    margin-bottom: 14px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border-subtle);
 }
 
 .perma-rule {
-    background: rgba(212, 168, 67, 0.07);
-    border: 1px solid rgba(212, 168, 67, 0.2);
-    border-radius: 8px;
-    padding: 8px 10px;
-    font-size: 12px;
+    font-size: 13px;
     line-height: 1.45;
     color: var(--text-on-felt);
-}
-
-.perma-rule-icon {
-    font-size: 14px;
-    margin-bottom: 3px;
-    display: block;
+    padding: 6px 8px;
+    border-left: 2px solid rgba(212, 168, 67, 0.3);
 }
 
 .rules-subheading {
@@ -515,7 +520,7 @@ body {
             rgba(139, 100, 50, 0.03) 4px
         );
     border-radius: 12px;
-    padding: 28px 26px 20px;
+    padding: 24px 26px 20px;
     box-shadow: var(--shadow-card);
     width: 100%;
     flex: 1;
@@ -540,8 +545,8 @@ body {
     color: rgba(139, 26, 26, 0.18);
     letter-spacing: 8px;
     pointer-events: none;
-    margin-top: 16px;
-    padding-bottom: 4px;
+    margin-top: 14px;
+    margin-left: 10px;
 }
 
 /* ── Corner Pips ── */
@@ -562,15 +567,14 @@ body {
 }
 
 .pip-num {
-    /**/
-    font-size: 20px;
+    font-size: 15px;
     font-weight: 700;
     color: var(--card-accent);
     opacity: 0.55;
 }
 
 .pip-suit {
-    font-size: 17px;
+    font-size: 13px;
     color: var(--card-accent);
     opacity: 0.45;
 }
@@ -608,19 +612,19 @@ body {
 }
 
 .card-title {
-    /**/
-    font-size: 24px;
+    font-size: 20px;
     font-weight: 900;
     color: var(--card-text);
     line-height: 1.2;
-    margin-bottom: 16px;
+    margin-bottom: 14px;
+    padding-right: 36px;
 }
 
 .card-divider {
     width: 40px;
     height: 2px;
     background: var(--card-accent);
-    margin-bottom: 16px;
+    margin-bottom: 14px;
     opacity: 0.6;
 }
 
@@ -628,13 +632,12 @@ body {
     font-size: 16px;
     color: #3a2010;
     line-height: 1.65;
-    padding-bottom: 12px;
 }
 
 /* ── Name Picker ── */
 
 .name-picker {
-    margin-top: 16px;
+    margin-top: 14px;
     padding-top: 14px;
     border-top: 1px solid rgba(139, 26, 26, 0.15);
 }
@@ -661,7 +664,7 @@ body {
     background: rgba(139, 26, 26, 0.08);
     border: 1px solid rgba(139, 26, 26, 0.2);
     color: #5a1a0a;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 500;
     cursor: pointer;
     transition: background 0.15s, border-color 0.15s;
@@ -814,6 +817,8 @@ body {
     margin-top: 14px;
     padding-top: 12px;
     border-top: 1px solid rgba(139, 26, 26, 0.15);
+    display: flex;
+    justify-content: center;
 }
 
 .long-timer-btn {
@@ -843,16 +848,16 @@ body {
 /* ── Footer ── */
 
 .footer {
-    padding: 12px 20px 24px;
+    padding: 10px 20px;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
     border-top: 1px solid var(--border-subtle);
 }
 
 .btn-row {
     display: flex;
-    gap: 10px;
+    gap: 7px;
 }
 
 .btn-row .btn { flex: 1; }
@@ -861,11 +866,11 @@ body {
 
 .btn {
     width: 100%;
-    padding: 14px;
+    padding: 10px 14px;
     border: none;
     border-radius: 8px;
     font-family: 'DM Sans', sans-serif;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 500;
     cursor: pointer;
     transition: transform 0.1s, background 0.15s, opacity 0.15s;
@@ -877,7 +882,7 @@ body {
 .btn-draw {
     background: var(--gold);
     color: #1a0e00;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 700;
     letter-spacing: 0.5px;
     box-shadow: 0 4px 16px rgba(212, 168, 67, 0.35);
