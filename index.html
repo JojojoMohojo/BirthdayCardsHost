@@ -283,6 +283,49 @@
             cursor: pointer; transition: filter 0.15s; white-space: nowrap;
         }
         .plyr-add-btn:hover { filter: brightness(1.1); }
+
+        .clear-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            margin-top: 8px;
+            padding: 9px 16px;
+            width: 100%;
+            background: transparent;
+            border: 1px solid rgba(239, 68, 68, 0.25);
+            border-radius: 10px;
+            color: rgba(239, 68, 68, 0.55);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.15s, color 0.15s, border-color 0.15s;
+        }
+        .clear-btn:hover { background: rgba(239,68,68,0.08); color: #f87171; border-color: rgba(239,68,68,0.45); }
+
+        .clear-overlay {
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.75);
+            display: flex; align-items: flex-end; justify-content: center;
+            z-index: 100;
+        }
+        .clear-box {
+            background: #100c1a;
+            border: 1px solid rgba(239,68,68,0.3);
+            border-bottom: none;
+            border-radius: 16px 16px 0 0;
+            padding: 24px;
+            width: 100%; max-width: 480px;
+        }
+        .clear-box-text { font-size: 16px; color: var(--text); margin-bottom: 20px; line-height: 1.5; }
+        .clear-box-actions { display: flex; gap: 10px; }
+        .clear-box-actions button { flex: 1; padding: 12px; border: none; border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; }
+        .clear-box-confirm { background: #ef4444; color: white; }
+        .clear-box-confirm:hover { background: #dc2626; }
+        .clear-box-cancel { background: rgba(255,255,255,0.06); color: var(--text); border: 1px solid rgba(255,255,255,0.1) !important; }
+        .clear-box-cancel:hover { background: rgba(255,255,255,0.1); }
+
         .hidden { display: none !important; }
     </style>
 </head>
@@ -343,8 +386,25 @@
             <span class="players-btn-count" id="players-count"></span>
         </button>
 
+        <button class="clear-btn" id="clear-btn">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+            </svg>
+            Clear all game data
+        </button>
+
         <div class="footer-text">Did you know Kampai is the Japanese word for "cumpie"?</div>
 
+    </div>
+
+    <div id="clear-overlay" class="clear-overlay hidden">
+        <div class="clear-box">
+            <p class="clear-box-text">Clear all game data? This resets deck progress, history, and any custom cards or rules across all packs. Your player list is kept.</p>
+            <div class="clear-box-actions">
+                <button class="clear-box-confirm" id="clear-confirm-yes">Clear All</button>
+                <button class="clear-box-cancel" id="clear-confirm-no">Cancel</button>
+            </div>
+        </div>
     </div>
 
     <div id="plyr-overlay" class="plyr-overlay hidden">
@@ -451,6 +511,25 @@
                 if (e.key === 'Escape') { done = true; plyrRender(); }
             });
         }
+
+        document.getElementById('clear-btn').addEventListener('click', () => {
+            document.getElementById('clear-overlay').classList.remove('hidden');
+        });
+        document.getElementById('clear-confirm-no').addEventListener('click', () => {
+            document.getElementById('clear-overlay').classList.add('hidden');
+        });
+        document.getElementById('clear-overlay').addEventListener('click', function(e) {
+            if (e.target === this) this.classList.add('hidden');
+        });
+        document.getElementById('clear-confirm-yes').addEventListener('click', () => {
+            const toRemove = [];
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key.startsWith('pubCrawl_') || key.startsWith('party_')) toRemove.push(key);
+            }
+            toRemove.forEach(k => localStorage.removeItem(k));
+            document.getElementById('clear-overlay').classList.add('hidden');
+        });
 
         document.getElementById('players-btn').addEventListener('click', plyrOpen);
         document.getElementById('plyr-close').addEventListener('click', plyrClose);

@@ -58,32 +58,10 @@
                             <path d="M8 2l1 6M16 2l-1 6"/>
                         </svg>
                     </button>
-<button id="card-manager-btn" class="admin-btn admin-btn-cards" aria-label="Edit cards">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="2" y="4" width="13" height="18" rx="2"/>
-                            <path d="M7 9h3M7 13h3"/>
-                            <path d="M17 7l3 1-3 10-3-1"/>
-                        </svg>
-                    </button>
-                    <button id="rule-manager-btn" class="admin-btn admin-btn-edit" aria-label="Edit rules">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>
-                        </svg>
-                    </button>
-                    <button id="reset" class="admin-btn admin-btn-reset" aria-label="Reset deck">
+<button id="reset" class="admin-btn admin-btn-reset" aria-label="Reset deck">
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <polyline points="1 4 1 10 7 10"/>
                             <path d="M3.51 15a9 9 0 1 0 .49-4.95"/>
-                        </svg>
-                    </button>
-                    <button id="clear-cookies-btn" class="admin-btn admin-btn-cookie" aria-label="Clear all data">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="12" cy="12" r="9"/>
-                            <circle cx="9" cy="10" r="1.5" fill="currentColor" stroke="none"/>
-                            <circle cx="14.5" cy="9" r="1" fill="currentColor" stroke="none"/>
-                            <circle cx="16" cy="14" r="1.5" fill="currentColor" stroke="none"/>
-                            <circle cx="10" cy="15" r="1" fill="currentColor" stroke="none"/>
-                            <circle cx="13" cy="12" r="1" fill="currentColor" stroke="none"/>
                         </svg>
                     </button>
                 </div>
@@ -193,80 +171,6 @@
             <div class="confirm-actions">
                 <button id="pub-confirm-yes" class="btn btn-danger-solid">Next Pub</button>
                 <button id="pub-confirm-no" class="btn btn-secondary">Cancel</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="cookie-confirm-overlay" class="overlay hidden">
-        <div class="confirm-box">
-            <p class="confirm-text">Clear everything? This wipes the deck, history, pub progress <em>and</em> all custom rules — resetting back to defaults.</p>
-            <div class="confirm-actions">
-                <button id="cookie-confirm-yes" class="btn btn-danger-solid">Clear All</button>
-                <button id="cookie-confirm-no" class="btn btn-secondary">Cancel</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="rule-manager-overlay" class="overlay hidden">
-        <div class="rule-manager-drawer">
-            <div class="rule-manager-header">
-                <span class="rule-manager-title">Manage Rules</span>
-                <button id="rule-manager-close" class="icon-btn" aria-label="Close">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-                </button>
-            </div>
-            <div class="rule-manager-body">
-                <div class="rm-section-label">Draw a card if you:</div>
-                <div id="rm-draw-list" class="rm-rule-list"></div>
-                <div class="rm-section-label">Make someone else draw if you:</div>
-                <div id="rm-others-list" class="rm-rule-list"></div>
-                <div class="rm-add-form">
-                    <select id="rm-section" class="rm-select">
-                        <option value="draw">Section: Draw a card if you…</option>
-                        <option value="others">Section: Make someone else draw if you…</option>
-                    </select>
-                    <div class="rm-input-row">
-                        <input type="number" id="rm-pub" class="rm-pub-input" min="1" max="99" value="1" aria-label="Reveal at pub number"/>
-                        <input type="text" id="rm-input" class="rm-input" placeholder="New rule text…" maxlength="200"/>
-                        <button id="rm-add" class="rm-add-btn">Add</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="card-manager-overlay" class="overlay hidden">
-        <div class="rule-manager-drawer">
-            <div class="rule-manager-header">
-                <span class="rule-manager-title">Manage Cards</span>
-                <button id="card-manager-close" class="icon-btn" aria-label="Close">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-                </button>
-            </div>
-            <div class="rule-manager-body">
-                <div id="cm-card-list" class="cm-card-list"></div>
-                <div class="rm-add-form">
-                    <div class="rm-section-label" style="margin-top:0">Add new card</div>
-                    <input type="text" id="cm-title-input" class="rm-input" placeholder="Card title…" maxlength="100"/>
-                    <textarea id="cm-text-input" class="rm-textarea" placeholder="Card text…" maxlength="500" rows="3"></textarea>
-                    <select id="cm-timer-type" class="rm-select">
-                        <option value="none">No timer</option>
-                        <option value="short">Short timer (inline)</option>
-                        <option value="long">Long timer (background tray)</option>
-                    </select>
-                    <div id="cm-long-timer-opts" class="cm-long-opts hidden">
-                        <input type="number" id="cm-timer-secs" class="rm-pub-input cm-secs-input" min="5" max="3600" value="15" aria-label="Timer duration in seconds"/>
-                        <span class="cm-secs-label">seconds</span>
-                        <input type="text" id="cm-timer-label" class="rm-input cm-timer-label-input hidden" placeholder="Tray label (long timers only)…" maxlength="50"/>
-                    </div>
-                    <label class="cm-ai-row">
-                        <input type="checkbox" id="cm-ai-check" class="cm-ai-check"/>
-                        <span class="cm-secs-label">AI generated</span>
-                    </label>
-                    <div style="display:flex;justify-content:flex-end">
-                        <button id="cm-add" class="rm-add-btn">Add Card</button>
-                    </div>
-                </div>
             </div>
         </div>
     </div>

@@ -8,7 +8,6 @@ const PACKS = [
         name: "Tom's Birthday 2025",
         description: "Custom pub crawl pack for Tom's birthday",
         headerTitle: "Tom's Birthday",
-        players: ['Joe', 'Liam', 'Monty', 'Hannah', 'Tom', 'Faith', 'Ellen', 'Matt', 'Brandon', 'Imogen', 'Ashley', 'Cameron', 'Ellie'],
         permanentRules: [
             "Draw one card for each hour you arrive late",
             "If Black Eyed Peas plays at any point, everyone must finish their drink",

@@ -5,7 +5,8 @@ const PM_TIMER = { NONE: 'none', SHORT: 'short', LONG: 'long' };
 
 let pmPack = null;
 let pmCards = [];
-let pmRules = [];  // flat string array for party mode
+let pmDrawRules = [];
+let pmOthersRules = [];
 let pmTab = 'cards';
 
 function pmFmt(s) {
@@ -33,13 +34,19 @@ function pmSaveCards() {
 function pmLoadRules() {
     try {
         const raw = localStorage.getItem(pmRulesKey());
-        if (raw) { const p = JSON.parse(raw); if (Array.isArray(p)) return p; }
+        if (raw) {
+            const p = JSON.parse(raw);
+            if (p && Array.isArray(p.draw)) return p;
+        }
     } catch (e) {}
-    return pmPack.rules ? [...pmPack.rules] : [];
+    return {
+        draw:   (pmPack.drawRules       || []).slice(),
+        others: (pmPack.othersDrawRules || []).slice(),
+    };
 }
 
 function pmSaveRules() {
-    localStorage.setItem(pmRulesKey(), JSON.stringify(pmRules));
+    localStorage.setItem(pmRulesKey(), JSON.stringify({ draw: pmDrawRules, others: pmOthersRules }));
 }
 
 // ── Open / Close ──────────────────────────────────────────────────────────────
@@ -48,7 +55,9 @@ function openPackManager(packId) {
     pmPack = PARTY_PACKS.find(p => p.id === packId);
     if (!pmPack) return;
     pmCards = pmLoadCards();
-    pmRules = pmLoadRules();
+    const loadedRules = pmLoadRules();
+    pmDrawRules   = loadedRules.draw;
+    pmOthersRules = loadedRules.others;
     document.getElementById('pm-title').textContent = pmPack.name;
     switchPMTab('cards');
     document.getElementById('pm-overlay').classList.remove('hidden');
@@ -179,41 +188,52 @@ function buildPMAddCardForm() {
     return form;
 }
 
-// ── Rules tab (party: flat string list) ───────────────────────────────────────
+// ── Rules tab ─────────────────────────────────────────────────────────────────
+
+function buildPMRuleList(rulesArr, onDelete) {
+    const list = document.createElement('div'); list.className = 'pm-list';
+    if (rulesArr.length === 0) {
+        const empty = document.createElement('div'); empty.className = 'pm-empty'; empty.textContent = 'No rules yet.';
+        list.appendChild(empty);
+    } else {
+        rulesArr.forEach((rule, i) => {
+            const el = document.createElement('div'); el.className = 'pm-item';
+            const text = document.createElement('span'); text.className = 'pm-rule-text'; text.textContent = rule;
+            const delBtn = document.createElement('button'); delBtn.className = 'pm-icon-btn pm-icon-btn--del'; delBtn.setAttribute('aria-label', 'Remove');
+            delBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+            delBtn.addEventListener('click', () => onDelete(i));
+            el.appendChild(text); el.appendChild(delBtn);
+            list.appendChild(el);
+        });
+    }
+    return list;
+}
+
+function buildPMAddRuleRow(placeholder, onAdd) {
+    const form = document.createElement('div'); form.className = 'pm-add-form';
+    const row = document.createElement('div'); row.className = 'pm-row';
+    const textIn = document.createElement('input'); textIn.type = 'text'; textIn.className = 'pm-input'; textIn.placeholder = placeholder; textIn.maxLength = 200;
+    const addBtn = document.createElement('button'); addBtn.className = 'pm-add-btn'; addBtn.textContent = 'Add';
+    addBtn.addEventListener('click', () => { const t = textIn.value.trim(); if (!t) return; onAdd(t); textIn.value = ''; });
+    textIn.addEventListener('keydown', e => { if (e.key === 'Enter') addBtn.click(); });
+    row.appendChild(textIn); row.appendChild(addBtn);
+    form.appendChild(row);
+    return form;
+}
 
 function renderPMRules() {
     const body = document.getElementById('pm-body');
     body.innerHTML = '';
 
-    const list = document.createElement('div'); list.className = 'pm-list';
-    if (pmRules.length === 0) {
-        const empty = document.createElement('div'); empty.className = 'pm-empty'; empty.textContent = 'No rules yet.';
-        list.appendChild(empty);
-    } else {
-        pmRules.forEach((rule, i) => {
-            const el = document.createElement('div'); el.className = 'pm-item';
-            const text = document.createElement('span'); text.className = 'pm-rule-text'; text.textContent = rule;
-            const delBtn = document.createElement('button'); delBtn.className = 'pm-icon-btn pm-icon-btn--del'; delBtn.setAttribute('aria-label', 'Remove');
-            delBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
-            delBtn.addEventListener('click', () => { pmRules.splice(i, 1); pmSaveRules(); renderPMRules(); });
-            el.appendChild(text); el.appendChild(delBtn);
-            list.appendChild(el);
-        });
-    }
-    body.appendChild(list);
+    const h1 = document.createElement('div'); h1.className = 'pm-section-label'; h1.textContent = 'Draw a card if you:';
+    body.appendChild(h1);
+    body.appendChild(buildPMRuleList(pmDrawRules, i => { pmDrawRules.splice(i, 1); pmSaveRules(); renderPMRules(); }));
+    body.appendChild(buildPMAddRuleRow('New rule…', t => { pmDrawRules.push(t); pmSaveRules(); renderPMRules(); }));
 
-    const form = document.createElement('div'); form.className = 'pm-add-form';
-    const row = document.createElement('div'); row.className = 'pm-row';
-    const textIn = document.createElement('input'); textIn.type = 'text'; textIn.className = 'pm-input'; textIn.placeholder = 'New rule…'; textIn.maxLength = 200;
-    const addBtn = document.createElement('button'); addBtn.className = 'pm-add-btn'; addBtn.textContent = 'Add';
-    addBtn.addEventListener('click', () => {
-        const text = textIn.value.trim(); if (!text) return;
-        pmRules.push(text); textIn.value = ''; pmSaveRules(); renderPMRules();
-    });
-    textIn.addEventListener('keydown', e => { if (e.key === 'Enter') addBtn.click(); });
-    row.appendChild(textIn); row.appendChild(addBtn);
-    form.appendChild(row);
-    body.appendChild(form);
+    const h2 = document.createElement('div'); h2.className = 'pm-section-label'; h2.style.marginTop = '16px'; h2.textContent = 'Make someone else draw if you:';
+    body.appendChild(h2);
+    body.appendChild(buildPMRuleList(pmOthersRules, i => { pmOthersRules.splice(i, 1); pmSaveRules(); renderPMRules(); }));
+    body.appendChild(buildPMAddRuleRow('New rule…', t => { pmOthersRules.push(t); pmSaveRules(); renderPMRules(); }));
 }
 
 // ── Timer helpers ─────────────────────────────────────────────────────────────

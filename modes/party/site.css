@@ -268,6 +268,16 @@ body {
     color: var(--text-on-surface);
 }
 
+.rules-subheading {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    margin-bottom: 8px;
+    margin-top: 14px;
+}
+
 .rules-empty {
     font-size: 13px;
     color: var(--text-muted);
@@ -1142,3 +1152,81 @@ body {
     from { opacity: 0; transform: translateX(-8px); }
     to   { opacity: 1; transform: translateX(0); }
 }
+
+/* ── Good card: neon green ── */
+
+.card-inner--good {
+    background-color: #011001;
+    background-image:
+        radial-gradient(ellipse at 80% 0%,  rgba(57,255,20,0.2) 0%, transparent 55%),
+        radial-gradient(ellipse at 20% 100%, rgba(0,180,0,0.1)  0%, transparent 55%);
+    border-color: rgba(57, 255, 20, 0.55);
+    box-shadow: 0 8px 40px rgba(0,0,0,0.8), 0 0 50px rgba(57,255,20,0.3);
+}
+
+.card-inner--good::before {
+    background: linear-gradient(90deg, #006600, #39ff14, #aaff00, #39ff14, #006600);
+}
+
+.card-inner--good .card-title       { color: #39ff14; text-shadow: 0 0 12px rgba(57,255,20,0.5); }
+.card-inner--good .card-text        { color: #ccffcc; }
+.card-inner--good .card-divider     { background: #39ff14; opacity: 1; }
+.card-inner--good .card-suits-row   { color: rgba(57,255,20,0.15); }
+.card-inner--good .pip-num,
+.card-inner--good .pip-suit         { color: #39ff14; opacity: 0.6; }
+.card-inner--good .card-ai-badge    { background: rgba(57,255,20,0.1); border-color: rgba(57,255,20,0.3); color: #39ff14; }
+.card-inner--good .name-picker-label { color: rgba(57,255,20,0.7); }
+.card-inner--good .name-picker      { border-top-color: rgba(57,255,20,0.2); }
+.card-inner--good .name-skip        { color: rgba(57,255,20,0.4); }
+.card-inner--good .name-chip        { background: rgba(57,255,20,0.08); border-color: rgba(57,255,20,0.2); color: #99ee88; }
+.card-inner--good .name-chip:hover,
+.card-inner--good .name-chip.selected { background: #39ff14; border-color: #39ff14; color: #011001; }
+.card-inner--good .card-assignee    { color: rgba(57,255,20,0.7); border-top-color: rgba(57,255,20,0.2); }
+.card-inner--good .card-timer,
+.card-inner--good .long-timer-wrap  { border-top-color: rgba(57,255,20,0.2); }
+.card-inner--good .card-timer-btn,
+.card-inner--good .long-timer-btn   { background: rgba(57,255,20,0.08); border-color: rgba(57,255,20,0.25); color: #39ff14; }
+.card-inner--good .card-timer-btn:hover,
+.card-inner--good .long-timer-btn:hover { background: rgba(57,255,20,0.15); }
+.card-inner--good .ring-bg          { stroke: rgba(57,255,20,0.15); }
+.card-inner--good .ring-progress    { stroke: #39ff14; }
+.card-inner--good .ring-count       { color: #39ff14; }
+
+/* ── Bad card: black & red ── */
+
+.card-inner--bad {
+    background-color: #0c0000;
+    background-image:
+        radial-gradient(ellipse at 80% 0%,  rgba(180,0,0,0.25) 0%, transparent 55%),
+        radial-gradient(ellipse at 20% 100%, rgba(100,0,0,0.15) 0%, transparent 55%);
+    border-color: rgba(200, 0, 0, 0.5);
+    box-shadow: 0 8px 40px rgba(0,0,0,0.9), 0 0 50px rgba(180,0,0,0.3);
+}
+
+.card-inner--bad::before {
+    background: linear-gradient(90deg, #3a0000, #aa0000, #ff2020, #aa0000, #3a0000);
+}
+
+.card-inner--bad .card-title        { color: #ff5555; }
+.card-inner--bad .card-text         { color: #ffcccc; }
+.card-inner--bad .card-divider      { background: #cc0000; opacity: 1; }
+.card-inner--bad .card-suits-row    { color: rgba(200,0,0,0.2); }
+.card-inner--bad .pip-num,
+.card-inner--bad .pip-suit          { color: #cc0000; opacity: 0.7; }
+.card-inner--bad .card-ai-badge     { background: rgba(200,0,0,0.12); border-color: rgba(200,0,0,0.3); color: #ff8888; }
+.card-inner--bad .name-picker-label { color: #ff6666; border-top-color: rgba(200,0,0,0.2); }
+.card-inner--bad .name-picker       { border-top-color: rgba(200,0,0,0.2); }
+.card-inner--bad .name-skip         { color: #cc4444; }
+.card-inner--bad .name-chip         { background: rgba(200,0,0,0.1); border-color: rgba(200,0,0,0.25); color: #ffaaaa; }
+.card-inner--bad .name-chip:hover,
+.card-inner--bad .name-chip.selected { background: #cc0000; border-color: #cc0000; color: white; }
+.card-inner--bad .card-assignee     { color: #ff6666; border-top-color: rgba(200,0,0,0.2); }
+.card-inner--bad .card-timer,
+.card-inner--bad .long-timer-wrap   { border-top-color: rgba(200,0,0,0.2); }
+.card-inner--bad .card-timer-btn,
+.card-inner--bad .long-timer-btn    { background: rgba(200,0,0,0.1); border-color: rgba(200,0,0,0.3); color: #ff5555; }
+.card-inner--bad .card-timer-btn:hover,
+.card-inner--bad .long-timer-btn:hover { background: rgba(200,0,0,0.18); }
+.card-inner--bad .ring-bg           { stroke: rgba(200,0,0,0.15); }
+.card-inner--bad .ring-progress     { stroke: #cc0000; }
+.card-inner--bad .ring-count        { color: #ff5555; }

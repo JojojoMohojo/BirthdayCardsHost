@@ -46,7 +46,17 @@ function saveHistory(h)     { try { localStorage.setItem(historyKey(), JSON.stri
 function loadHistory()      { try { const r = localStorage.getItem(historyKey()); if (r) return JSON.parse(r); } catch (e) {} return []; }
 function clearHistory()     { try { localStorage.removeItem(historyKey()); } catch (e) {} }
 
-function loadRules()        { try { const r = localStorage.getItem(rulesKey());  if (r) { const p = JSON.parse(r); if (Array.isArray(p)) return p; } } catch (e) {} return null; }
+function loadRules() {
+    try {
+        const r = localStorage.getItem(rulesKey());
+        if (r) {
+            const p = JSON.parse(r);
+            if (p && Array.isArray(p.draw)) return p;
+        }
+    } catch (e) {}
+    return null;
+}
+function saveRules(draw, others) { try { localStorage.setItem(rulesKey(), JSON.stringify({ draw, others })); } catch (e) {} }
 
 function loadCards() {
     try {
@@ -72,7 +82,8 @@ let lastCard  = null;
 let history   = [];
 let activeLongTimers = [];
 let shortTimerInterval = null;
-let gameRules = [];
+let drawRules = [];
+let othersDrawRules = [];
 let players = [];
 
 // ── Deck reconciliation ───────────────────────────────────────────────────────
@@ -102,7 +113,9 @@ function init() {
     document.getElementById('game-header-title').textContent = ACTIVE_PACK.name;
     document.title = ACTIVE_PACK.name;
 
-    gameRules = loadRules() ?? (ACTIVE_PACK.rules || []).map(r => r);
+    const savedRules = loadRules();
+    drawRules       = savedRules ? savedRules.draw   : (ACTIVE_PACK.drawRules       || []).slice();
+    othersDrawRules = savedRules ? savedRules.others : (ACTIVE_PACK.othersDrawRules || []).slice();
     players   = loadGlobalPlayers();
     const savedCards = loadCards();
     cards = savedCards !== null ? savedCards : ACTIVE_PACK.cards.map(c => ({ ...c }));
@@ -126,80 +139,26 @@ function updateCounter() {
 // ── Rules panel ───────────────────────────────────────────────────────────────
 
 function renderRulesPanel() {
-    const list = document.getElementById('rules-list');
-    list.innerHTML = '';
-    if (gameRules.length === 0) {
-        const empty = document.createElement('li');
-        empty.className = 'rules-empty';
-        empty.style.listStyle = 'none';
-        empty.textContent = 'No rules yet — add some below.';
-        list.appendChild(empty);
-        return;
-    }
-    gameRules.forEach(r => {
+    const list1 = document.getElementById('rules-list-1');
+    const list2 = document.getElementById('rules-list-2');
+    list1.innerHTML = '';
+    list2.innerHTML = '';
+
+    drawRules.forEach(r => {
         const li = document.createElement('li');
         li.textContent = r;
-        list.appendChild(li);
+        list1.appendChild(li);
     });
-}
 
-// ── Rule manager ──────────────────────────────────────────────────────────────
-
-function openRuleManager() {
-    renderRuleManager();
-    document.getElementById('rule-manager-overlay').classList.remove('hidden');
-}
-
-function closeRuleManager() {
-    document.getElementById('rule-manager-overlay').classList.add('hidden');
-}
-
-function renderRuleManager() {
-    const container = document.getElementById('rm-rule-list');
-    container.innerHTML = '';
-    if (gameRules.length === 0) {
-        const empty = document.createElement('div');
-        empty.className = 'rm-empty';
-        empty.textContent = 'No rules yet.';
-        container.appendChild(empty);
-        return;
-    }
-    gameRules.forEach((rule, i) => {
-        const el = document.createElement('div');
-        el.className = 'rm-rule-item';
-
-        const text = document.createElement('span');
-        text.className = 'rm-rule-text';
-        text.textContent = rule;
-
-        const btn = document.createElement('button');
-        btn.className = 'rm-delete-btn';
-        btn.setAttribute('aria-label', 'Remove rule');
-        btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
-        btn.addEventListener('click', () => {
-            gameRules.splice(i, 1);
-            saveRules();
-            renderRulesPanel();
-            renderRuleManager();
-        });
-
-        el.appendChild(text);
-        el.appendChild(btn);
-        container.appendChild(el);
+    othersDrawRules.forEach(r => {
+        const li = document.createElement('li');
+        li.textContent = r;
+        list2.appendChild(li);
     });
-}
 
-function addRule() {
-    const input = document.getElementById('rm-input');
-    const text = input.value.trim();
-    if (!text) return;
-    gameRules.push(text);
-    input.value = '';
-    saveRules();
-    renderRulesPanel();
-    renderRuleManager();
+    document.getElementById('rules-subheading-2').classList.toggle('hidden', othersDrawRules.length === 0);
+    list2.classList.toggle('hidden', othersDrawRules.length === 0);
 }
-
 // ── Reset & clear ─────────────────────────────────────────────────────────────
 
 function clearAllData() {
@@ -207,11 +166,12 @@ function clearAllData() {
     clearHistory();
     localStorage.removeItem(rulesKey());
     localStorage.removeItem(cardsKey());
-    cards   = ACTIVE_PACK.cards.map(c => ({ ...c }));
-    deck    = [...cards];
-    history = [];
-    lastCard  = null;
-    gameRules = (ACTIVE_PACK.rules || []).map(r => r);
+    cards           = ACTIVE_PACK.cards.map(c => ({ ...c }));
+    deck            = [...cards];
+    history         = [];
+    lastCard        = null;
+    drawRules       = (ACTIVE_PACK.drawRules       || []).slice();
+    othersDrawRules = (ACTIVE_PACK.othersDrawRules || []).slice();
     activeLongTimers.forEach(t => clearInterval(t.intervalId));
     activeLongTimers = [];
     renderTimerTray();
@@ -310,6 +270,11 @@ function renderCard(entry, animate) {
     document.getElementById('CardTitle').textContent = cardDef.title;
     document.getElementById('CardText').textContent  = resolvedText;
     document.getElementById('card-ai-badge').classList.toggle('hidden', !cardDef.ai);
+
+    const cardInner = document.querySelector('.card-inner');
+    cardInner.classList.remove('card-inner--good', 'card-inner--bad');
+    if (cardDef.good === true)  cardInner.classList.add('card-inner--good');
+    if (cardDef.good === false) cardInner.classList.add('card-inner--bad');
 
     const assigneeEl = document.getElementById('card-assignee');
     if (assignee) {
@@ -674,9 +639,4 @@ document.getElementById('reset').addEventListener('click', () => { document.getE
 document.getElementById('confirm-yes').addEventListener('click', () => { document.getElementById('confirm-overlay').classList.add('hidden'); resetAll(); });
 document.getElementById('confirm-no').addEventListener('click', () => { document.getElementById('confirm-overlay').classList.add('hidden'); });
 document.getElementById('confirm-overlay').addEventListener('click', function (e) { if (e.target === this) this.classList.add('hidden'); });
-document.getElementById('clear-cookies-btn').addEventListener('click', () => { document.getElementById('cookie-confirm-overlay').classList.remove('hidden'); });
-document.getElementById('cookie-confirm-yes').addEventListener('click', () => { document.getElementById('cookie-confirm-overlay').classList.add('hidden'); clearAllData(); });
-document.getElementById('cookie-confirm-no').addEventListener('click', () => { document.getElementById('cookie-confirm-overlay').classList.add('hidden'); });
-document.getElementById('cookie-confirm-overlay').addEventListener('click', function (e) { if (e.target === this) this.classList.add('hidden'); });
-
 init();
