@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
+    <title>Party Mode — Choose a Pack</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg: #0d0a14;
+            --pink: #e879a0;
+            --pink-dim: #9b2355;
+            --pink-glow: rgba(232, 121, 160, 0.3);
+            --text: #f0e6d3;
+            --text-muted: #7c6e8a;
+            --border: rgba(232, 121, 160, 0.18);
+            --card-bg: rgba(255, 255, 255, 0.04);
+            --card-hover: rgba(255, 255, 255, 0.07);
+        }
+
+        html, body { height: 100%; }
+
+        body {
+            background-color: var(--bg);
+            background-image:
+                radial-gradient(ellipse at 80% 10%, rgba(232, 121, 160, 0.08) 0%, transparent 55%),
+                radial-gradient(ellipse at 20% 85%, rgba(245, 158, 11, 0.05) 0%, transparent 55%);
+            font-family: 'DM Sans', sans-serif;
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            min-height: 100dvh;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        .page {
+            display: flex;
+            flex-direction: column;
+            max-width: 480px;
+            width: 100%;
+            margin: 0 auto;
+            min-height: 100dvh;
+        }
+
+        /* ── Header ── */
+
+        .pc-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 20px 20px 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            transition: color 0.15s, background 0.15s;
+            flex-shrink: 0;
+        }
+
+        .back-btn:hover { color: var(--pink); background: rgba(232, 121, 160, 0.08); }
+
+        .pc-header-titles { flex: 1; }
+
+        .pc-header-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--pink);
+            letter-spacing: 0.3px;
+        }
+
+        .pc-header-sub {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        /* ── Pack list ── */
+
+        .pack-list {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .section-label {
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 4px;
+        }
+
+        .pack-card {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 16px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            cursor: pointer;
+            transition: background 0.15s, border-color 0.15s, transform 0.1s;
+        }
+
+        .pack-card:hover {
+            background: var(--card-hover);
+            border-color: rgba(232, 121, 160, 0.35);
+        }
+
+        .pack-card:active { transform: scale(0.98); }
+
+        .pack-card--active {
+            border-color: rgba(232, 121, 160, 0.5);
+            background: rgba(232, 121, 160, 0.06);
+        }
+
+        .pack-icon {
+            width: 46px;
+            height: 46px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(232, 121, 160, 0.1);
+            border: 1px solid rgba(232, 121, 160, 0.25);
+            border-radius: 12px;
+            font-size: 22px;
+        }
+
+        .pack-info { flex: 1; min-width: 0; }
+
+        .pack-name {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .pack-desc {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 3px;
+            line-height: 1.4;
+        }
+
+        .pack-meta {
+            display: flex;
+            gap: 8px;
+            margin-top: 6px;
+            flex-wrap: wrap;
+        }
+
+        .pack-tag {
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--pink-dim);
+            background: rgba(232, 121, 160, 0.08);
+            border: 1px solid rgba(232, 121, 160, 0.2);
+            border-radius: 20px;
+            padding: 2px 8px;
+        }
+
+        .pack-arrow {
+            color: var(--text-muted);
+            flex-shrink: 0;
+        }
+
+        .active-badge {
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--pink);
+            background: rgba(232, 121, 160, 0.12);
+            border: 1px solid rgba(232, 121, 160, 0.3);
+            border-radius: 20px;
+            padding: 2px 8px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            flex-shrink: 0;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 14px;
+            padding: 40px 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <header class="pc-header">
+            <button class="back-btn" onclick="window.location.href='../../index.html'" aria-label="Back to home">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="15 18 9 12 15 6"/>
+                </svg>
+            </button>
+            <div class="pc-header-titles">
+                <div class="pc-header-title">Party Mode</div>
+                <div class="pc-header-sub">Choose a pack to play with</div>
+            </div>
+        </header>
+
+        <div class="pack-list" id="pack-list">
+        </div>
+    </div>
+
+    <script src="../../packs/party-packs.js"></script>
+    <script>
+        function selectPack(packId) {
+            localStorage.setItem('partyActivePack', packId);
+            window.location.href = 'game.html';
+        }
+
+        function renderPacks() {
+            const container = document.getElementById('pack-list');
+            const activePack = localStorage.getItem('partyActivePack');
+
+            if (!PARTY_PACKS || PARTY_PACKS.length === 0) {
+                container.innerHTML = '<div class="empty-state">No packs available.</div>';
+                return;
+            }
+
+            const label = document.createElement('div');
+            label.className = 'section-label';
+            label.textContent = 'Available packs';
+            container.appendChild(label);
+
+            PARTY_PACKS.forEach(pack => {
+                const isActive = pack.id === activePack;
+                const el = document.createElement('div');
+                el.className = 'pack-card' + (isActive ? ' pack-card--active' : '');
+                el.setAttribute('role', 'button');
+                el.setAttribute('tabindex', '0');
+                el.setAttribute('aria-label', `Select ${pack.name}`);
+
+                const cardCount = pack.cards ? pack.cards.length : 0;
+                const playerCount = pack.players ? pack.players.length : 0;
+
+                const metaTags = cardCount > 0
+                    ? `<span class="pack-tag">${cardCount} cards</span>${playerCount > 0 ? `<span class="pack-tag">${playerCount} players</span>` : ''}`
+                    : '<span class="pack-tag">Coming soon</span>';
+
+                el.innerHTML = `
+                    <div class="pack-icon">🍺</div>
+                    <div class="pack-info">
+                        <div class="pack-name">${pack.name}</div>
+                        <div class="pack-desc">${pack.description || ''}</div>
+                        <div class="pack-meta">${metaTags}</div>
+                    </div>
+                    ${isActive ? '<span class="active-badge">Active</span>' : '<div class="pack-arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></div>'}
+                `;
+
+                el.addEventListener('click', () => selectPack(pack.id));
+                el.addEventListener('keydown', e => {
+                    if (e.key === 'Enter' || e.key === ' ') selectPack(pack.id);
+                });
+
+                container.appendChild(el);
+            });
+        }
+
+        renderPacks();
+    </script>
+</body>
+</html>
