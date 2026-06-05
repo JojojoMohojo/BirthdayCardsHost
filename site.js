@@ -8,24 +8,23 @@ const DEFAULT_PLAYERS = ['Joe', 'Liam', 'Monty', 'Hannah', 'Tom', 'Faith', 'Elle
 
 const DEFAULT_RULES_DRAW = [
     { text: "Tom tells you to draw a card — his word is final",                  pub: 1 },
-    { text: "Use any players first name (or shorted version)",                   pub: 1 },
+    { text: "Use any player's first name, nickname, or abbreviated name",         pub: 1 },
     { text: "Fail to split the G",                                               pub: 2 },
     { text: "Place your drink within a thumb's length of the table",             pub: 2 },
     { text: "Take a piss at the pub (first piss per pub is free)",               pub: 3 },
-    { text: "If you are the only one outside the pub at any point",              pub: 4 },
-    { text: "Drink with your left hand",                                         pub: 5 },
-    { text: "Accidentally rhyme",                                                pub: 6 },
-    { text: "Are caught drinking sparkling wine or prossecco (once per drink)",  pub: 7 },
+    { text: "If you are the only one outside the pub at any point",              pub: 3 },
+    { text: "Drink with your right hand",                                        pub: 4 },
+    { text: "Accidentally rhyme",                                                pub: 4 }
 ];
 
 const DEFAULT_RULES_OTHERS = [
-    { text: "Drink a full glass of milk",           pub: 1 },
-    { text: "Manage to split the G",                pub: 2 },
-    { text: "Challenge and win a boat race",        pub: 3 },
-    { text: "Buy Tom a shot",                       pub: 3 },
-    { text: "Eat a dog treat (Once per pub)",       pub: 3 },
-    { text: "Buy another player a drink",           pub: 5 },
-    { text: "Wear the gamer vest for a whole pub",  pub: 7 },
+    { text: "When leaving a pub, you have the best placed Matt/Ellen slander sticker",  pub: 1 },
+    { text: "Drink a full glass of milk",                                               pub: 1 },
+    { text: "Manage to split the G",                                                    pub: 2 },
+    { text: "Challenge and win a boat race",                                            pub: 2 },
+    { text: "Buy Tom a shot",                                                           pub: 3 },
+    { text: "Eat a dog treat (Once per pub)",                                           pub: 3 },
+    { text: "Wear the gamer vest for a whole pub",                                      pub: 4 },
 ];
 
 // ── Card suits (assigned per card number for corner pips) ─────────────────────
@@ -299,7 +298,7 @@ const DEFAULT_CARDS = [
         timerSeconds: 300,
         timerLabel: "5 Min Ug Rule",
         title: "Hat of Ug",
-        text: "You must talk in small word for five time length. Each time you fail, take two sips"
+        text: "You can only talk in one syllable words for five minutes. Each time you fail, take two sips"
     },
     {
         number: 18,
@@ -307,7 +306,7 @@ const DEFAULT_CARDS = [
         timerSeconds: 300,
         timerLabel: "5 Min Heaven Rule",
         title: "Tom wishes he was dead, show him the way",
-        text: "For the next 5 minutes any time you point to heaven  - Tom's dream - everyone else must point too, the last one has to take 3 sips"
+        text: "For the next 5 minutes, any time you point to heaven — Tom's dream — everyone else must point too. The last one to point takes 3 sips"
     },
     {
         number: 19,
@@ -339,13 +338,13 @@ const DEFAULT_CARDS = [
         number: 23,
         timer: TIMER.NONE,
         title: "Pokémon Trivia",
-        text: "Ask Tom a question about Pokémon - feel free to google a question. If he gets it right, you have to buy him his favourite drink. If he gets it wrong, you can buy him any drink"
+        text: "Ask Tom a question about Pokémon — feel free to google one. If he gets it right, you have to buy him his favourite drink. If he gets it wrong, you can buy him any drink"
     },
     {
         number: 24,
         timer: TIMER.NONE,
         title: "Monttttyyyyyy!",
-        text: "Monty burnt a penis into the roof of Tom's car, now he's drawing one on you. Let Monty - or Tom if he's not present - draw a penis in sharpie onto a exposed part of your body"
+        text: "Monty burnt a penis into the roof of Tom's car, now he's drawing one on you. Let Monty — or Tom if he's not present — draw a penis in sharpie onto an exposed part of your body"
     },
     {
         number: 25,
@@ -365,7 +364,7 @@ const DEFAULT_CARDS = [
         timerSeconds: 300,
         timerLabel: "5 Min Eyes Rule",
         title: "Sleeping with Both Eyes Open",
-        text: "You drank so much last night you slept with your eyes open, now they're all sticky and bloodshot. Anyone who looks you in the eyes for the next 5 minutes must take a drink"
+        text: "You drank so much last night you slept with your eyes open, now they're all sticky and bloodshot. Anyone who looks you in the eyes for the next 5 minutes must take 2 sips"
     },
     {
         number: 28,
@@ -383,7 +382,7 @@ const DEFAULT_CARDS = [
         number: 30,
         timer: TIMER.NONE,
         title: "Anti-Clavicular",
-        text: "Challenge someone to an anti-mog on mogging.com. Whoever gets the higher score loses, and has to drink half a drinks worth"
+        text: "Challenge someone to an anti-mog on mogging.com. Whoever gets the higher score loses and has to drink half a drink's worth"
     },
     {
         number: 31,
@@ -400,106 +399,100 @@ const DEFAULT_CARDS = [
     {
         number: 33,
         timer: TIMER.NONE,
-        title: "Rawr xD",
-        text: "No one really understood secondary school emo Tom, but you can feel a little closer to how he felt if you don the wig and sing/shout 'Can you smell my fart'"
-    },
-    {
-        number: 34,
-        timer: TIMER.NONE,
         title: "Strong Bones!",
         text: "Don't end up like Tom with rickets. Drink a glass of milk, and you must finish it before you can return to your drink"
     },
     {
-        number: 35,
+        number: 34,
         timer: TIMER.NONE,
         title: "Butt Text, Sorry!",
-        text: "Tom sat on your phone and somehow managed to send a text on it. Tom is allowed to send one text to anyone on your phone - excluding work and parents. If you refuse, down your drink"
+        text: "Tom sat on your phone and somehow managed to send a text on it. Tom is allowed to send one text to anyone on your phone — excluding work and parents. If you refuse, down your drink"
     },
     {
-        number: 36,
+        number: 35,
         timer: TIMER.NONE,
         title: "Avid Gamer Moment",
         text: "You are an avid gamer. You must wear Ellen's gamer shirt until someone else draws this card or decides to wear it themselves. If you refuse, take a shot of spirit"
     },
     {
-        number: 37,
+        number: 36,
         timer: TIMER.NONE,
         title: "Well That's Written Off...",
         text: "Tom just hit ANOTHER deer on the road and now his car is totalled. Buy Tom a drink since he's skint from car repairs"
     },
     {
-        number: 38,
+        number: 37,
         timer: TIMER.NONE,
         title: "Last Orders",
         text: "The bar just rang the bell! If anyone has a third or less of drink left in their glass, they have to finish it off"
     },
     {
-        number: 39,
+        number: 38,
         timer: TIMER.NONE,
         title: "JANKENPON!",
         text: "Challenge someone to Rock, Paper, Scissors. Best of 3. Loser downs their drink"
     },
     {
-        number: 40,
+        number: 39,
         timer: TIMER.NONE,
         title: "Guitar Hero Pro",
-        text: "Tom loves to belt out some tunes on the Wii. Let the group record a new ringtone for you and leave your phone on loudspeaker for the rest of the night — or take shot of spirit"
+        text: "Tom loves to belt out some tunes on the Wii. Let the group record a new ringtone for you and leave your phone on loudspeaker for the rest of the night — or take a shot of spirit"
     },
     {
-        number: 41,
+        number: 40,
         timer: TIMER.LONG,
         timerSeconds: 300,
         timerLabel: "5 Min Charlie Kirk Rule",
         title: "We are Charlie Kirk!",
-        text: "We carrrry the flame! You must end every sentence with 'We are Charlie Kirk' for the next 5 minutes. Each time you forget, take a drink"
+        text: "We carrrry the flame! You must end every sentence with 'We are Charlie Kirk' for the next 5 minutes. Each time you forget, take 2 sips"
     },
     {
-        number: 42,
+        number: 41,
         timer: TIMER.NONE,
         title: "Bing Chilling",
         text: "Order a pint of Chinese guinness from the bar"
     },
     {
-        number: 43,
+        number: 42,
         timer: TIMER.SHORT,
         timerSeconds: 120,
         title: "LET THEM COOK!",
         text: "Hold up, let them cook. Come up with an unpopular opinion/conspiracy, you have 2 minutes to convince the table to your side. Take a sip for each player you are unable to win over."
     },
     {
-        number: 44,
-        title: "Would you Rather? - Redux",
+        number: 43,
+        title: "Would You Rather? — Redux",
         timer: TIMER.SHORT,
         timerSeconds: 120,
         text: "A good 'Would you rather' could unite even Israel and Palestine. You have 2 minutes to come up with one for the table. After everyone answers, take the totals of each side and drink the difference."
     },
     {
-        number: 45,
+        number: 44,
         title: "Charades",
         timer: TIMER.SHORT,
         timerSeconds: 60,
         text: "A good ol' fashioned round of charades. Someone must guess within 60 seconds, or else take 3 sips. If guessed, both players give out two sips"
     },
     {
-        number: 46,
+        number: 45,
         timer: TIMER.NONE,
         title: "Paul Hudson, Wingman Extraordinaire",
         text: "You've spotted someone interesting in the pub and desperately want to know more about them. Call Hudson and let him give you a question to ask the stranger. If you refuse, take a shot of spirit"
     },
     {
-        number: 47,
+        number: 46,
         timer: TIMER.NONE,
         title: "Your Biggest Fan",
         text: "You've noticed one of your all time idols is working behind the bar. You can't pass up the opportunity, go get a selfie with them!"
     },
     {
-        number: 48,
+        number: 47,
         timer: TIMER.NONE,
         title: "Go straight to jail",
         text: "Tom's traveller background has caught up with him and you. You must be handcuffed together until the next pub"
     },
     {
-        number: 49,
+        number: 48,
         timer: TIMER.SHORT,
         timerSeconds: 60,
         title: "Pub Quiz Wildcard",
@@ -507,7 +500,7 @@ const DEFAULT_CARDS = [
         ai: true
     },
     {
-        number: 50,
+        number: 49,
         timer: TIMER.SHORT,
         timerSeconds: 30,
         title: "Name That Banger",
@@ -515,14 +508,14 @@ const DEFAULT_CARDS = [
         ai: true
     },
     {
-        number: 51,
+        number: 50,
         timer: TIMER.NONE,
         title: "Speed Round",
         text: "You and the person to your left simultaneously describe each other in one word to the group. If the table agrees yours is more accurate, they take 3 sips. If theirs is, you do",
         ai: true
     },
     {
-        number: 52,
+        number: 51,
         timer: TIMER.LONG,
         timerSeconds: 300,
         timerLabel: "5 Min Accent Rule",
@@ -531,7 +524,7 @@ const DEFAULT_CARDS = [
         ai: true
     },
     {
-        number: 53,
+        number: 52,
         timer: TIMER.SHORT,
         timerSeconds: 30,
         title: "Invisible Pint",
@@ -589,13 +582,27 @@ function updateCounter() {
 
 // ── Pub progression ───────────────────────────────────────────────────────────
 
-function applyRuleVisibility() {
+function applyRuleVisibility(animate) {
     document.getElementById('pubNumber').textContent = currentPub;
     document.querySelectorAll('#rules-list-1 li').forEach((li, i) => {
-        li.classList.toggle('hidden', !drawRules[i] || currentPub < drawRules[i].pub);
+        const wasHidden = li.classList.contains('hidden');
+        const shouldShow = drawRules[i] && currentPub >= drawRules[i].pub;
+        li.classList.toggle('hidden', !shouldShow);
+        if (animate && wasHidden && shouldShow) {
+            li.classList.remove('rule-new');
+            void li.offsetWidth;
+            li.classList.add('rule-new');
+        }
     });
     document.querySelectorAll('#rules-list-2 li').forEach((li, i) => {
-        li.classList.toggle('hidden', !makeOthersRules[i] || currentPub < makeOthersRules[i].pub);
+        const wasHidden = li.classList.contains('hidden');
+        const shouldShow = makeOthersRules[i] && currentPub >= makeOthersRules[i].pub;
+        li.classList.toggle('hidden', !shouldShow);
+        if (animate && wasHidden && shouldShow) {
+            li.classList.remove('rule-new');
+            void li.offsetWidth;
+            li.classList.add('rule-new');
+        }
     });
     const anyOthersVisible = makeOthersRules.some(r => currentPub >= r.pub);
     document.getElementById('rules-subheading-2').classList.toggle('hidden', !anyOthersVisible);
@@ -608,7 +615,7 @@ function applyRuleVisibility() {
 function nextPub() {
     currentPub++;
     savePubCount(currentPub);
-    applyRuleVisibility();
+    applyRuleVisibility(true);
 }
 
 // ── Rules panel rendering ─────────────────────────────────────────────────────
@@ -1069,18 +1076,18 @@ function updateTimerTrayItem(timer, done) {
 function timerTrayItemHTML(timer, done) {
     const urgent = timer.remaining <= 30 && !done;
     const display = done ? 'Done!' : formatTime(timer.remaining);
-    const playerLine = timer.assignee
-        ? `<div class="tray-timer-sub">${timer.assignee} · ${timer.cardTitle}</div>`
-        : `<div class="tray-timer-sub">${timer.cardTitle}</div>`;
+    const playerPart = timer.assignee
+        ? `<span class="tray-timer-sep">·</span><span class="tray-timer-player">${timer.assignee}</span>`
+        : '';
     return `
         <div class="tray-timer-info">
-            <div class="tray-timer-name">${timer.label}</div>
-            ${playerLine}
+            <span class="tray-timer-name">${timer.label}</span>
+            ${playerPart}
         </div>
         <div class="tray-timer-right">
             <div class="tray-timer-count${urgent ? ' urgent' : ''}">${display}</div>
             <button class="tray-timer-dismiss" onclick="dismissLongTimer(${timer.id})" aria-label="Dismiss timer">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
                     <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
                 </svg>
             </button>
