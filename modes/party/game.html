@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
+    <title>Party Mode</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="site.css"/>
+</head>
+<body>
+    <div class="app">
+
+        <header class="header">
+            <div class="header-left">
+                <button id="home-btn" class="icon-btn" aria-label="Go home">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V9.5z"/><polyline points="9 21 9 12 15 12 15 21"/></svg>
+                </button>
+            </div>
+            <div>
+                <div class="header-title" id="game-header-title">Party Mode</div>
+            </div>
+            <div class="header-right">
+                <button id="history-btn" class="icon-btn hidden" aria-label="Card history">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="4" rx="1"/><rect x="3" y="10" width="18" height="4" rx="1"/><rect x="3" y="17" width="12" height="4" rx="1"/></svg>
+                </button>
+                <div class="deck-counter">
+                    <span class="deck-fraction"><span id="remainingCards">??</span><span class="deck-total" id="totalCards"></span></span>
+                    <span class="deck-label">cards left</span>
+                </div>
+            </div>
+        </header>
+
+        <div id="timer-tray" class="timer-tray hidden">
+            <div class="timer-tray-label">Active timers</div>
+            <div id="timer-tray-list" class="timer-tray-list"></div>
+        </div>
+
+        <main class="main">
+
+            <div id="rules-panel" class="panel rules-panel">
+                <h2 class="rules-heading">The Rules</h2>
+                <ol id="rules-list" class="rules-list"></ol>
+                <div class="rules-admin">
+<button id="reset" class="admin-btn admin-btn-reset" aria-label="Reset deck">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="1 4 1 10 7 10"/>
+                            <path d="M3.51 15a9 9 0 1 0 .49-4.95"/>
+                        </svg>
+                    </button>
+                    <button id="clear-cookies-btn" class="admin-btn admin-btn-cookie" aria-label="Clear all data">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="9"/>
+                            <circle cx="9" cy="10" r="1.5" fill="currentColor" stroke="none"/>
+                            <circle cx="14.5" cy="9" r="1" fill="currentColor" stroke="none"/>
+                            <circle cx="16" cy="14" r="1.5" fill="currentColor" stroke="none"/>
+                            <circle cx="10" cy="15" r="1" fill="currentColor" stroke="none"/>
+                            <circle cx="13" cy="12" r="1" fill="currentColor" stroke="none"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div id="card-panel" class="panel card-panel hidden">
+                <div class="card-flip-scene">
+                <div class="card-flipper" id="card-flipper">
+
+                <div class="card-face card-face--back" aria-hidden="true"></div>
+
+                <div class="card-face card-face--front">
+                <div class="card-inner">
+                    <div class="card-pip card-pip-tl">
+                        <span class="pip-num" id="pip-tl-num"></span>
+                        <span class="pip-suit" id="pip-tl-suit"></span>
+                    </div>
+                    <div class="card-pip card-pip-br" aria-hidden="true">
+                        <span class="pip-num" id="pip-br-num"></span>
+                        <span class="pip-suit" id="pip-br-suit"></span>
+                    </div>
+
+                    <div id="card-ai-badge" class="card-ai-badge hidden">✦ AI Generated</div>
+                    <div class="card-title" id="CardTitle"></div>
+                    <div class="card-divider"></div>
+                    <div class="card-text" id="CardText"></div>
+
+                    <div id="name-picker" class="name-picker hidden">
+                        <div class="name-picker-label">Who drew this?</div>
+                        <div id="name-picker-btns" class="name-picker-btns"></div>
+                    </div>
+
+                    <div id="card-assignee" class="card-assignee hidden"></div>
+
+                    <div id="card-timer" class="card-timer hidden">
+                        <button id="card-timer-start" class="card-timer-btn">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5,3 19,12 5,21"/></svg>
+                            Start 15s timer
+                        </button>
+                        <div id="card-timer-display" class="card-timer-display hidden">
+                            <div class="card-timer-ring" id="card-timer-ring">
+                                <svg viewBox="0 0 36 36" class="ring-svg">
+                                    <circle class="ring-bg" cx="18" cy="18" r="15.9"/>
+                                    <circle id="ring-progress" class="ring-progress" cx="18" cy="18" r="15.9"/>
+                                </svg>
+                                <span id="card-timer-count" class="ring-count">15</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="long-timer-wrap" class="long-timer-wrap hidden">
+                        <button id="long-timer-start" class="long-timer-btn">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5,3 19,12 5,21"/></svg>
+                            <span id="long-timer-label">Start timer</span>
+                        </button>
+                    </div>
+
+                    <div class="card-suits-row">★ ♥ ★ ♥</div>
+                </div><!-- card-inner -->
+                </div><!-- card-face--front -->
+
+                </div><!-- card-flipper -->
+                </div><!-- card-flip-scene -->
+            </div>
+
+        </main>
+
+        <footer class="footer">
+            <button id="draw" class="btn btn-draw">Draw Card</button>
+            <div class="btn-row">
+                <button id="rules-toggle" class="btn btn-secondary hidden">Show Rules</button>
+                <button id="back-to-card" class="btn btn-secondary hidden">Back to Card</button>
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- History -->
+    <div id="history-overlay" class="overlay hidden">
+        <div class="history-drawer">
+            <div class="history-header">
+                <span class="history-title">Cards Drawn</span>
+                <button id="history-close" class="icon-btn" aria-label="Close">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+            <div id="history-list" class="history-list"></div>
+        </div>
+    </div>
+
+    <!-- Reset confirm -->
+    <div id="confirm-overlay" class="overlay hidden">
+        <div class="confirm-box">
+            <p class="confirm-text">Reset the deck? This puts all cards back in and clears history.</p>
+            <div class="confirm-actions">
+                <button id="confirm-yes" class="btn btn-danger-solid">Reset</button>
+                <button id="confirm-no" class="btn btn-secondary">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Clear all confirm -->
+    <div id="cookie-confirm-overlay" class="overlay hidden">
+        <div class="confirm-box">
+            <p class="confirm-text">Clear everything? This wipes the deck, history, <em>and</em> all custom rules — resetting back to pack defaults.</p>
+            <div class="confirm-actions">
+                <button id="cookie-confirm-yes" class="btn btn-danger-solid">Clear All</button>
+                <button id="cookie-confirm-no" class="btn btn-secondary">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Home confirm -->
+    <div id="home-confirm-overlay" class="overlay hidden">
+        <div class="confirm-box">
+            <p class="confirm-text">Exit the game? Your deck and history will be saved, but active timers will be lost.</p>
+            <div class="confirm-actions">
+                <button id="home-confirm-yes" class="btn btn-danger-solid">Exit</button>
+                <button id="home-confirm-no" class="btn btn-secondary">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../../packs/party-packs.js"></script>
+    <script src="site.js"></script>
+    <script>
+        document.getElementById('home-btn').addEventListener('click', function () {
+            document.getElementById('home-confirm-overlay').classList.remove('hidden');
+        });
+        document.getElementById('home-confirm-no').addEventListener('click', function () {
+            document.getElementById('home-confirm-overlay').classList.add('hidden');
+        });
+        document.getElementById('home-confirm-yes').addEventListener('click', function () {
+            window.location.href = '../../index.html';
+        });
+        document.getElementById('home-confirm-overlay').addEventListener('click', function (e) {
+            if (e.target === this) this.classList.add('hidden');
+        });
+    </script>
+</body>
+</html>
