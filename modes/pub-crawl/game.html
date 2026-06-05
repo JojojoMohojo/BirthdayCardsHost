@@ -58,15 +58,7 @@
                             <path d="M8 2l1 6M16 2l-1 6"/>
                         </svg>
                     </button>
-                    <button id="player-manager-btn" class="admin-btn admin-btn-people" aria-label="Manage players">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                            <circle cx="9" cy="7" r="4"/>
-                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-                            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-                        </svg>
-                    </button>
-                    <button id="card-manager-btn" class="admin-btn admin-btn-cards" aria-label="Edit cards">
+<button id="card-manager-btn" class="admin-btn admin-btn-cards" aria-label="Edit cards">
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <rect x="2" y="4" width="13" height="18" rx="2"/>
                             <path d="M7 9h3M7 13h3"/>
@@ -193,25 +185,7 @@
         </div>
     </div>
 
-    <div id="player-manager-overlay" class="overlay hidden">
-        <div class="rule-manager-drawer">
-            <div class="rule-manager-header">
-                <span class="rule-manager-title">Players</span>
-                <button id="player-manager-close" class="icon-btn" aria-label="Close">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-                </button>
-            </div>
-            <div class="rule-manager-body">
-                <div id="pm-player-list" class="rm-rule-list"></div>
-                <div class="rm-add-form">
-                    <div class="rm-input-row">
-                        <input type="text" id="pm-input" class="rm-input" placeholder="New player name…" maxlength="50"/>
-                        <button id="pm-add" class="rm-add-btn">Add</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+
 
     <div id="pub-confirm-overlay" class="overlay hidden">
         <div class="confirm-box">

@@ -1,4 +1,4 @@
-'use strict';
+﻿'use strict';
 
 // ── Active pack ───────────────────────────────────────────────────────────────
 // TIMER and PACKS are defined in packs.js, loaded before this file.
@@ -34,8 +34,11 @@ function storageKey()  { return `pubCrawl_${ACTIVE_PACK.id}_deck`; }
 function historyKey()  { return `pubCrawl_${ACTIVE_PACK.id}_history`; }
 function pubKey()      { return `pubCrawl_${ACTIVE_PACK.id}_pub`; }
 function rulesKey()    { return `pubCrawl_${ACTIVE_PACK.id}_rules`; }
-function playersKey()  { return `pubCrawl_${ACTIVE_PACK.id}_players`; }
 function cardsKey()    { return `pubCrawl_${ACTIVE_PACK.id}_cards`; }
+
+function loadGlobalPlayers() {
+    try { return JSON.parse(localStorage.getItem('kampai_players')) || []; } catch (e) { return []; }
+}
 
 function saveState(deck) {
     try { localStorage.setItem(storageKey(), JSON.stringify(deck)); } catch (e) {}
@@ -98,18 +101,6 @@ function loadRules() {
             const p = JSON.parse(raw);
             return { draw: Array.isArray(p.draw) ? p.draw : [], others: Array.isArray(p.others) ? p.others : [] };
         }
-    } catch (e) {}
-    return null;
-}
-
-function savePlayers() {
-    try { localStorage.setItem(playersKey(), JSON.stringify(players)); } catch (e) {}
-}
-
-function loadPlayers() {
-    try {
-        const raw = localStorage.getItem(playersKey());
-        if (raw) return JSON.parse(raw);
     } catch (e) {}
     return null;
 }
@@ -199,7 +190,7 @@ function init() {
         drawRules = ACTIVE_PACK.drawRules.map(r => ({ ...r }));
         makeOthersRules = ACTIVE_PACK.othersDrawRules.map(r => ({ ...r }));
     }
-    players = loadPlayers() ?? [...ACTIVE_PACK.players];
+    players = loadGlobalPlayers();
     const savedCards = loadCards();
     cards = savedCards !== null ? savedCards : ACTIVE_PACK.cards.map(c => ({ ...c }));
     renderRulesPanel();
@@ -397,7 +388,6 @@ function clearAllData() {
     clearHistory();
     clearPubCount();
     localStorage.removeItem(rulesKey());
-    localStorage.removeItem(playersKey());
     localStorage.removeItem(cardsKey());
     cards   = ACTIVE_PACK.cards.map(c => ({ ...c }));
     deck    = [...cards];
@@ -406,7 +396,6 @@ function clearAllData() {
     currentPub = 1;
     drawRules = ACTIVE_PACK.drawRules.map(r => ({ ...r }));
     makeOthersRules = ACTIVE_PACK.othersDrawRules.map(r => ({ ...r }));
-    players = [...ACTIVE_PACK.players];
     activeLongTimers.forEach(t => clearInterval(t.intervalId));
     activeLongTimers = [];
     renderTimerTray();
@@ -993,111 +982,6 @@ document.getElementById('confirm-no').addEventListener('click', () => {
 document.getElementById('confirm-overlay').addEventListener('click', function (e) {
     if (e.target === this) this.classList.add('hidden');
 });
-
-// ── Player manager ────────────────────────────────────────────────────────────
-
-function openPlayerManager() {
-    renderPlayerManager();
-    document.getElementById('player-manager-overlay').classList.remove('hidden');
-}
-
-function closePlayerManager() {
-    document.getElementById('player-manager-overlay').classList.add('hidden');
-}
-
-function renderPlayerManager() {
-    const container = document.getElementById('pm-player-list');
-    container.innerHTML = '';
-    if (players.length === 0) {
-        const empty = document.createElement('div');
-        empty.className = 'rm-empty';
-        empty.textContent = 'No players added.';
-        container.appendChild(empty);
-        return;
-    }
-    players.forEach((name, i) => {
-        const count = history.filter(h => h.assignee === name).length;
-        const el = document.createElement('div');
-        el.className = 'pm-player-item';
-
-        const nameSpan = document.createElement('span');
-        nameSpan.className = 'pm-player-name';
-        nameSpan.textContent = name;
-
-        const countBadge = document.createElement('span');
-        countBadge.className = 'pm-card-count';
-        countBadge.textContent = count === 1 ? '1 card' : `${count} cards`;
-
-        const editBtn = document.createElement('button');
-        editBtn.className = 'rm-delete-btn';
-        editBtn.setAttribute('aria-label', 'Rename player');
-        editBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>';
-        editBtn.addEventListener('click', () => startRenamePlayer(i, el, nameSpan));
-
-        const delBtn = document.createElement('button');
-        delBtn.className = 'rm-delete-btn';
-        delBtn.setAttribute('aria-label', 'Remove player');
-        delBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
-        delBtn.addEventListener('click', () => removePlayer(i));
-
-        el.appendChild(nameSpan);
-        el.appendChild(countBadge);
-        el.appendChild(editBtn);
-        el.appendChild(delBtn);
-        container.appendChild(el);
-    });
-}
-
-function startRenamePlayer(index, el, nameSpan) {
-    const oldName = players[index];
-    const input = document.createElement('input');
-    input.type = 'text';
-    input.value = oldName;
-    input.className = 'pm-rename-input';
-    el.replaceChild(input, nameSpan);
-    input.focus();
-    input.select();
-
-    let committed = false;
-    const commit = () => {
-        if (committed) return;
-        committed = true;
-        const newName = input.value.trim();
-        if (newName && newName !== oldName) {
-            history.forEach(h => { if (h.assignee === oldName) h.assignee = newName; });
-            saveHistory(history);
-            players[index] = newName;
-            savePlayers();
-            buildNameChips();
-        }
-        renderPlayerManager();
-    };
-
-    input.addEventListener('blur', commit);
-    input.addEventListener('keydown', e => {
-        if (e.key === 'Enter') input.blur();
-        if (e.key === 'Escape') { committed = true; renderPlayerManager(); }
-    });
-}
-
-function addPlayer() {
-    const input = document.getElementById('pm-input');
-    const name = input.value.trim();
-    if (!name || players.includes(name)) return;
-    players.push(name);
-    input.value = '';
-    savePlayers();
-    buildNameChips();
-    renderPlayerManager();
-}
-
-function removePlayer(index) {
-    players.splice(index, 1);
-    savePlayers();
-    buildNameChips();
-    renderPlayerManager();
-}
-
 // ── Card manager ──────────────────────────────────────────────────────────────
 
 function openCardManager() {
@@ -1369,20 +1253,6 @@ document.getElementById('cookie-confirm-no').addEventListener('click', () => {
 
 document.getElementById('cookie-confirm-overlay').addEventListener('click', function (e) {
     if (e.target === this) this.classList.add('hidden');
-});
-
-document.getElementById('player-manager-btn').addEventListener('click', openPlayerManager);
-
-document.getElementById('player-manager-close').addEventListener('click', closePlayerManager);
-
-document.getElementById('player-manager-overlay').addEventListener('click', function (e) {
-    if (e.target === this) closePlayerManager();
-});
-
-document.getElementById('pm-add').addEventListener('click', addPlayer);
-
-document.getElementById('pm-input').addEventListener('keydown', function (e) {
-    if (e.key === 'Enter') addPlayer();
 });
 
 document.getElementById('card-manager-btn').addEventListener('click', openCardManager);
