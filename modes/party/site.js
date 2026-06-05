@@ -362,6 +362,7 @@ function startShortTimer() {
         countEl.textContent = remaining;
         ringEl.style.strokeDashoffset = 100 * (1 - remaining / duration);
         if (remaining <= urgent) { countEl.classList.add('urgent'); ringEl.classList.add('urgent'); }
+        if (remaining === 15 && duration > 15) { playKillBillWarning(); }
         if (remaining <= 0) {
             clearInterval(shortTimerInterval);
             shortTimerInterval = null;
@@ -381,6 +382,10 @@ function playTimerAlarm() {
     try { new Audio('party-alarm.mp3').play(); } catch (e) {}
 }
 
+function playKillBillWarning() {
+    try { new Audio('Kill Bill Ironside Siren Sound.mp3').play(); } catch (e) {}
+}
+
 function startLongTimer(cardDef, assignee) {
     const id = ++longTimerIdCounter;
     const timer = {
@@ -394,6 +399,7 @@ function startLongTimer(cardDef, assignee) {
 
     timer.intervalId = setInterval(() => {
         timer.remaining--;
+        if (timer.remaining === 15) { playKillBillWarning(); }
         if (timer.remaining <= 0) {
             clearInterval(timer.intervalId);
             try { navigator.vibrate([100, 80, 100, 80, 100]); } catch (e) {}
